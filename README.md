@@ -23,3 +23,8 @@ cd shop
 ```
 cd shop/shop/apps
 ```
+
+### Create SuperUser with Docker
+
+```
+docker exec -it tb_django python ./shop/manage.py createsuperuser

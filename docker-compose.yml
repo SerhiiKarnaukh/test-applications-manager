@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  tb_db:
+    image: postgres:15
+    container_name: tb_postgres
+    volumes:
+      - ~/.pg/pg_data/tb:/var/lib/postgresql/data
+    env_file:
+      - .env
+  django_taberna:
+    container_name: tb_django
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    command: >
+      bash -c "python /usr/src/tb_rest/shop/manage.py migrate --noinput && python /usr/src/tb_rest/shop/manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/usr/src/tb_rest
+    ports:
+      - 8000:8000
+    depends_on:
+      - tb_db
+    env_file:
+      - .env
+
+volumes:
+  pg_data:
