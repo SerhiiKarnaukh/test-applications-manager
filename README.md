@@ -1,17 +1,25 @@
-# Super Shop
+# Backend Python(Django) + App with Django Templates Language
 
-## Description
-
-Pet ecommerce app using Python(Django), Django Templates Language, Django Rest Framework, Vue.js
-
-## Backend Python(Django)
+## Python version
 
 ```
-cd backend
+3.11.0
 ```
 
-## Frontend Vue.js
+### Install requirements
 
 ```
-cd frontend-vue
+pip install -r requirements.txt
+```
+
+### Project folder
+
+```
+cd shop
+```
+
+### Apps folder
+
+```
+cd shop/shop/apps
 ```
