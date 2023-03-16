@@ -1,4 +1,4 @@
-# Backend Python(Django) + App with Django Templates Language
+# Taberna
 
 ## Python version
 
@@ -9,7 +9,7 @@
 ### Install requirements
 
 ```
-pip install -r requirements.txt
+pip install -r req.txt
 ```
 
 ### Project folder

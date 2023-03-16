@@ -26,12 +26,12 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, 'apps'))
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%bkii7@6vhj^z#(9rx=dtkex6gn79f84@7sy^r#552ef)ztdv^'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(int(os.environ.get("DEBUG", default=1)))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # Application definition
 
@@ -95,24 +95,20 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 
 AUTH_USER_MODEL = 'accounts.Account'
 
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
-        'PORT': os.getenv('POSTGRES_PORT', 5432),
-        'USER': os.getenv('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'NAME': os.getenv('POSTGRES_DB', "postgres")
+    "default": {
+        "ENGINE":
+        os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+        "NAME":
+        os.environ.get("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
+        "USER":
+        os.environ.get("SQL_USER", "user"),
+        "PASSWORD":
+        os.environ.get("SQL_PASSWORD", "password"),
+        "HOST":
+        os.environ.get("SQL_HOST", "localhost"),
+        "PORT":
+        os.environ.get("SQL_PORT", "5432"),
     }
 }
 

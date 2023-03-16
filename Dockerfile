@@ -1,15 +1,23 @@
 FROM python:3.11
 
+WORKDIR /usr/src/app
+
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-WORKDIR /usr/src/tb_rest
+RUN apt-get update \
+    && apt-get install netcat -y
 
-COPY ./requirements.txt /usr/src/requirements.txt
+RUN apt-get upgrade -y && apt-get install postgresql gcc python3-dev musl-dev -y
 
-RUN pip install -r /usr/src/requirements.txt
+RUN pip install --upgrade pip
 
-COPY . /usr/src/tb_rest
+COPY ./req.txt .
+RUN pip install -r req.txt
 
-EXPOSE 8000
+COPY ./entrypoint.sh .
+
+COPY . .
+
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
