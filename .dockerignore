@@ -1,3 +1,9 @@
+.git
 .vscode
+.dockerignore
+.gitignore
 venv
+docker-compose.yaml
+Dockerfile
+README.md
 temp
