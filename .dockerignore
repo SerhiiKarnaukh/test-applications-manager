@@ -4,6 +4,8 @@
 .gitignore
 venv
 docker-compose.yaml
+docker-compose.prod.yaml
 Dockerfile
+Dockerfile.prod
 README.md
 temp
