@@ -1,11 +1,9 @@
-version: "3.9"
-
 services:
   web:
     build:
       context: ./
       dockerfile: Dockerfile.prod
-    command: gunicorn ./shop/shop.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn shop.wsgi:application --bind 0.0.0.0:8000
     expose:
       - 8000
     volumes:
@@ -18,13 +16,13 @@ services:
   db:
     image: postgres:15
     volumes:
-      - dmp_postgres_data:/var/lib/postgresql/data/
+      - tbp_postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./env/.env.prod.db
   nginx:
     build: ./nginx
     ports:
-      - 80:80
+      - 1337:80
     volumes:
       - static_volume:/home/app/web/static
       - media_volume:/home/app/web/media
@@ -34,6 +32,6 @@ services:
 
 
 volumes:
-  dmp_postgres_data:
+  tbp_postgres_data:
   static_volume:
   media_volume:

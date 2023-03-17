@@ -1,27 +1,25 @@
 version: "3.9"
 
 services:
-  tb_db:
-    image: postgres:15
-    container_name: tb_postgres
-    volumes:
-      - ~/.pg/pg_data/tb:/var/lib/postgresql/data
-    env_file:
-      - ./env/.env.dev
   web:
     container_name: tb_django
     build:
       dockerfile: Dockerfile
       context: ./
-    command: python /usr/src/app/shop/manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/usr/src/app/
     ports:
       - 8000:8000
-    depends_on:
-      - tb_db
     env_file:
       - ./env/.env.dev
+  db:
+    image: postgres:15
+    container_name: tb_postgres
+    volumes:
+      - tb_postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./env/.env.dev.db
 
 volumes:
-  pg_data:
+   tb_postgres_data:

@@ -10,7 +10,7 @@ docker-compose up
 ### Create SuperUser with Docker
 
 ```
-docker exec -it tb_django python ./shop/manage.py createsuperuser
+docker exec -it tb_django python manage.py createsuperuser
 ```
 
 ## Production
