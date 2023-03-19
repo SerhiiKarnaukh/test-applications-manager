@@ -5,6 +5,7 @@ WORKDIR /usr/src/app
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV PIP_ROOT_USER_ACTION ignore
 
 RUN apt-get update \
     && apt-get install netcat -y
