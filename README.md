@@ -7,11 +7,16 @@ docker-compose build
 docker-compose up
 ```
 
-### Create SuperUser with Docker
+### Basic commands
 
 ```
+docker-compose run --rm tb_django sh -c "django-admin startproject projects_name"
+docker-compose run --rm tb_django sh -c "python manage.py startapp apps_name"
+docker-compose run --rm tb_django sh -c "python manage.py makemigrations"
+docker-compose up
 docker exec -it tb_django python manage.py migrate
 docker exec -it tb_django python manage.py createsuperuser
+docker-compose -f docker-compose.yml -f docker-compose-debug.yml up --build + F5
 ```
 
 ## Production
