@@ -10,9 +10,9 @@ docker-compose up
 ### Basic commands
 
 ```
-docker-compose run --rm tb_django sh -c "django-admin startproject projects_name"
-docker-compose run --rm tb_django sh -c "python manage.py startapp apps_name"
-docker-compose run --rm tb_django sh -c "python manage.py makemigrations"
+docker-compose run --rm web sh -c "django-admin startproject projects_name"
+docker-compose run --rm web sh -c "python manage.py startapp apps_name"
+docker-compose run --rm web sh -c "python manage.py makemigrations"
 docker-compose up
 docker exec -it tb_django python manage.py migrate
 docker exec -it tb_django python manage.py createsuperuser
