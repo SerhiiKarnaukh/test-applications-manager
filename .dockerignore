@@ -9,3 +9,6 @@ Dockerfile
 Dockerfile.prod
 README.md
 temp
+**/node_modules
+_dev
+setup.cfg
