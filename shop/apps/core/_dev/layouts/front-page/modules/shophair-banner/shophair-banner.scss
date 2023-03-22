@@ -1,0 +1,53 @@
+@import '../../../../styles/mixins';
+
+.shophair-banner {
+  &__item {
+    @include embed-proportional(56.25%);
+    @media (max-width: $breakpoint-sm) {
+    padding: 0 0 65.25% 0;
+    }
+  }
+
+  &__info {
+    position: absolute;
+    left: 50%;
+    top: 55%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    @media (max-width: $breakpoint-xl) {
+      top: 68%;
+    }
+    @media (max-width: $breakpoint-sm) {
+      top: 63%;
+    }
+  }
+
+  &__title {
+    color: $white;
+    font-size: 72px;
+    padding-bottom: 30px;
+    @media (max-width: $breakpoint-lg) {
+      font-size: 52px;
+      padding-bottom: 15px;
+    }
+    @media (max-width: $breakpoint-sm) {
+      font-size: 30px;
+      padding-bottom: 0;
+      line-height: 35px;
+    }
+  }
+
+  &__subtitle {
+    color: $white;
+    padding-bottom: 30px;
+    @media (max-width: $breakpoint-sm) {
+      padding-bottom: 10px;
+      font-size: 15px;
+    }
+  }
+}
+
+
+
+
+

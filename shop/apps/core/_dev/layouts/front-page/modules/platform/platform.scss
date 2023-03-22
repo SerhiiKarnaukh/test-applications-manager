@@ -1,0 +1,45 @@
+@import '../../../../styles/mixins';
+
+.platform {
+  margin: 90px 0 150px;
+  @media (max-width: $breakpoint-xl) {
+    margin-bottom: 80px;
+  }
+  @media (max-width: $breakpoint-lg) {
+    margin-bottom: 50px;
+  }
+  @media (max-width: $breakpoint-sm) {
+    margin-top: 10px;
+  }
+
+  &__wrap {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  &__image {
+    flex-basis: 40%;
+    @media (max-width: $breakpoint-lg) {
+      display: none;
+    }
+  }
+
+  &__content {
+    flex-basis: 60%;
+    @media (max-width: $breakpoint-lg) {
+      flex-basis: 100%;
+      margin-top: 40px;
+    }
+  }
+
+  &__description {
+    max-width: 85%;
+    padding-bottom: 25px;
+  }
+}
+
+
+
+

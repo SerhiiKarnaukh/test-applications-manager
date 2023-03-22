@@ -1,0 +1,53 @@
+@import '../../../../styles/mixins';
+
+.form-title {
+  color: $color-brand;
+}
+
+.subscription_form {
+  position: relative;
+  z-index: 1;
+
+  .mail {
+    border: none;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    font-size: 12px;
+    height: 50px;
+    padding: 5px 15px;
+    width: 100%;
+    background-color: #f0eded;
+    color: #929191;
+    font-style: italic;
+    @media (max-width: $breakpoint-md) {
+      height: 35px;
+    }
+  }
+
+  .submit {
+    background-color: $color-brand;
+    border: none;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    height: 50px;
+    position: absolute;
+    right: 0;
+    text-transform: uppercase;
+    top: 0;
+    transition-duration: 500ms;
+    padding: 0 30px;
+    font-weight: 700;
+    @media (max-width: $breakpoint-md) {
+      height: 35px;
+      font-size: 10px;
+    }
+
+    &:hover {
+      background-color: $color-fade;
+      color: #fff;
+    }
+  }
+}

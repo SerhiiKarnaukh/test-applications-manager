@@ -1,0 +1,222 @@
+@import '~normalize.css';
+//@import '../../vendors/bootstrap-grid-4.0.0-modified';
+@import '~bootstrap/scss/bootstrap.scss';
+@import '../../styles/fonts';
+@import '../../styles/mixins';
+@import '~aos/src/sass/aos.scss';
+
+
+* {
+  position: relative;
+  outline: none;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  scroll-behavior: smooth;
+  @include font-regular($description-font);
+}
+
+html {
+  font-size: 14px;
+  color: black;
+  box-sizing: border-box;
+}
+
+
+body {
+  background: $color-base;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  font-size: $font-size-lg;
+  color: $color-title;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+button,
+select,
+option,
+input,
+textarea {
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 0;
+  outline: none;
+}
+
+:-moz-ui-invalid:-moz-focusring:not(output),
+:-moz-ui-invalid:not(output) {
+  box-shadow: none;
+}
+
+input[type="search"] {
+  box-sizing: border-box;
+}
+
+a {
+  transition: $transition-speed;
+  text-decoration: none;
+}
+
+img {
+  height: auto;
+  max-width: 100%;
+}
+
+ul {
+  margin: 0;
+  padding: 0 20px;
+}
+
+//Fonts classes
+.font-title {
+  @include font-bold($title-font);
+  font-size: 45px;
+  line-height: 55px;
+  @media (max-width: $breakpoint-md) {
+    font-size: 40px;
+    line-height: 50px;
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    font-size: 35px;
+    line-height: 44px;
+  }
+
+  @media (max-width: $breakpoint-xs) {
+    line-height: 35px;
+  }
+}
+
+.font-subtitle {
+  @include font-semibold($title-font);
+  font-size: 40px;
+  line-height: 41px;
+  @media (max-width: $breakpoint-md) {
+    font-size: 35px;
+    line-height: 36px;
+  }
+  @media (max-width: $breakpoint-sm) {
+    font-size: 30px;
+    line-height: 30px;
+  }
+}
+
+.font-description {
+  @include font-light($content-font);
+  font-size: 25px;
+  line-height: 31px;
+  @media (max-width: $breakpoint-md) {
+    font-size: 20px;
+    line-height: 28px;
+  }
+  @media (max-width: $breakpoint-xs) {
+    font-size: 18px;
+    line-height: 22px;
+  }
+}
+
+.font-content {
+  @include font-regular($content-font);
+  font-size: 21px;
+  line-height: 33px;
+  @media (max-width: $breakpoint-md) {
+    font-size: 16px;
+    line-height: 28px;
+  }
+}
+
+.font-link {
+  @include font-light($content-font);
+  font-size: 15px;
+  line-height: 22px;
+}
+
+
+//pattern visually-hidden
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  white-space: nowrap;
+  clip-path: inset(100%);
+  clip: rect(0, 0, 0, 0);
+  overflow: hidden;
+}
+
+.blackout {
+  &::after {
+    content: "";
+    background-color: rgba(0, 0, 0, 0.4);
+    display: block;
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+  }
+}
+
+//mobile margin for fixed top-menu
+.mobile-margin {
+  @media (max-width: $breakpoint-lg) {
+    margin-top: 85px;
+  }
+}
+
+/////////////Disable default admin bar styles///////////////////
+html {
+  margin-bottom: 32px !important;
+}
+
+* html body {
+  margin-bottom: 32px !important;
+}
+
+#wpadminbar {
+  top: auto !important;
+  bottom: 0;
+}
+
+#wpadminbar {
+  .menupop {
+    .ab-sub-wrapper {
+      bottom: 32px;
+      box-shadow: 2px -2px 5px rgba(0, 0, 0, .2);
+    }
+  }
+}
+
+@media screen and (max-width: 782px) {
+  html {
+    margin-bottom: 46px !important;
+  }
+  * html body {
+    margin-bottom: 46px !important;
+  }
+  #wpadminbar {
+    position: fixed;
+  }
+  #wpadminbar  {
+    .menupop {
+      .ab-sub-wrapper {
+        bottom: 46px;
+      }
+    }
+  }
+}
+///////////////////End////////////////////////////////////

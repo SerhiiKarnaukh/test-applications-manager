@@ -1,0 +1,107 @@
+@import './variables';
+
+@function str-remove-whitespace($str) {
+  @while (str-index($str, ' ') != null) {
+    $index: str-index($str, ' ');
+    $str: "#{str-slice($str, 0, $index - 1)}#{str-slice($str, $index + 1)}";
+  }
+  @return $str;
+}
+
+@mixin svg{
+  svg{
+    display: block;
+    margin: auto;
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
+
+@mixin img{
+  img{
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    flex-shrink: 0;
+  }
+}
+
+@mixin svg-path-fill($color: black){
+  svg{
+    path,
+    polygon,
+    circle,
+    rect,
+    ellipse{
+      fill: $color;
+    }
+  }
+}
+
+@mixin svg-path-transition($speed: $transition-speed){
+  svg{
+    path,
+    polygon,
+    circle,
+    rect,
+    ellipse{
+      transition: $speed;
+    }
+  }
+}
+
+@mixin embed-proportional($size: 100%, $fit-type: cover){
+  //1920 - 100%
+  //1080 - 56.25%
+  //1200 - 62.5%
+  position: relative;
+  display: block;
+  overflow: hidden;
+  height: 0;
+  padding: 0 0 $size 0;
+  >*:first-child{
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    border: 0;
+    object-fit: $fit-type;
+    >*:first-child{
+      max-width: unset;
+    }
+  }
+}
+
+@mixin font-light($font-family) {
+  font-family: $font-family, sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+@mixin font-regular($font-family) {
+  font-family: $font-family, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+@mixin font-semibold($font-family) {
+  font-family: $font-family, sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+@mixin font-bold($font-family) {
+  font-family: $font-family, sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+@mixin iconCenter {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+

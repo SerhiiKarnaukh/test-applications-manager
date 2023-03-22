@@ -1,0 +1,33 @@
+@import './mixins';
+
+$path: '../../resources/fonts';
+
+@mixin get-font-face(
+  $font-family,
+  $font-size,
+  $font-weight,
+  $font-style,
+  $font-file-name
+){
+  $connect-type: 'external';
+  @font-face {
+    font-family: $font-family;
+    src:
+      local("#{$font-family} #{$font-size}"),
+      local("#{str-remove-whitespace($font-family)}-#{$font-size}"),
+      url('#{$path}/#{$font-file-name}.woff2?#{$connect-type}') format('woff2'),
+      url('#{$path}/#{$font-file-name}.woff?#{$connect-type}') format('woff');
+    font-weight: $font-weight;
+    font-style: $font-style;
+    //font-display: swap;
+  }
+}
+
+@include get-font-face('Open Sans', 'Light', 300, normal, 'open-sans-v15-cyrillic_latin-300');
+@include get-font-face('Open Sans', 'Regular', 400, normal, 'open-sans-v15-cyrillic_latin-regular');
+@include get-font-face('Open Sans', 'SemiBold', 600, normal, 'open-sans-v15-cyrillic_latin-600');
+@include get-font-face('Open Sans', 'Bold', 700, normal, 'open-sans-v15-cyrillic_latin-700');
+
+@include get-font-face('ArboriaBook', 'Light', 300, normal, 'arboria-book');
+@include get-font-face('Arboria', 'Medium', 600, normal, 'arboria-medium');
+@include get-font-face('Arboria Bold', 'Bold', 700, normal, 'arboria-bold');

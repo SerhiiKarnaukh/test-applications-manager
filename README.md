@@ -22,6 +22,9 @@ docker-compose -f docker-compose.yml -f docker-compose-debug.yml up --build + F5
 ### Front-end
 
 ```
+nvm use 19.7.0
+cd shop/apps/core/_dev
+npm run w
 ```
 
 ### For debugging

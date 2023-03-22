@@ -1,0 +1,47 @@
+@import '../../../../styles/mixins';
+
+.footer__title {
+  text-transform: uppercase;
+  color: $color-brand;
+  font-weight: 700;
+  padding: 0 20px;
+  padding-bottom: .5em;
+  position: relative;
+
+  &::after {
+    content: '';
+    background: $color-brand;
+    width: 15%;
+    height: 2px;
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+
+    @media (max-width: 991px) {
+      width: 6%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+}
+
+.footer__widget {
+  ul {
+    a {
+      display: block;
+      margin-bottom: 10px;
+      text-transform: capitalize;
+      transition-duration: 500ms;
+      color: $color-title;
+      @include font-light($content-font);
+      font-size: 15px;
+      line-height: 22px;
+
+      &:hover {
+        margin-left: 5px;
+        color: $color-brand;
+      }
+    }
+    list-style-type: none;
+  }
+}

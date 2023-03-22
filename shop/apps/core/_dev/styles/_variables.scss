@@ -1,0 +1,78 @@
+// See grid library
+@use "sass:math";
+
+$block-space: 16px;
+$block-space_half: $block-space*0.5;
+$block-space_quarter: $block-space_half*0.5;
+$around-space-factor: 2;
+
+// Same breakpoints for js in index.js
+$breakpoint-us: 320px;
+$breakpoint-xs: 460px;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+$breakpoint-xxl: 1400px;
+
+$aos-distance: $block-space*2;
+
+$font-text-name: 'Open Sans';
+$content-font: 'ArboriaBook'; //300
+$title-font: 'Arboria Bold'; //700
+$description-font: 'Arboria'; //600
+$font-title-name: $font-text-name;
+
+$font-size-xs: 10px;
+$font-size-sm: 12px;
+$font-size-lg: 14px;
+$font-size-xl: 15px;
+$line-height: 1.618;
+
+// Base colors
+$white: #fff;
+$white-bg: #fafafa;
+$color-base-brand: #EC709A;
+$color-brand: #EC709A;
+//$color-brand: $color-base-brand; //
+$color-brand-for-dark-bg: lighten($color-brand, 7%);
+
+$color-title: #555555;
+
+// Background colors
+$color-bg-gradient-first: #EC709a;
+$color-bg-gradient-second: #ffd09b;
+$color-brand-gradient: linear-gradient(90deg, $color-bg-gradient-first 0%, $color-bg-gradient-second 100%);
+
+$dark-bg-gradient-first-color: #3c2126;
+$dark-bg-gradient-second-color: #163448;
+
+$color-base: #fcfcfc;
+$color-fade: #161618;
+
+$color-shop-btn: #FFC59B;
+$color-link: #D7995D;
+//$color-accent: #ffe664;
+$color-bg-darken-second: #ececec;
+$color-bg-darken: #f8fafc;
+$color-title-for-light-bg: #363636;
+$color-text-for-light-bg: #545454;
+$color-title-for-dark-bg: white;
+$color-text-for-dark-bg: darken($color-title-for-dark-bg, 20%);
+$color-footer-text: rgba($color-base, .4);
+$color-input: rgba(black, .4);
+$color-input-hover: rgba(black, .6);
+
+// Specific colors
+$color-ui-elements: #d0d0d0;
+$color-ui-light-elements: #f1f1f1;
+$color-specific-elements: #888888;
+$color-depends-intro-video: #303d50;
+
+$color-error: #e0603f;
+$color-success: #2fad4c;
+$color-info: $color-base-brand;
+
+//$transition-speed: 0.25s;
+$transition-speed: 0.8s;
+$input-height: $block-space_half*5;

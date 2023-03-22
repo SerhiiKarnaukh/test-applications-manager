@@ -1,0 +1,16 @@
+@import '../../../../styles/mixins';
+
+.copyright_text {
+  p {
+    color: #9f9f9f;
+    font-size: 14px;
+    margin-top: 30px;
+    display: block;
+    @media (max-width: $breakpoint-lg) {
+      margin: 0 auto;
+      margin-top: 5px;
+      font-size: 10px;
+      text-align: center;
+    }
+  }
+}

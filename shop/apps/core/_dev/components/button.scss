@@ -1,0 +1,88 @@
+@import '../styles/mixins';
+
+.button-component{
+  display: inline-flex;
+  position: relative;
+  overflow: hidden;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  cursor: pointer;
+  transition: $transition-speed;
+  @include font-semibold($description-font);
+  letter-spacing: 1px;
+  line-height: 1;
+  //border-radius: $block-space_quarter;
+}
+
+$button-font-size-sm: 11px;
+
+// Sizes
+.button_sm{
+  height: 28px;
+  border-radius: 5px;
+  font-size: $font-size-sm;
+  padding: 0 ($block-space_half*3) 0 (2 + $block-space_half*3);
+  @media (min-width: $breakpoint-md){
+    height: 32px;
+  }
+}
+.button_lg{
+  height: 36px;
+  border-radius: 5px;
+  font-size: $button-font-size-sm;
+  padding: 0 $block-space*2 0 (2 + $block-space*2);
+  @media (min-width: $breakpoint-md){
+    font-size: $font-size-lg;
+    height: 40px;
+  }
+}
+
+// Styles
+//Transparent
+.button_style_base-light{
+  border: 1px solid $color-base;
+  color: $color-base;
+}
+.button_style_dark-light{
+  border: 1px solid $color-text-for-light-bg;
+  color: $color-title-for-light-bg;
+}
+.button_style_brand-light{
+  border: 1px solid $color-brand;
+  color: $color-brand;
+}
+//With background
+.button_style_base-fill{
+  background-color: #000000;
+  color: $white;
+}
+.button_style_brand-fill{
+  background-color: $color-brand;
+  color: $color-base;
+}
+
+
+// Hover, Active
+.button_hover_base{
+  &:hover{
+    background-color: $color-base;
+    color: $color-title-for-light-bg;
+    border-color: $color-base;
+  }
+}
+.button_hover_dark{
+  &:hover{
+    background-color: $color-fade;
+    color: $color-base;
+    border-color: $color-fade;
+  }
+}
+.button_hover_brand{
+  &:hover{
+    background-color: $color-brand;
+    color: $color-base;
+    border-color: $color-brand;
+  }
+}

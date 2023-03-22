@@ -1,0 +1,25 @@
+@import '../../../../styles/mixins';
+
+.top-menu {
+  &__wrap {
+    background: $color-brand-gradient;
+    @media (max-width: $breakpoint-lg) {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 99;
+    }
+
+    .form-control {
+      font-style: italic;
+    }
+
+    .navbar-nav {
+      flex-wrap: wrap;
+    }
+  }
+
+  &__logo {
+    height: 35px;
+  }
+}

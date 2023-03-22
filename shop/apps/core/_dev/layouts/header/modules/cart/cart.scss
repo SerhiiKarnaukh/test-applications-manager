@@ -1,0 +1,47 @@
+@import '../../../../styles/mixins';
+
+.top-menu {
+  &__cart {
+    display: block;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    transition: $transition-speed;
+    padding: 1.3rem;
+
+
+    &:hover {
+      border-color: $white;
+      background-color: $white;
+
+      .top-menu__cart-icon {
+        background-image: url(images/cart-arrow-down-solid-pink.svg?inline-css);
+      }
+    }
+  }
+
+  &__cart-icon {
+    height: 30px;
+    width: 30px;
+    background-image: url(images/cart-arrow-down-solid.svg?inline-css);
+    background-repeat: no-repeat;
+    @include iconCenter;
+  }
+
+  &__cart-count {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: $white;
+    width: 20px;
+    height: 20px;
+    border: 1px solid $color-brand;
+    border-radius: 50%;
+  }
+
+  &__cart-number {
+    @include iconCenter;
+    font-size: 14px;
+    color: $color-title;
+  }
+}

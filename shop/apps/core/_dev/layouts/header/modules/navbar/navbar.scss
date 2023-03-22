@@ -1,0 +1,7 @@
+@import '../../../../styles/mixins';
+
+.top-menu__wrap {
+  a.font-link.dropdown-item.active {
+    background-color: lighten($color-brand, 15%);
+  }
+}
