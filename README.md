@@ -2,13 +2,13 @@
 
 ## For local development
 
-1.Create a dev folder at the root of the project
+1. Create a dev folder at the root of the project
 
 ```
 ./dev
 ```
 
-2.In the './dev' folder, create a configuration file '.env.dev' and assign a value to the constants
+2. In the './dev' folder, create a configuration file '.env.dev' and assign a value to the constants
 
 ```
 SQL_ENGINE=django.db.backends.postgresql
@@ -24,7 +24,7 @@ EMAIL_HOST_PASSWORD=your_password
 EMAIL_USE_TLS=1
 ```
 
-2.In the './dev' folder, create a configuration file '.env.dev.db' and assign a value to the constants
+3. In the './dev' folder, create a configuration file '.env.dev.db' and assign a value to the constants
 
 ```
 POSTGRES_USER=django_user
