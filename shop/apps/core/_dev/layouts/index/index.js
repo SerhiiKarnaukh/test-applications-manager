@@ -21,29 +21,6 @@ import FrontPage from '../../layouts/front-page/front-page';
 import Footer from '../footer/footer';
 import SingleProduct from '../single-product/single-product';
 
-
-// For removing google recaptcha empty div (bug with fixed height),
-// and Wordpress clear: both div
-function removeUselessLayers() {
-    $('body>div').each(function () {
-        if (
-            (
-                (
-                    $(this).css('position') === 'absolute' &&
-                    $(this).css('z-index') === '-10000' &&
-                    parseInt($(this).css('top')) === 0 &&
-                    parseInt($(this).css('left')) === 0 &&
-                    parseInt($(this).css('right')) === 0
-                ) ||
-                $(this).css('clear') === 'both'
-            ) &&
-            !$(this).html()
-        ) {
-            $(this).remove();
-        }
-    });
-}
-
 $(document).ready(function () {
     Swiper.use([Navigation, Pagination, EffectCoverflow, Keyboard, Autoplay]);
     Header();
@@ -54,7 +31,4 @@ $(document).ready(function () {
         duration: 1000,
         easing: 'ease-out-sine'
     });
-    setTimeout(function () {
-        removeUselessLayers();
-    }, 1000);
 });
