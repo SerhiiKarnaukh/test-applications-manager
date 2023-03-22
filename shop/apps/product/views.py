@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.contrib import messages
 
-from .models import Product, Category, ReviewRating
+from .models import Product, Category, ReviewRating, ProductGallery
 from .serializers import ProductSerializer
 from cart.models import CartItem
 from cart.views import _get_cart_id
@@ -30,6 +30,8 @@ class ProductDetail(DetailView):
         else:
             order_product = None
             context['orderproduct'] = order_product
+        context['product_gallery'] = ProductGallery.objects.filter(
+            product__slug=self.kwargs['slug'])
         context['reviews'] = ReviewRating.objects.filter(
             product__slug=self.kwargs['slug'], status=True)
         context['in_cart'] = CartItem.objects.filter(

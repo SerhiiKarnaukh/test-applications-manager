@@ -10,6 +10,7 @@ cryptography==39.0.2
 cssbeautifier==1.14.7
 defusedxml==0.7.1
 Django==4.1.7
+django-admin-thumbnails==0.2.6
 django-cors-headers==3.14.0
 django-grappelli==3.0.4
 django-rest-framework==0.1.0

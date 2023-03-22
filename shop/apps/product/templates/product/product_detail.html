@@ -13,6 +13,18 @@
                              alt="{{ product.name }}"
                              width="auto"
                              height="auto"/>
+                        <ul class="thumb">
+                            <li>
+                                <a href="{{ product.image.url }}" target="mainImage">
+                                    <img src="{{ product.image.url }}" alt="Product Image"/>
+                                </a>
+                                {% for i in product_gallery %}
+                                    <a href="{{ i.image.url }}" target="mainImage">
+                                        <img src="{{ i.image.url }}" alt="Product Image">
+                                    </a>
+                                {% endfor %}
+                            </li>
+                        </ul>
                     </div>
                     <div class="col-md-6">
                         <form action="{% url 'add_cart' product.id %}" method="post">
