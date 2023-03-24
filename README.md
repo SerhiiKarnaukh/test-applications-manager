@@ -40,6 +40,22 @@ npm run w
 docker-compose -f docker-compose.yml -f docker-compose-debug.yml up --build + F5
 ```
 
+### Tests
+
+1. Create report
+
+```
+docker-compose run --rm web sh -c "coverage report"
+docker-compose run --rm web sh -c "coverage html
+```
+
+2. Run Tests
+
+```
+docker-compose up
+docker exec -it tb_django coverage run manage.py test
+```
+
 ### Create your own project
 
 ```

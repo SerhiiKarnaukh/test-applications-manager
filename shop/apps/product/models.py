@@ -1,8 +1,5 @@
-from io import BytesIO
-from PIL import Image
 from django.urls import reverse
 
-from django.core.files import File
 from django.db import models
 
 from accounts.models import Account
@@ -10,10 +7,11 @@ from django.db.models import Avg, Count
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=255, db_index=True)
     slug = models.SlugField(max_length=100, unique=True)
     description = models.TextField(max_length=255, blank=True)
-    cat_image = models.ImageField(upload_to='uploads/%Y/%m/%d/', blank=True)
+    cat_image = models.ImageField(upload_to='images/categories/%Y/%m/%d/',
+                                  blank=True)
     ordering = models.IntegerField(default=0)
 
     class Meta:
@@ -32,22 +30,23 @@ class Product(models.Model):
     category = models.ForeignKey(Category,
                                  related_name='products',
                                  on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, unique=True)
-    slug = models.SlugField(max_length=200, unique=True)
+    created_by = models.ForeignKey(Account,
+                                   related_name='product_creator',
+                                   on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=200)
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    image = models.ImageField(upload_to='uploads/%Y/%m/%d/',
+    image = models.ImageField(upload_to='images/products/%Y/%m/%d/',
                               blank=True,
                               null=True)
     stock = models.IntegerField()
     is_available = models.BooleanField(default=True)
-    thumbnail = models.ImageField(upload_to='uploads/%Y/%m/%d/',
-                                  blank=True,
-                                  null=True)
     date_added = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 
     class Meta:
+        verbose_name_plural = 'Products'
         ordering = ('-date_added', )
 
     def __str__(self):
