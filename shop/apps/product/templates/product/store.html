@@ -30,7 +30,7 @@
                                                class="list-group-item list-group-item-action">All Products</a>
                                             {% for category in menu_categories %}
                                                 <a href="{{ category.get_absolute_url }}"
-                                                   class="list-group-item list-group-item-action">{{ category.name }}</a>
+                                                   class="list-group-item list-group-item-action {% if category.name == store_title %}active{% endif %}">{{ category.name }}</a>
                                             {% endfor %}
                                         </div>
                                     </div>

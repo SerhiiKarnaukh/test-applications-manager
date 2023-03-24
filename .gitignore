@@ -26,11 +26,12 @@ db.sqlite3-journal
 media/*
 
 # Environments
-.env
+.env.dev
+.env.dev.db
+.env.prod
+.env.prod.db
 .venv
-env/
 venv/
-ENV/
 env.bak/
 venv.bak/
 

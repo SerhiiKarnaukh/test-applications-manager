@@ -55,8 +55,8 @@ class CategoryDetail(ListView):
     def create_store_data(self, **kwargs):
         context = kwargs
         if 'slug' in self.kwargs:
-            context['store_title'] = Category.objects.get(
-                slug=self.kwargs['slug'])
+            context['store_title'] = str(
+                Category.objects.get(slug=self.kwargs['slug']))
             context['product_count'] = Product.objects.filter(
                 category__slug=self.kwargs['slug'], is_available=True).count()
             return context
@@ -94,6 +94,38 @@ def search(request):
         'product_count': product_count,
     }
     return render(request, 'product/store.html', context)
+
+
+class Search(ListView):
+    paginate_by = 4
+    model = Product
+    template_name = 'product/store.html'
+    context_object_name = 'products'
+    allow_empty = False
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     queryset = self.get_queryset()
+    #     if 'keyword' in self.request.GET:
+    #         keyword = self.request.GET['keyword']
+    #     queryset = queryset.order_by('-date_added').filter(
+    #         Q(description__icontains=keyword)
+    #         | Q(name__icontains=keyword))
+    #     context['product_count'] = self.get_queryset().count()
+    #     return context
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product_count'] = self.get_queryset().count()
+        return context
+
+    def get_queryset(self, **kwargs):
+        if 'keyword' in self.request.GET:
+            keyword = self.request.GET['keyword']
+            if keyword:
+                return Product.objects.order_by('-date_added').filter(
+                    Q(description__icontains=keyword)
+                    | Q(name__icontains=keyword))
 
 
 def submit_review(request, product_id):

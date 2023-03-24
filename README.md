@@ -2,51 +2,27 @@
 
 ## For local development
 
-1. Create a dev folder at the root of the project
+1. In the './dev' folder, create a configuration file '.env.dev.db' and '.env.dev' and assign a value to the constants
 
-```
-./dev
-```
-
-2. In the './dev' folder, create a configuration file '.env.dev' and assign a value to the constants
-
-```
-SQL_ENGINE=django.db.backends.postgresql
-SQL_DATABASE=django_taberna_dev
-SQL_USER=django_user
-SQL_PASSWORD=django_pass
-SQL_HOST=db
-SQL_PORT=5432
-EMAIL_HOST=your_host
-EMAIL_PORT=587
-EMAIL_HOST_USER=your_email
-EMAIL_HOST_PASSWORD=your_password
-EMAIL_USE_TLS=1
-```
-
-3. In the './dev' folder, create a configuration file '.env.dev.db' and assign a value to the constants
-
-```
-POSTGRES_USER=django_user
-POSTGRES_PASSWORD=django_pass
-POSTGRES_DB=django_taberna_dev
-```
+2. Build the image and make migrations
 
 ```
 docker-compose build
-docker-compose up
-```
-
-### Basic commands
-
-```
-docker-compose run --rm web sh -c "django-admin startproject projects_name"
-docker-compose run --rm web sh -c "python manage.py startapp apps_name"
 docker-compose run --rm web sh -c "python manage.py makemigrations"
+```
+
+3. Create container and migrate database migrations and also create superuser
+
+```
 docker-compose up
 docker exec -it tb_django python manage.py migrate
 docker exec -it tb_django python manage.py createsuperuser
-docker-compose -f docker-compose.yml -f docker-compose-debug.yml up --build + F5
+```
+
+4. Go to admin panel and add test content
+
+```
+http://127.0.0.1:8000/admin
 ```
 
 ### Front-end
@@ -61,11 +37,14 @@ npm run w
 ### For debugging
 
 ```
+docker-compose -f docker-compose.yml -f docker-compose-debug.yml up --build + F5
 ```
 
 ### Create your own project
 
 ```
+docker-compose run --rm web sh -c "django-admin startproject projects_name"
+docker-compose run --rm web sh -c "python manage.py startapp apps_name"
 ```
 
 ## Production

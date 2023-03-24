@@ -9,7 +9,7 @@
         <title>
             {% block title %}
             {% endblock title %}
-        Super Shop</title>
+        Taberna</title>
         <link href="{% static 'core/css/custom-style.css' %}" rel="stylesheet" />
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
@@ -27,6 +27,7 @@
             {% endblock content %}
         </section>
         {% include "core/includes/footer.html" %}
+        <script src="{% static 'core/bundle/jquery.js' %}" crossorigin="anonymous"></script>
         <script src="{% static 'core/bundle/index.js' %}" crossorigin="anonymous"></script>
     </body>
 </html>
