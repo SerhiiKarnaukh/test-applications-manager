@@ -1,5 +1,5 @@
 {
-  "name": "beautifl",
+  "name": "taberna",
   "version": "1.0.0",
   "privat": true,
   "scripts": {
@@ -22,18 +22,19 @@
     "css-loader": "^6.7.3",
     "css-minimizer-webpack-plugin": "^4.2.2",
     "file-loader": "^6.2.0",
+    "image-webpack-loader": "^8.1.0",
     "less-loader": "^11.1.0",
     "mini-css-extract-plugin": "^2.7.5",
     "postcss": "^8.4.21",
     "postcss-loader": "^7.1.0",
     "postcss-preset-env": "^8.0.1",
-    "sass": "^1.59.3",
+    "sass": "^1.60.0",
     "sass-loader": "^13.2.1",
     "style-loader": "^3.3.2",
     "svg-inline-loader": "^0.8.2",
     "terser-webpack-plugin": "^5.3.7",
     "url-loader": "^4.1.1",
-    "webpack": "^5.76.2",
+    "webpack": "^5.76.3",
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {

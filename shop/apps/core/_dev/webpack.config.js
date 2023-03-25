@@ -62,11 +62,11 @@ const babelOptions = (preset) => {
 module.exports = {
     mode: 'development',
     entry: {
-        'jquery':['@babel/polyfill', path.resolve(__dirname, 'vendors/jquery')],
-        'index': ['@babel/polyfill', path.resolve(__dirname, 'layouts/index/index')],
-        // 'category': path.resolve(__dirname, 'layouts/category/category'),
-        // 'single': path.resolve(__dirname, 'layouts/single/single'),
-        // 'office': path.resolve(__dirname, 'layouts/pages/office/office'),
+        'jquery':['@babel/polyfill/noConflict', path.resolve(__dirname, 'vendors/jquery')],
+        'bootstrap':['@babel/polyfill/noConflict', path.resolve(__dirname, 'vendors/bootstrap')],
+        'bootstrap-style':[path.resolve(__dirname, 'vendors/bootstrap-style.scss')],
+        'swiper':['@babel/polyfill/noConflict', path.resolve(__dirname, 'vendors/swiper')],
+        'index': ['@babel/polyfill/noConflict', path.resolve(__dirname, 'layouts/index/index')],
         // 'our-team': path.resolve(__dirname, 'layouts/pages/our-team/our-team')
     },
     output: {
@@ -145,24 +145,61 @@ module.exports = {
                 test: /\.less$/,
                 use: cssLoaders('less-loader')
             },
+            // Fonts
+            {
+                test: /\.woff2?$/i,
+                type: 'asset/resource',
+                generator: {
+                  filename: '[name][ext]',
+                },
+              },
+              {
+                test: /\.(jpe?g|png|webp|gif|svg)$/i,
+                use: isDev
+                  ? []
+                  : [
+                      {
+                        loader: 'image-webpack-loader',
+                        options: {
+                          mozjpeg: {
+                            progressive: true,
+                          },
+                          optipng: {
+                            enabled: false,
+                          },
+                          pngquant: {
+                            quality: [0.65, 0.9],
+                            speed: 4,
+                          },
+                          gifsicle: {
+                            interlaced: false,
+                          },
+                          webp: {
+                            quality: 75,
+                          },
+                        },
+                      },
+                    ],
+                type: 'asset/resource',
+              },
 
             // Resources
-            {
-                test: /.(jpe?g|png|svg|gif|woff(2)?|eot|ttf)(\?[a-z0-9=]\.+)?$/,
-                oneOf: [
-                    {
-                        resourceQuery: /inline-css/,
-                        use: 'url-loader'
-                    },
-                    {
-                        resourceQuery: /inline-js/,
-                        use: 'svg-inline-loader'
-                    },
-                    {
-                        use: 'file-loader?name=./[name].[ext]'
-                    }
-                ]
-            },
+            // {
+            //     test: /.(jpe?g|png|svg|gif|woff(2)?|eot|ttf)(\?[a-z0-9=]\.+)?$/,
+            //     oneOf: [
+            //         {
+            //             resourceQuery: /inline-css/,
+            //             use: 'url-loader'
+            //         },
+            //         {
+            //             resourceQuery: /inline-js/,
+            //             use: 'svg-inline-loader'
+            //         },
+            //         {
+            //             use: 'file-loader?name=./[name].[ext]'
+            //         }
+            //     ]
+            // },
         ]
     },
     optimization: {

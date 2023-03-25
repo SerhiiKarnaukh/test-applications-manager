@@ -14,7 +14,6 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
-from django.core.exceptions import ObjectDoesNotExist
 import requests
 
 
@@ -69,7 +68,9 @@ def login(request):
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
+
         user = auth.authenticate(email=email, password=password)
+
         if user is not None:
             try:
                 cart = Cart.objects.get(cart_id=_get_cart_id(request))
@@ -77,12 +78,10 @@ def login(request):
                     cart=cart).exists()
                 if is_cart_item_exists:
                     cart_item = CartItem.objects.filter(cart=cart)
-
                     product_variation = []
                     for item in cart_item:
                         variation = item.variations.all()
                         product_variation.append(list(variation))
-
                     cart_item = CartItem.objects.filter(user=user)
                     ex_var_list = []
                     id = []
@@ -104,7 +103,7 @@ def login(request):
                             for item in cart_item:
                                 item.user = user
                                 item.save()
-            except ObjectDoesNotExist:
+            except Exception:
                 pass
             auth.login(request, user)
             messages.success(request, 'You are now logged in.')
@@ -115,7 +114,7 @@ def login(request):
                 if 'next' in params:
                     nextPage = params['next']
                     return redirect(nextPage)
-            except ObjectDoesNotExist:
+            except Exception:
                 return redirect('dashboard')
         else:
             messages.error(request, 'Invalid login credentials')

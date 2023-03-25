@@ -1,8 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from product.models import Product, Variation
 from .models import Cart, CartItem
-
-from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 
 # from django.http import HttpResponse
@@ -31,7 +29,7 @@ def add_cart(request, product_id):
                         variation_category__iexact=key,
                         variation_value__iexact=value)
                     product_variation.append(variation)
-                except ObjectDoesNotExist:
+                except Exception:
                     pass
 
         is_cart_item_exists = CartItem.objects.filter(
@@ -86,7 +84,7 @@ def add_cart(request, product_id):
                         variation_category__iexact=key,
                         variation_value__iexact=value)
                     product_variation.append(variation)
-                except ObjectDoesNotExist:
+                except Exception:
                     pass
 
         try:
@@ -154,7 +152,7 @@ def remove_cart(request, product_id, cart_item_id):
             cart_item.save()
         else:
             cart_item.delete()
-    except ObjectDoesNotExist:
+    except Exception:
         pass
     return redirect('cart')
 
@@ -189,7 +187,7 @@ def cart(request, total=0, quantity=0, cart_items=None):
             quantity += cart_item.quantity
         tax = (2 * total) / 100
         grand_total = total + tax
-    except ObjectDoesNotExist:
+    except Exception:
         pass
 
     context = {
@@ -218,7 +216,7 @@ def checkout(request, total=0, quantity=0, cart_items=None):
             quantity += cart_item.quantity
         tax = (2 * total) / 100
         grand_total = total + tax
-    except ObjectDoesNotExist:
+    except Exception:
         pass
 
     context = {
