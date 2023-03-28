@@ -10,8 +10,7 @@ class ProductGalleryInline(admin.TabularInline):
     extra = 1
 
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdminModel(admin.ModelAdmin):
     list_display = (
         'name',
         'slug',
@@ -23,8 +22,12 @@ class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name", )}
 
 
-@admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class VariationAdminInline(admin.TabularInline):
+    model = Variation
+    extra = 1
+
+
+class ProductAdminModel(admin.ModelAdmin):
     list_display = (
         'name',
         'category',
@@ -50,24 +53,10 @@ class ProductAdmin(admin.ModelAdmin):
         'category',
     )
     prepopulated_fields = {"slug": ("name", )}
-    inlines = [ProductGalleryInline]
+    inlines = [ProductGalleryInline, VariationAdminInline]
 
 
-@admin.register(Variation)
-class VariationAdmin(admin.ModelAdmin):
-    list_display = (
-        'product',
-        'variation_category',
-        'variation_value',
-        'is_active',
-    )
-    list_editable = ('is_active', )
-    list_filter = (
-        'product',
-        'variation_category',
-        'variation_value',
-    )
-
-
+admin.site.register(Category, CategoryAdminModel)
+admin.site.register(Product, ProductAdminModel)
 admin.site.register(ReviewRating)
 admin.site.register(ProductGallery)

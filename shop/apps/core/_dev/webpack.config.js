@@ -63,10 +63,9 @@ module.exports = {
     mode: 'development',
     entry: {
         'jquery':['@babel/polyfill/noConflict', path.resolve(__dirname, 'vendors/jquery')],
-        'bootstrap':['@babel/polyfill/noConflict', path.resolve(__dirname, 'vendors/bootstrap')],
-        'bootstrap-style':[path.resolve(__dirname, 'vendors/bootstrap-style.scss')],
+        'bootstrap':['@babel/polyfill/noConflict', path.resolve(__dirname, 'vendors/bootstrap/bootstrap')],
         'index': ['@babel/polyfill/noConflict', path.resolve(__dirname, 'layouts/index/index')],
-        // 'our-team': path.resolve(__dirname, 'layouts/pages/our-team/our-team')
+
     },
     output: {
         publicPath: `${bundlePath}/`,
@@ -149,7 +148,7 @@ module.exports = {
                 test: /\.woff2?$/i,
                 type: 'asset/resource',
                 generator: {
-                  filename: '[name][ext]',
+                  filename: './[name][ext]',
                 },
               },
               {
@@ -205,6 +204,6 @@ module.exports = {
         minimizer: [
             new TerserWebpackPlugin(),
             new CssMinimizerPlugin()
-        ]
+        ],
     },
 };

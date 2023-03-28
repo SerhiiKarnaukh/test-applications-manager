@@ -19,38 +19,35 @@ class ProductDetail(DetailView):
     template_name = 'product/product_detail.html'
     context_object_name = 'product'
 
-    def create_store_data(self, **kwargs):
-        context = kwargs
-        if self.request.user.is_authenticated:
-            try:
-                order_product = OrderProduct.objects.filter(
-                    user=self.request.user,
-                    product__slug=self.kwargs['slug']).exists()
-            except OrderProduct.DoesNotExist:
-                order_product = None
-        else:
-            order_product = None
-            context['orderproduct'] = order_product
-
-        all_gallery_img = ProductGallery.objects.filter(
-            product__slug=self.kwargs['slug'])
-        gallery_paginator = Paginator(all_gallery_img, 3)
-        all_gallery_img_list = []
-        for page_no in gallery_paginator.page_range:
-            current_page = gallery_paginator.get_page(page_no)
-            all_gallery_img_list.append(current_page.object_list)
-        context['product_gallery'] = all_gallery_img_list
-        context['reviews'] = ReviewRating.objects.filter(
-            product__slug=self.kwargs['slug'], status=True)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = self.get_object()
+        category = product.category
+        context['related_products'] = Product.objects.filter(
+            category=category).exclude(id=product.id)
         context['in_cart'] = CartItem.objects.filter(
             cart__cart_id=_get_cart_id(self.request),
-            product__slug=self.kwargs['slug']).exists()
-        return context
+            product__slug=product.slug).exists()
+        context['reviews'] = ReviewRating.objects.filter(
+            product__slug=product.slug, status=True)
+        context['order_product'] = None
+        if self.request.user.is_authenticated:
+            try:
+                order_product = OrderProduct.objects.get(
+                    user=self.request.user, product=product)
+                context['order_product'] = order_product
+            except OrderProduct.DoesNotExist:
+                pass
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        c_def = self.create_store_data()
-        return dict(list(context.items()) + list(c_def.items()))
+        all_gallery_images = ProductGallery.objects.filter(product=product)
+        gallery_paginator = Paginator(all_gallery_images, 3)
+        all_gallery_images_list = []
+        for page in gallery_paginator.page_range:
+            current_page = gallery_paginator.get_page(page)
+            all_gallery_images_list.append(current_page.object_list)
+        context['product_gallery'] = all_gallery_images_list
+
+        return context
 
 
 class CategoryDetail(ListView):
