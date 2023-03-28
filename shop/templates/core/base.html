@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>
+            {% block title %}
+            {% endblock title %}
+        Taberna</title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta name="keywords" content="meta keywords"/>
+        <meta name="description" content="meta description"/>
+        <link rel="shortcut icon" type="{% static 'core/images/favicon.ico' %}"/>
+        <link href="{% static 'core/bundle/bootstrap-style.css' %}"
+              rel="stylesheet"
+              crossorigin="anonymous"/>
+        <link href="{% static 'core/bundle/index.css' %}"
+              rel="stylesheet"
+              crossorigin="anonymous"/>
+        <link href="{% static 'core/font-awesome/css/fontawesome.min.css' %}"
+              rel="stylesheet"
+              crossorigin="anonymous"/>
+        <!-- Slick -->
+        <link rel="stylesheet"
+              type="text/css"
+              href="{% static 'core/slick/css/slick.min.css' %}"/>
+        <link rel="stylesheet"
+              type="text/css"
+              href="{% static 'core/slick/css/slick-theme.min.css' %}"/>
+        {% comment %} DELETE {% endcomment %}
+        {% comment %} <link href="{% static 'core/css/custom-style.css' %}" rel="stylesheet" />
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/> {% endcomment %}
+    </head>
+    <body>
+        {% include "core/includes/navbar.html" %}
+        {% block content %}
+        {% endblock content %}
+        {% include "core/includes/footer.html" %}
+        <script src="{% static 'core/bundle/jquery.js' %}" crossorigin="anonymous"></script>
+        <script src="{% static 'core/bundle/bootstrap.js' %}" crossorigin="anonymous"></script>
+        <script src="{% static 'core/slick/js/slick.min.js' %}"
+                crossorigin="anonymous"></script>
+        <script src="{% static 'core/bundle/index.js' %}" crossorigin="anonymous"></script>
+    </body>
+</html>

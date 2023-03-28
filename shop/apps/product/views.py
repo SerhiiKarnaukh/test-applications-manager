@@ -10,6 +10,7 @@ from cart.models import CartItem
 from cart.views import _get_cart_id
 from .forms import ReviewForm
 from orders.models import OrderProduct
+from django.core.paginator import Paginator
 
 
 # for Django Template Language
@@ -30,8 +31,15 @@ class ProductDetail(DetailView):
         else:
             order_product = None
             context['orderproduct'] = order_product
-        context['product_gallery'] = ProductGallery.objects.filter(
+
+        all_gallery_img = ProductGallery.objects.filter(
             product__slug=self.kwargs['slug'])
+        gallery_paginator = Paginator(all_gallery_img, 3)
+        all_gallery_img_list = []
+        for page_no in gallery_paginator.page_range:
+            current_page = gallery_paginator.get_page(page_no)
+            all_gallery_img_list.append(current_page.object_list)
+        context['product_gallery'] = all_gallery_img_list
         context['reviews'] = ReviewRating.objects.filter(
             product__slug=self.kwargs['slug'], status=True)
         context['in_cart'] = CartItem.objects.filter(
@@ -46,7 +54,7 @@ class ProductDetail(DetailView):
 
 
 class CategoryDetail(ListView):
-    paginate_by = 4
+    paginate_by = 6
     model = Product
     template_name = 'product/store.html'
     context_object_name = 'products'

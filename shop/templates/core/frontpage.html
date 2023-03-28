@@ -1,0 +1,167 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}
+    Welcome |
+{% endblock title %}
+{% block content %}
+    <!-- Start Banner -->
+    <div id="template-mo-zay-hero-carousel"
+         class="carousel slide"
+         data-bs-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-bs-target="#template-mo-zay-hero-carousel"
+                data-bs-slide-to="0"
+                class="active"></li>
+            <li data-bs-target="#template-mo-zay-hero-carousel" data-bs-slide-to="1"></li>
+            <li data-bs-target="#template-mo-zay-hero-carousel" data-bs-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="container">
+                    <div class="row p-5">
+                        <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
+                            <img class="img-fluid"
+                                 src="{% static 'core/images/banner/banner-01.png' %}"
+                                 alt="main-banner"/>
+                        </div>
+                        <div class="col-lg-6 mb-0 d-flex align-items-center">
+                            <div class="text-align-left align-self-center">
+                                <h1 class="h1 text-success">
+                                    <b>Taberna</b> eCommerce
+                                </h1>
+                                <h3 class="h2">Lorem Ipsum is simply dummy text of the printing</h3>
+                                <p>
+                                    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="container">
+                    <div class="row p-5">
+                        <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
+                            <img class="img-fluid"
+                                 src="{% static 'core/images/banner/banner-02.png' %}"
+                                 alt="main-banner"/>
+                        </div>
+                        <div class="col-lg-6 mb-0 d-flex align-items-center">
+                            <div class="text-align-left">
+                                <h1 class="h1">The standard chunk</h1>
+                                <h3 class="h2">There are many variations of passages of Lorem</h3>
+                                <p>
+                                    Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical <strong>Latin literature</strong>from 45 BC, making it over 2000 years old.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="container">
+                    <div class="row p-5">
+                        <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
+                            <img class="img-fluid"
+                                 src="{% static 'core/images/banner/banner-03.png' %}"
+                                 alt="main-banner"/>
+                        </div>
+                        <div class="col-lg-6 mb-0 d-flex align-items-center">
+                            <div class="text-align-left">
+                                <h1 class="h1">The point of using</h1>
+                                <h3 class="h2">Ullamco laboris nisi ut</h3>
+                                <p>
+                                    All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="carousel-control-prev text-decoration-none w-auto ps-3"
+           href="#template-mo-zay-hero-carousel"
+           role="button"
+           data-bs-slide="prev">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <a class="carousel-control-next text-decoration-none w-auto pe-3"
+           href="#template-mo-zay-hero-carousel"
+           role="button"
+           data-bs-slide="next">
+            <i class="fas fa-chevron-right"></i>
+        </a>
+    </div>
+    <!-- End Banner -->
+    <!-- Start Top Categories -->
+    <section class="container py-5">
+        <div class="row text-center pt-3">
+            <div class="col-lg-6 m-auto">
+                <h1 class="h1">Top Categories</h1>
+                <p>
+                    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                    deserunt mollit anim id est laborum.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            {% for category in top_categories %}
+                <div class="col-12 col-md-4 p-5 mt-3">
+                    <a href="{{ category.get_absolute_url }}">
+                        <img src="{{ category.cat_image.url }}"
+                             class="rounded-circle img-fluid border"
+                             alt="{{ category.name }}"/>
+                    </a>
+                    <h5 class="text-center mt-3 mb-3">{{ category.name }}</h5>
+                    <p class="text-center">
+                        <a href="{{ category.get_absolute_url }}" class="btn btn-success">Go Shop</a>
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+    <!-- End Categories of The Month -->
+    <!-- Start Featured Product -->
+    <section class="bg-light">
+        <div class="container py-5">
+            <div class="row text-center py-3">
+                <div class="col-lg-6 m-auto">
+                    <h1 class="h1">Featured Product</h1>
+                    <p>
+                        There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form.
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                {% for product in products %}
+                    <div class="col-12 col-md-4 mb-4">
+                        <div class="card h-100">
+                            <a href="{{ product.get_absolute_url }}">
+                                <img src="{{ product.image.url }}"
+                                     class="card-img-top"
+                                     alt="{{ product.name }}"/>
+                            </a>
+                            <div class="card-body">
+                                <ul class="list-unstyled d-flex justify-content-between rating-star">
+                                    <li>
+                                        <i class="fa fa-star{% if product.averageReview < 0.5 %} text-light{% elif product.averageReview >= 0.5 and product.averageReview < 1 %}-half-alt {% endif %}"></i>
+                                        <i class="fa fa-star{% if product.averageReview < 1.5 %} text-light{% elif product.averageReview >= 1.5 and product.averageReview < 2 %}-half-alt {% endif %}"></i>
+                                        <i class="fa fa-star{% if product.averageReview < 2.5 %} text-light{% elif product.averageReview >= 2.5 and product.averageReview < 3 %}-half-alt {% endif %}"></i>
+                                        <i class="fa fa-star{% if product.averageReview < 3.5 %} text-light{% elif product.averageReview >= 3.5 and product.averageReview < 4 %}-half-alt {% endif %}"></i>
+                                        <i class="fa fa-star{% if product.averageReview < 4.5 %} text-light{% elif product.averageReview >= 4.5 and product.averageReview < 5 %}-half-alt {% endif %}"></i>
+                                    </li>
+                                    <li class="text-muted text-right">${{ product.price }}</li>
+                                </ul>
+                                <a href="{{ product.get_absolute_url }}"
+                                   class="h2 text-decoration-none text-dark">{{ product.name }}</a>
+                                <p class="card-text">{{ product.description | linebreaks | truncatewords:25 }}</p>
+                                <p class="text-muted">Reviews ({{ product.countReview }})</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <!-- End Featured Product -->
+{% endblock content %}

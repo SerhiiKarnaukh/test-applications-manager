@@ -13,6 +13,7 @@ class FrontPage(ListView):
         context = kwargs
         products = Product.objects.all().filter(
             is_available=True).select_related('category')
+        reviews = None
         for product in products:
             reviews = ReviewRating.objects.filter(product_id=product.id,
                                                   status=True)
@@ -26,7 +27,7 @@ class FrontPage(ListView):
 
     def get_queryset(self):
         return Product.objects.all().filter(
-            is_available=True).select_related('category')
+            is_available=True).select_related('category')[0:6]
 
 
 def contact(request):

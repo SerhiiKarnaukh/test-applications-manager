@@ -32,8 +32,9 @@ $line-height: 1.618;
 // Base colors
 $white: #fff;
 $white-bg: #fafafa;
-$color-base-brand: #EC709A;
-$color-brand: #EC709A;
+$color-base-brand: #e87f1c;
+$color-brand: #e87f1c;
+$color-hover:rgba($color-brand, .6);
 //$color-brand: $color-base-brand; //
 $color-brand-for-dark-bg: lighten($color-brand, 7%);
 

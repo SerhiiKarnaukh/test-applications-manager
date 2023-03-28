@@ -65,7 +65,6 @@ module.exports = {
         'jquery':['@babel/polyfill/noConflict', path.resolve(__dirname, 'vendors/jquery')],
         'bootstrap':['@babel/polyfill/noConflict', path.resolve(__dirname, 'vendors/bootstrap')],
         'bootstrap-style':[path.resolve(__dirname, 'vendors/bootstrap-style.scss')],
-        'swiper':['@babel/polyfill/noConflict', path.resolve(__dirname, 'vendors/swiper')],
         'index': ['@babel/polyfill/noConflict', path.resolve(__dirname, 'layouts/index/index')],
         // 'our-team': path.resolve(__dirname, 'layouts/pages/our-team/our-team')
     },
