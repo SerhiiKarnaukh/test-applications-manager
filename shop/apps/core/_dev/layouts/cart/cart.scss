@@ -1,0 +1,71 @@
+@import "../../styles/mixins";
+
+.cart-section {
+    padding: 2.5em 0;
+
+    .site-blocks-table {
+        overflow: auto;
+    }
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    .site-blocks-table {
+        overflow: auto;
+    }
+    .site-blocks-table .product-thumbnail {
+        width: 200px;
+    }
+    .site-blocks-table thead th {
+        padding: 30px;
+        text-align: center;
+        border-width: 1px !important;
+        vertical-align: middle;
+        color: #212529;
+        font-size: 18px;
+    }
+    .site-blocks-table td {
+        padding: 20px;
+        text-align: center;
+        vertical-align: middle;
+        color: #212529;
+    }
+    .site-blocks-table tbody tr:first-child td {
+        border-top: 1px solid #7971ea !important;
+    }
+    .input-group {
+        max-width: 120px;
+    }
+    .btn.btn-sm {
+        font-size: 14px !important;
+        padding: 10px 20px !important;
+    }
+    .btn.btn-primary {
+        font-size: 17px;
+        font-weight: 300;
+        letter-spacing: 0.2em;
+    }
+    .btn {
+        // text-transform: uppercase;
+        position: relative;
+        transition: 0.2s all ease-in-out !important;
+        top: 0;
+        letter-spacing: 0.05em;
+    }
+    .btn-outline-primary {
+        --bs-btn-color: #e87f1c;
+        --bs-btn-border-color: #e87f1c;
+        --bs-btn-hover-bg: #e87f1c;
+        --bs-btn-hover-border-color: #e87f1c;
+    }
+    .btn-primary {
+        --bs-btn-bg: #f50909;
+        --bs-btn-border-color: #f50909;
+        --bs-btn-hover-bg: #f06a6a;
+        --bs-btn-hover-border-color: #f06a6a;
+    }
+}
+@media (min-width: 768px) {
+    .cart-section {
+        padding: 5em 0;
+    }
+}

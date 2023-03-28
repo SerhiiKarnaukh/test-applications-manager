@@ -1,4 +1,4 @@
-@import '../../styles/mixins';
+@import "../../styles/mixins";
 
 .contact-section {
     padding: 2.5em 0;
@@ -14,16 +14,15 @@
     .btn-primary {
         display: block;
         width: 100%;
-        --bs-btn-bg:#e87f1c;
-         --bs-btn-border-color: #e87f1c;
-        --bs-btn-hover-bg:#f1b277;
+        --bs-btn-bg: #e87f1c;
+        --bs-btn-border-color: #e87f1c;
+        --bs-btn-hover-bg: #f1b277;
         --bs-btn-hover-border-color: #f1b277;
     }
     .text-primary {
         color: $color-brand !important;
     }
 }
-
 
 @media (min-width: 768px) {
     .site-section {

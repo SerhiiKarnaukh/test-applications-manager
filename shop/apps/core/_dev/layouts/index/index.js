@@ -11,11 +11,13 @@ import '../../components/button.scss';
 import Store from '../store/store';
 import Contact from '../contact/contact';
 import ProductDetail from '../product-detail/product-detail';
+import Cart from '../cart/cart';
 
 $(document).ready(function () {
     Store()
     Contact()
     ProductDetail()
+    Cart()
 
     AOS.init({
         duration: 1000,
