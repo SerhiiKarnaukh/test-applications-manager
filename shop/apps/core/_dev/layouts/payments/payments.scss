@@ -1,6 +1,6 @@
 @import "../../styles/mixins";
 
-.cart-section {
+.payments-section {
     padding: 2.5em 0;
 
     .site-blocks-table {
@@ -29,40 +29,25 @@
     .site-blocks-table tbody tr:first-child td {
         border-top: 1px solid #7971ea !important;
     }
-    .input-group {
-        max-width: 120px;
-    }
-    .btn.btn-sm {
-        font-size: 14px !important;
-        padding: 10px 20px !important;
-    }
-    .btn.btn-primary {
+
+    .btn-primary {
         font-size: 17px;
         font-weight: 300;
-        letter-spacing: 0.2em;
-    }
-    .btn {
-        // text-transform: uppercase;
-        position: relative;
-        transition: 0.2s all ease-in-out !important;
-        top: 0;
-        letter-spacing: 0.05em;
-    }
-    .btn-outline-primary {
-        --bs-btn-color: #e87f1c;
+        letter-spacing: 0.1em;
+        display: block;
+        width: 100%;
+        --bs-btn-bg: #e87f1c;
         --bs-btn-border-color: #e87f1c;
-        --bs-btn-hover-bg: #e87f1c;
-        --bs-btn-hover-border-color: #e87f1c;
+        --bs-btn-hover-bg: #f1b277;
+        --bs-btn-hover-border-color: #f1b277;
     }
-    .btn-primary {
-        --bs-btn-bg: #f50909;
-        --bs-btn-border-color: #f50909;
-        --bs-btn-hover-bg: #f06a6a;
-        --bs-btn-hover-border-color: #f06a6a;
+    .text-primary {
+        color: $color-brand !important;
     }
 }
+
 @media (min-width: 768px) {
-    .cart-section {
+    .payments-section {
         padding: 5em 0;
     }
 }

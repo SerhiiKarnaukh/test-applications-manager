@@ -1,4 +1,4 @@
-import './cart.scss'
+import './checkout.scss'
 
 function init() {}
 

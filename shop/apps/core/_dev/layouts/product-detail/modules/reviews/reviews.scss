@@ -1,0 +1,47 @@
+@import "../../../../styles/mixins";
+
+.reviews {
+    .rate {
+        display: inline-block;
+        border: 0;
+        input {
+            display: none;
+        }
+        label {
+            float: right;
+            i:before {
+                display: inline-block;
+                font-size: 1.1rem;
+                margin: 0;
+                padding: 0.3rem 0.2rem;
+                cursor: pointer;
+                padding-right: 10px;
+            }
+        }
+        label.half {
+            i {
+                position: absolute;
+            }
+            i:before {
+                padding-right: 0;
+            }
+        }
+        /* Click and hover */
+        input:checked ~ label,
+        label:hover ~ label {
+            i:before {
+                color: #ffb503;
+            }
+        }
+
+        /* hover hightlight */
+        input:checked + label:hover,
+        input:checked ~ label:hover,
+        input:checked ~ label:hover ~ label,
+        label:hover ~ input:checked ~ label {
+            i:before {
+                color: #cc9000;
+            }
+        }
+    }
+}

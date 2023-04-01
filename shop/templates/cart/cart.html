@@ -32,7 +32,9 @@
                                             <td class="product-thumbnail">
                                                 <img src="{{ cart_item.product.image.url }}"
                                                      alt="{{ cart_item.product.name }}"
-                                                     class="img-fluid"/>
+                                                     class="img-fluid"
+                                                     height="auto"
+                                                     width="auto"/>
                                             </td>
                                             <td class="product-name">
                                                 <h2 class="h5 text-black">{{ cart_item.product.name }}</h2>
@@ -108,7 +110,7 @@
                                         <strong class="text-black">$ {{ total }}</strong>
                                     </div>
                                 </div>
-                                <div class="row mb-5">
+                                <div class="row mb-3">
                                     <div class="col-md-6">
                                         <span class="text-black">Tax</span>
                                     </div>
@@ -127,10 +129,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <a href="{% url 'checkout' %}"
-                                           class="btn btn-success btn-lg py-2 btn-block"
-                                           onclick="window.location='checkout.html'">
-                                            Proceed To Checkout
-                                        </a>
+                                           class="btn btn-success btn-lg py-2 btn-block">Proceed To Checkout</a>
                                     </div>
                                 </div>
                             </div>

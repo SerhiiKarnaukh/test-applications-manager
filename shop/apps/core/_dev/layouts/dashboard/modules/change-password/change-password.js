@@ -1,4 +1,4 @@
-import './cart.scss'
+import './change-password.scss'
 
 function init() {}
 

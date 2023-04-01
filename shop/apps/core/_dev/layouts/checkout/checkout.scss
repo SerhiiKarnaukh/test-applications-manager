@@ -1,8 +1,7 @@
 @import "../../styles/mixins";
 
-.contact-section {
+.checkout-section {
     padding: 2.5em 0;
-
     label {
         margin-bottom: 0.5rem;
     }
@@ -12,6 +11,9 @@
     }
 
     .btn-primary {
+        font-size: 17px;
+        font-weight: 300;
+        letter-spacing: 0.1em;
         display: block;
         width: 100%;
         --bs-btn-bg: #e87f1c;
@@ -25,7 +27,7 @@
 }
 
 @media (min-width: 768px) {
-    .contact-section {
+    .checkout-section {
         padding: 5em 0;
     }
 }

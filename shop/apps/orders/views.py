@@ -76,11 +76,7 @@ def payments(request):
     return JsonResponse(data)
 
 
-def place_order(
-    request,
-    total=0,
-    quantity=0,
-):
+def place_order(request, total=0, quantity=0):
     current_user = request.user
 
     # If the cart count is less than or equal to 0, then redirect back to shop
@@ -94,7 +90,7 @@ def place_order(
     for cart_item in cart_items:
         total += (cart_item.product.price * cart_item.quantity)
         quantity += cart_item.quantity
-    tax = (2 * total) / 100
+    tax = round(((2 * total) / 100), 2)
     grand_total = total + tax
 
     if request.method == 'POST':

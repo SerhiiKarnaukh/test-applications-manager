@@ -1,4 +1,4 @@
-import './cart.scss'
+import './payments.scss'
 
 function init() {}
 

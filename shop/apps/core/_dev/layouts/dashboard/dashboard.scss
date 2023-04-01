@@ -1,7 +1,11 @@
 @import "../../styles/mixins";
 
-.contact-section {
+.dashboard-section {
     padding: 2.5em 0;
+
+    .site-blocks-table {
+        overflow: auto;
+    }
 
     label {
         margin-bottom: 0.5rem;
@@ -22,10 +26,16 @@
     .text-primary {
         color: $color-brand !important;
     }
+
+    .dashboard-link {
+        &:hover {
+            color: $color-brand;
+        }
+    }
 }
 
 @media (min-width: 768px) {
-    .contact-section {
+    .dashboard-section {
         padding: 5em 0;
     }
 }

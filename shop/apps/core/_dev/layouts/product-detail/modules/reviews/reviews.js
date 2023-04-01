@@ -1,4 +1,4 @@
-import './cart.scss'
+import './reviews.scss'
 
 function init() {}
 

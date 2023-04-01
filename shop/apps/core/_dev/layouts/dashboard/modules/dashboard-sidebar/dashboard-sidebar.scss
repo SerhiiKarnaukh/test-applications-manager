@@ -1,0 +1,10 @@
+@import "../../../../styles/mixins";
+
+a:hover {
+    color: $color-brand;
+}
+
+.list-group-item.active {
+    background-color: $color-brand;
+    border-color: $color-brand;
+}

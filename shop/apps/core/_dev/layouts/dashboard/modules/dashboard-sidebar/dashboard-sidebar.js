@@ -1,4 +1,4 @@
-import './cart.scss'
+import './dashboard-sidebar.scss'
 
 function init() {}
 

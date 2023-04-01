@@ -1,4 +1,4 @@
-import './cart.scss'
+import './edit-profile.scss'
 
 function init() {}
 
