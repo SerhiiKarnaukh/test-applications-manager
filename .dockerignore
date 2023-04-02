@@ -1,14 +1,28 @@
 .git
 .vscode
-.dockerignore
 .gitignore
-venv
-docker-compose.yaml
-docker-compose.prod.yaml
-Dockerfile
-Dockerfile.prod
 README.md
 temp
+setup.cfg
+
+# Docker
+.docker
+docker-compose.yaml
+Dockerfile
+.dockerignore
+
+# Python
+shop/__pycache__/
+apps/__pycache__/
+apps/*/__pycache__/
+apps/*/*/__pycache__/
+apps/*/*/*/__pycache__/
+.venv/
+venv/
+
+# JS
 **/node_modules
 _dev
-setup.cfg
+
+# Local PostgreSQL data
+data/

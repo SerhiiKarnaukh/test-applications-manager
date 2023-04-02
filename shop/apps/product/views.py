@@ -1,6 +1,6 @@
 from rest_framework import generics
 from django.views.generic import ListView, DetailView
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.db.models import Q
 from django.contrib import messages
 
@@ -86,51 +86,41 @@ class CategoryDetail(ListView):
                 is_available=True).select_related('category')
 
 
-def search(request):
-    if 'keyword' in request.GET:
-        keyword = request.GET['keyword']
-        if keyword:
-            products = Product.objects.order_by('-date_added').filter(
-                Q(description__icontains=keyword)
-                | Q(name__icontains=keyword))
-            product_count = products.count()
-    context = {
-        'products': products,
-        'product_count': product_count,
-    }
-    return render(request, 'product/store.html', context)
+# def search(request):
+#     if 'keyword' in request.GET:
+#         keyword = request.GET['keyword']
+#         if keyword:
+#             products = Product.objects.order_by('-date_added').filter(
+#                 Q(description__icontains=keyword)
+#                 | Q(name__icontains=keyword))
+#             product_count = products.count()
+#     context = {
+#         'products': products,
+#         'product_count': product_count,
+#         'store_title': 'Search result'
+#     }
+#     return render(request, 'product/store.html', context)
 
 
-class Search(ListView):
-    paginate_by = 4
+class ProductSearchListView(ListView):
     model = Product
     template_name = 'product/store.html'
     context_object_name = 'products'
-    allow_empty = False
+    paginate_by = 4
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     queryset = self.get_queryset()
-    #     if 'keyword' in self.request.GET:
-    #         keyword = self.request.GET['keyword']
-    #     queryset = queryset.order_by('-date_added').filter(
-    #         Q(description__icontains=keyword)
-    #         | Q(name__icontains=keyword))
-    #     context['product_count'] = self.get_queryset().count()
-    #     return context
+    def get_queryset(self):
+        query = self.request.GET.get('keyword')
+        if query:
+            return Product.objects.filter(
+                Q(description__icontains=query)
+                | Q(name__icontains=query)).order_by('-date_added')
+        return Product.objects.none()
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['product_count'] = self.get_queryset().count()
+        context['store_title'] = 'Search Result'
         return context
-
-    def get_queryset(self, **kwargs):
-        if 'keyword' in self.request.GET:
-            keyword = self.request.GET['keyword']
-            if keyword:
-                return Product.objects.order_by('-date_added').filter(
-                    Q(description__icontains=keyword)
-                    | Q(name__icontains=keyword))
 
 
 def submit_review(request, product_id):

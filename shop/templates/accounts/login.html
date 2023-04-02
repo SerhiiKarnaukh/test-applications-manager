@@ -5,14 +5,13 @@
 {% block content %}
     <section class="section-content py-5">
         {% if request.GET.command == 'verification' %}
-            <div class="container mx-auto alert alert-info text-center"
-                 role="alert"
-                 style="max-width: 1024px;
-                        margin-top:100px">
-                Thank you for registering with us. We have sent you a verification email to your email address [{{ request.GET.email }}]
-                <br/>
-                <br/>
-                Already verified? <a href="{% url 'login' %}">Login</a>
+            <div class="container">
+                <div class="mx-auto alert alert-info text-center" role="alert">
+                    Thank you for registering with us. We have sent you a verification email to your email address [{{ request.GET.email }}]
+                    <br/>
+                    <br/>
+                    Already verified? <a href="{% url 'login' %}">Login</a>
+                </div>
             </div>
         {% else %}
             <div class="card mx-auto col-10 col-md-6 col-xl-4">

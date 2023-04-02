@@ -6,12 +6,13 @@
     <section class="section-content py-5">
         <div class="card mx-auto col-11 col-md-7 col-xl-5">
             <article class="card-body">
-                {% include "core/includes/alerts.html" %}
                 <header class="mb-4">
                     <h4 class="card-title">Sign up</h4>
                 </header>
+                {% include "core/includes/alerts.html" %}
                 <form action="{% url 'register' %}" method="post">
                     {% csrf_token %}
+                    {% include "accounts/errorlist.html" %}
                     <div class="row">
                         <div class="col">
                             <label class="mb-2">

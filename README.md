@@ -8,15 +8,15 @@
 
 ```
 docker-compose build
-docker-compose run --rm web sh -c "python manage.py makemigrations"
+docker-compose run --rm app sh -c "python manage.py makemigrations"
+docker-compose run --rm app sh -c "python manage.py migrate"
+docker-compose run --rm app sh -c "python manage.py createsuperuser"
 ```
 
-3. Create container and migrate database migrations and also create superuser
+3. Run container
 
 ```
 docker-compose up
-docker exec -it tb_django python manage.py migrate
-docker exec -it tb_django python manage.py createsuperuser
 ```
 
 4. Go to admin panel and add test content
@@ -45,22 +45,31 @@ docker-compose -f docker-compose.yml -f docker-compose-debug.yml up --build + F5
 1. Create report
 
 ```
-docker-compose run --rm web sh -c "coverage report"
-docker-compose run --rm web sh -c "coverage html
+docker-compose run --rm app sh -c "coverage report"
+docker-compose run --rm app sh -c "coverage html
 ```
 
 2. Run Tests
 
 ```
 docker-compose up
-docker exec -it tb_django coverage run manage.py test
+docker exec -it taberna coverage run manage.py test
 ```
 
-### Create your own project
+### Create your own project with this Dockerfile
 
 ```
-docker-compose run --rm web sh -c "django-admin startproject projects_name"
-docker-compose run --rm web sh -c "python manage.py startapp apps_name"
+1.Create your dependency file 'req.txt' (Django + psycopg2)
+2.Create .dockerignore
+3.Commands:
+docker-compose build
+docker-compose run --rm app sh -c "django-admin startproject projects_name"
+4.Change the 'settings.py' file to take into account the database connection constants
+5.Next commands:
+docker-compose run --rm app sh -c "python manage.py startapp apps_name"
+docker-compose run --rm app sh -c "python manage.py makemigrations"
+docker-compose run --rm app sh -c "python manage.py migrate"
+docker-compose run --rm app sh -c "python manage.py createsuperuser"
 ```
 
 ## Production

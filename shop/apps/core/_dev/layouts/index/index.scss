@@ -234,6 +234,10 @@ i.text-light {
     height: 6px;
 }
 
+.errorlist {
+    display: none;
+}
+
 @media (min-width: $breakpoint-sm) {
     .tempaltemo-carousel .h1 {
         font-size: 1em !important;
