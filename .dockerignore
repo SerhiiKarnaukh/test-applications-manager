@@ -26,3 +26,5 @@ _dev
 
 # Local PostgreSQL data
 data/
+
+**/__pycache__/

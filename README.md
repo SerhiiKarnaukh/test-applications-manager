@@ -37,7 +37,8 @@ npm run w
 ### For debugging
 
 ```
-docker-compose -f docker-compose.yml -f docker-compose-debug.yml up --build + F5
+1.See .vscode/launch.json
+2.docker-compose -f docker-compose.yml -f docker-compose-debug.yml up --build + F5
 ```
 
 ### Tests
@@ -45,8 +46,9 @@ docker-compose -f docker-compose.yml -f docker-compose-debug.yml up --build + F5
 1. Create report
 
 ```
+docker-compose run --rm app sh -c "coverage run manage.py test"
 docker-compose run --rm app sh -c "coverage report"
-docker-compose run --rm app sh -c "coverage html
+docker-compose run --rm app sh -c "coverage html"
 ```
 
 2. Run Tests
@@ -72,9 +74,11 @@ docker-compose run --rm app sh -c "python manage.py migrate"
 docker-compose run --rm app sh -c "python manage.py createsuperuser"
 ```
 
-## Production
+## Production test for deploy
 
 ```
-docker-compose -f docker-compose.prod.yml build
-docker-compose -f docker-compose.prod.yml up
+docker-compose -f docker-compose-deploy.yml down --volumes
+docker-compose -f docker-compose-deploy.yml build
+docker-compose -f docker-compose-deploy.yml up
+docker-compose -f docker-compose-deploy.yml run --rm app sh -c "python manage.py createsuperuser"
 ```
