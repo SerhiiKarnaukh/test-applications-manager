@@ -1,4 +1,4 @@
-# WIP:Django-Taberna
+# WIP:Django Portfolio for Test Applications
 
 ## For local development
 
@@ -29,7 +29,7 @@ http://127.0.0.1:8000/admin
 
 ```
 nvm use 19.7.0
-cd shop/apps/core/_dev
+cd portfolio/apps/core/_dev
 npm install
 npm run w
 ```
@@ -55,7 +55,7 @@ docker-compose run --rm app sh -c "coverage html"
 
 ```
 docker-compose up
-docker exec -it taberna coverage run manage.py test
+docker exec -it portfolio coverage run manage.py test
 ```
 
 ### Create your own project with this Dockerfile

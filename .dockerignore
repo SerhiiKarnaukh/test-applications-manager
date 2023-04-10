@@ -12,7 +12,7 @@ Dockerfile
 .dockerignore
 
 # Python
-shop/__pycache__/
+portfolio/__pycache__/
 apps/__pycache__/
 apps/*/__pycache__/
 apps/*/*/__pycache__/

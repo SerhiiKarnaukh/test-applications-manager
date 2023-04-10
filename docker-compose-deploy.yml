@@ -5,8 +5,19 @@ services:
     restart: always
     volumes:
       - static-data:/vol/web
-    env_file:
-      - ./env/.env.prod
+    environment:
+      - SQL_ENGINE=${SQL_ENGINE}
+      - SQL_HOST=db
+      - SQL_DATABASE=${SQL_DATABASE}
+      - SQL_USER=${SQL_USER}
+      - SQL_PASSWORD=${SQL_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - EMAIL_USE_TLS=${EMAIL_USE_TLS}
     depends_on:
       - db
 
@@ -15,8 +26,10 @@ services:
     restart: always
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    env_file:
-      - ./env/.env.prod.db
+    environment:
+      - POSTGRES_DB=${SQL_DATABASE}
+      - POSTGRES_USER=${SQL_USER}
+      - POSTGRES_PASSWORD=${SQL_PASSWORD}
 
   proxy:
     build:

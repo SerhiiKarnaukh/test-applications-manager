@@ -1,6 +1,6 @@
 services:
   app:
-    container_name: taberna
+    container_name: portfolio
     build:
       context: .
     command: >
@@ -12,17 +12,30 @@ services:
     volumes:
       - .:/app
       - ./data/web:/vol/web
-    env_file:
-      - ./env/.env.dev
+    environment:
+      - SECRET_KEY=%bkii7@6vhj84@7sy^r-552ef)ztdv^
+      - DEBUG=1
+      - SQL_ENGINE=django.db.backends.postgresql
+      - SQL_HOST=db
+      - SQL_DATABASE=django_portfolio_dev
+      - SQL_USER=django_user
+      - SQL_PASSWORD=django_pass
+      - EMAIL_HOST=changeme
+      - EMAIL_PORT=587
+      - EMAIL_HOST_USER=changeme
+      - EMAIL_HOST_PASSWORD=changeme
+      - EMAIL_USE_TLS=1
     depends_on:
       - db
   db:
     image: postgres:15-alpine
-    container_name: taberna-db
+    container_name: portfolio-db
     volumes:
-      - postgres-data:/var/lib/postgresql/data
-    env_file:
-      - ./env/.env.dev.db
+      - portfolio-postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=django_portfolio_dev
+      - POSTGRES_USER=django_user
+      - POSTGRES_PASSWORD=django_pass
 
 volumes:
-   postgres-data:
+   portfolio-postgres-data:
