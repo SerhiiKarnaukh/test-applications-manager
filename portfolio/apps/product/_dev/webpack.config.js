@@ -14,10 +14,6 @@ const cssLoaders = (extra) => {
       loader: MiniCssExtractPlugin.loader,
       options: {
         publicPath: '',
-        //automatically finds url path for images from css
-        // publicPath: (resourcePath, context) => {
-        //     return path.relative(path.dirname(resourcePath), context) + '/';
-        // },
       },
     },
     'css-loader',
@@ -107,23 +103,6 @@ module.exports = {
           options: babelOptions(),
         },
       },
-      {
-        test: /\.ts$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: babelOptions('@babel/preset-typescript'),
-        },
-      },
-      {
-        test: /\.jsx$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: babelOptions('@babel/preset-react'),
-        },
-      },
-
       // CSS
       {
         test: /\.css$/,
@@ -134,11 +113,6 @@ module.exports = {
         test: /\.s[ac]ss$/,
         use: cssLoaders('sass-loader'),
       },
-      // LESS
-      {
-        test: /\.less$/,
-        use: cssLoaders('less-loader'),
-      },
       // Fonts
       {
         test: /\.woff2?$/i,
@@ -147,36 +121,6 @@ module.exports = {
           filename: './[name][ext]',
         },
       },
-      {
-        test: /\.(jpe?g|png|webp|gif|svg)$/i,
-        use: isDev
-          ? []
-          : [
-              {
-                loader: 'image-webpack-loader',
-                options: {
-                  mozjpeg: {
-                    progressive: true,
-                  },
-                  optipng: {
-                    enabled: false,
-                  },
-                  pngquant: {
-                    quality: [0.65, 0.9],
-                    speed: 4,
-                  },
-                  gifsicle: {
-                    interlaced: false,
-                  },
-                  webp: {
-                    quality: 75,
-                  },
-                },
-              },
-            ],
-        type: 'asset/resource',
-      },
-
       // Resources
       // {
       //     test: /.(jpe?g|png|svg|gif|woff(2)?|eot|ttf)(\?[a-z0-9=]\.+)?$/,
