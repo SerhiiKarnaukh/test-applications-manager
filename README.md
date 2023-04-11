@@ -25,11 +25,11 @@ docker-compose up
 http://127.0.0.1:8000/admin
 ```
 
-### Front-end
+### Front-end Store
 
 ```
 nvm use 19.7.0
-cd portfolio/apps/core/_dev
+cd portfolio/apps/product/_dev
 npm install
 npm run w
 ```

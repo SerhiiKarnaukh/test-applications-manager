@@ -13,51 +13,52 @@
         <!-- Favicon start -->
         <link rel="apple-touch-icon"
               sizes="180x180"
-              href="{% static 'core/images/favicons/apple-touch-icon.png' %}"/>
+              href="{% static 'product/images/favicons/apple-touch-icon.png' %}"/>
         <link rel="icon"
               type="image/png"
               sizes="32x32"
-              href="{% static 'core/images/favicons/favicon-32x32.png' %}"/>
+              href="{% static 'product/images/favicons/favicon-32x32.png' %}"/>
         <link rel="icon"
               type="image/png"
               sizes="16x16"
-              href="{% static 'core/images/favicons/favicon-16x16.png' %}"/>
+              href="{% static 'product/images/favicons/favicon-16x16.png' %}"/>
         <link rel="manifest"
-              href="{% static 'core/images/favicons/site.webmanifest' %}"/>
+              href="{% static 'product/images/favicons/site.webmanifest' %}"/>
         <link rel="mask-icon"
-              href="{% static 'core/images/favicons/safari-pinned-tab.svg' %}"
+              href="{% static 'product/images/favicons/safari-pinned-tab.svg' %}"
               color="#5bbad5"/>
         <meta name="msapplication-TileColor" content="#da532c"/>
         <meta name="theme-color" content="#ffffff"/>
         <!-- Favicon end -->
         <link rel="shortcut icon"
-              type="{% static 'core/images/favicons/favicon.ico' %}"/>
-        <link href="{% static 'core/bundle/bootstrap.css' %}"
+              type="{% static 'product/images/favicons/favicon.ico' %}"/>
+        <link href="{% static 'product/bundle/bootstrap.css' %}"
               rel="stylesheet"
               crossorigin="anonymous"/>
-        <link href="{% static 'core/bundle/index.css' %}"
+        <link href="{% static 'product/bundle/index.css' %}"
               rel="stylesheet"
               crossorigin="anonymous"/>
-        <link href="{% static 'core/font-awesome/css/fontawesome.min.css' %}"
+        <link href="{% static 'product/font-awesome/css/fontawesome.min.css' %}"
               rel="stylesheet"
               crossorigin="anonymous"/>
         <!-- Slick -->
         <link rel="stylesheet"
               type="text/css"
-              href="{% static 'core/slick/css/slick.min.css' %}"/>
+              href="{% static 'product/slick/css/slick.min.css' %}"/>
         <link rel="stylesheet"
               type="text/css"
-              href="{% static 'core/slick/css/slick-theme.min.css' %}"/>
+              href="{% static 'product/slick/css/slick-theme.min.css' %}"/>
     </head>
     <body>
         {% include "store/includes/navbar.html" %}
         {% block content %}
         {% endblock content %}
         {% include "store/includes/footer.html" %}
-        <script src="{% static 'core/bundle/jquery.js' %}" crossorigin="anonymous"></script>
-        <script src="{% static 'core/bundle/bootstrap.js' %}" crossorigin="anonymous"></script>
-        <script src="{% static 'core/slick/js/slick.min.js' %}"
+        <script src="{% static 'product/bundle/jquery.js' %}" crossorigin="anonymous"></script>
+        <script src="{% static 'product/bundle/bootstrap.js' %}"
                 crossorigin="anonymous"></script>
-        <script src="{% static 'core/bundle/index.js' %}" crossorigin="anonymous"></script>
+        <script src="{% static 'product/slick/js/slick.min.js' %}"
+                crossorigin="anonymous"></script>
+        <script src="{% static 'product/bundle/index.js' %}" crossorigin="anonymous"></script>
     </body>
 </html>
