@@ -2,6 +2,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin'),
   { CleanWebpackPlugin } = require('clean-webpack-plugin'),
   TerserWebpackPlugin = require('terser-webpack-plugin'),
   CssMinimizerPlugin = require('css-minimizer-webpack-plugin'),
+  FaviconsWebpackPlugin = require('favicons-webpack-plugin'),
   path = require('path'),
   bundleDirName = 'bundle',
   bundlePath = `../static/product/${bundleDirName}`,
@@ -73,22 +74,22 @@ module.exports = {
       filename: '[name].css',
       chunkFilename: '[id].css',
     }),
-    // new FaviconsWebpackPlugin({
-    //     logo: './resources/images/favicon.svg',
-    //     cache: true,
-    //     prefix: '../bundle',
-    //     inject: false,
-    //     favicons: {
-    //         appName: 'Beautifl',
-    //         appDescription: 'Discover the ultimate hair and wig shopping experience',
-    //         background: '#ffffff',
-    //         theme_color: '#EC709A',
-    //         icons: {
-    //             coast: false,
-    //             yandex: false
-    //         }
-    //     }
-    // }),
+    new FaviconsWebpackPlugin({
+      logo: './resources/images/favicon.png',
+      cache: true,
+      prefix: '../bundle/favicon',
+      inject: true,
+      favicons: {
+        appName: 'Taberna',
+        appDescription: 'Test Django Store',
+        background: '#ffffff',
+        theme_color: '#e87f1c',
+        icons: {
+          coast: false,
+          yandex: false,
+        },
+      },
+    }),
     new CleanWebpackPlugin(),
   ],
 
