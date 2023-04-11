@@ -1,4 +1,4 @@
-{% extends "core/base.html" %}
+{% extends "store/base.html" %}
 {% block title %}
     Sign up |
 {% endblock title %}
@@ -9,7 +9,7 @@
                 <header class="mb-4">
                     <h4 class="card-title">Sign up</h4>
                 </header>
-                {% include "core/includes/alerts.html" %}
+                {% include "store/includes/alerts.html" %}
                 <form action="{% url 'register' %}" method="post">
                     {% csrf_token %}
                     {% include "accounts/errorlist.html" %}

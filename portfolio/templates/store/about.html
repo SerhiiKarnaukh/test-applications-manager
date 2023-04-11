@@ -1,4 +1,4 @@
-{% extends "core/base.html" %}
+{% extends "store/base.html" %}
 {% load static %}
 {% block title %}
     About |
@@ -16,7 +16,7 @@
                     </p>
                 </div>
                 <div class="col-md-4">
-                    <img src="{% static 'core/images/about-page/about-hero.svg' %}"
+                    <img src="{% static 'store/images/about-page/about-hero.svg' %}"
                          alt="About Hero"/>
                 </div>
             </div>
@@ -70,5 +70,5 @@
         </div>
     </section>
     <!-- End Section -->
-    {% include "core/includes/our-brands.html" %}
+    {% include "store/includes/our-brands.html" %}
 {% endblock content %}
