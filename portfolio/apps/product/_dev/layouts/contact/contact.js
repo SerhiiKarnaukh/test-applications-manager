@@ -1,8 +1,5 @@
-import './contact.scss';
+import './contact.scss'
 
+function init() {}
 
-function init() {
-
-}
-
-export default init;
+export default init

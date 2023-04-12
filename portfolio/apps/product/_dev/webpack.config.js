@@ -36,7 +36,15 @@ const cssLoaders = (extra) => {
 
 const babelOptions = (preset) => {
   const opts = {
-    presets: ['@babel/preset-env'],
+    presets: [
+      [
+        '@babel/preset-env',
+        {
+          useBuiltIns: 'usage',
+          corejs: '3.22',
+        },
+      ],
+    ],
     plugins: ['@babel/plugin-proposal-class-properties'],
   }
 
@@ -49,18 +57,9 @@ const babelOptions = (preset) => {
 module.exports = {
   mode: 'development',
   entry: {
-    jquery: [
-      '@babel/polyfill/noConflict',
-      path.resolve(__dirname, 'vendors/jquery'),
-    ],
-    bootstrap: [
-      '@babel/polyfill/noConflict',
-      path.resolve(__dirname, 'vendors/bootstrap/bootstrap'),
-    ],
-    index: [
-      '@babel/polyfill/noConflict',
-      path.resolve(__dirname, 'layouts/index/index'),
-    ],
+    jquery: [path.resolve(__dirname, 'vendors/jquery')],
+    bootstrap: [path.resolve(__dirname, 'vendors/bootstrap/bootstrap')],
+    index: [path.resolve(__dirname, 'layouts/index/index')],
   },
   output: {
     publicPath: `${bundlePath}/`,
@@ -79,6 +78,7 @@ module.exports = {
       cache: true,
       prefix: '../bundle/favicon',
       inject: true,
+      devMode: 'webapp',
       favicons: {
         appName: 'Taberna',
         appDescription: 'Test Django Store',

@@ -1,5 +1,6 @@
 // Node Modules
-import '@babel/polyfill'
+// import '@babel/polyfill'
+import 'core-js/stable'
 
 import AOS from 'aos/dist/aos' // include css in scss 'aos/dist/aos.css'
 import './index.scss'
