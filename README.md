@@ -34,6 +34,15 @@ npm install
 npm run w
 ```
 
+### Front-end Core
+
+```
+nvm use 19.7.0
+cd portfolio/apps/core/_dev
+npm install
+npm run w
+```
+
 ### For debugging
 
 ```
