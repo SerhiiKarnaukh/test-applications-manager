@@ -122,6 +122,10 @@ module.exports = {
           filename: './[name][ext]',
         },
       },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        type: 'asset/resource',
+      },
       // Resources
       // {
       //     test: /.(jpe?g|png|svg|gif|woff(2)?|eot|ttf)(\?[a-z0-9=]\.+)?$/,

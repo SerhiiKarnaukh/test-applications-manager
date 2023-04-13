@@ -1,0 +1,107 @@
+@import "../../styles/mixins";
+
+.dark-bg {
+    background-color: $dark-bg;
+}
+
+.portfolio-topbar {
+    .topbar-wrap {
+        height: 45px;
+    }
+    .text-light {
+        font-family: $title-font;
+    }
+}
+
+.bg-header {
+    background: linear-gradient(rgba(9, 30, 62, 0.7), rgba(9, 30, 62, 0.7)),
+        url(./img/header.jpg) center center no-repeat;
+    background-size: cover;
+}
+
+.portfolio-list {
+    .label {
+        background-color: $color-brand;
+        text-decoration: none;
+    }
+    .link {
+        color: $color-brand;
+        &:hover {
+            color: #b33200;
+        }
+    }
+    .text {
+        background-color: #f2f2f4;
+    }
+}
+.search-form {
+    padding: 30px;
+    background-color: #f2f2f4 !important;
+    .border-primary {
+        border-color: #ff4800 !important;
+    }
+    .bg-primary {
+        background-color: #ff4800 !important;
+        font-size: 20px;
+    }
+    .form-control:focus {
+        box-shadow: 0 0 0 0.25rem rgb(255 72 0 / 25%);
+    }
+}
+
+.categories {
+    padding: 30px;
+    background-color: #f2f2f4 !important;
+    .badge-secondary {
+        color: #212529;
+        background-color: #f2f2f4;
+        font-weight: 700;
+        padding: 0.25em 0.4em;
+        font-size: 75%;
+        line-height: 1;
+        text-align: center;
+    }
+    .bg-light {
+        background-color: white !important;
+    }
+    a {
+        text-decoration: none;
+        i {
+            color: $color-brand;
+        }
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+.page-link {
+    position: relative;
+    display: block;
+    color: #ff4800;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    &:hover {
+        z-index: 2;
+        color: #b33200;
+        text-decoration: none;
+        background-color: #e9ecef;
+        border-color: #dee2e6;
+    }
+}
+
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #ff4800;
+    border-color: #ff4800;
+}
+
+.footer {
+    background: $dark-bg;
+    a {
+        text-decoration: none;
+    }
+    .text {
+        height: 75px;
+    }
+}
