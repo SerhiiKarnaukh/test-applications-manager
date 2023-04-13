@@ -11,9 +11,15 @@
     .text-light {
         font-family: $title-font;
     }
+    a {
+        text-decoration: none;
+    }
 }
 
 .bg-header {
+    a {
+        text-decoration: none;
+    }
     background: linear-gradient(rgba(9, 30, 62, 0.7), rgba(9, 30, 62, 0.7)),
         url(./img/header.jpg) center center no-repeat;
     background-size: cover;
@@ -103,5 +109,28 @@
     }
     .text {
         height: 75px;
+    }
+}
+
+.detail-btn-git {
+    background-color: $color-brand;
+    color: white;
+    &:hover {
+        border: 1px solid;
+        border-color: $color-brand;
+        color: $color-brand;
+    }
+}
+
+.detail-btn-view {
+    background-color: $dark-bg;
+    color: white;
+    &:hover {
+        border: 1px solid;
+        border-color: $dark-bg;
+        color: $dark-bg;
+    }
+    @media (max-width: 363px) {
+        margin-top: 1rem;
     }
 }

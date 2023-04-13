@@ -9,7 +9,7 @@
     <div class="row gx-0">
         <div class="col-sm-8 text-center align-items-center text-sm-start">
             <div class="d-inline-flex align-items-center topbar-wrap">
-                <small class="me-3 text-light"><i class="fa fa-database me-2"></i>Test Application Manager</small>
+                <a href="{% url 'index' %}"><small class="me-3 text-light"><i class="fa fa-database me-2"></i>Test Applications Manager</small></a>
             </div>
         </div>
         <div class="col-sm-4 text-center text-sm-end mb-2 mb-sm-0">
@@ -18,7 +18,8 @@
                    href="https://docs.google.com/document/d/1_jVZa3RMLXx9SFJzEikWLCASFV8jRmKM-ZMId78FfWs/edit?usp=share_link"
                    target="_blank"><i class="fab fw-normal">CV</i></a>
                 <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2"
-                   href="https://github.com/SerhiiKarnaukh"><i class="fab fa-github fw-normal" target="_blank"></i></a>
+                   href="https://github.com/SerhiiKarnaukh"
+                   target="_blank"><i class="fab fa-github fw-normal"></i></a>
                 <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle"
                    href="https://www.linkedin.com/in/serhiikarnaukh"
                    target="_blank"><i class="fab fa-linkedin-in fw-normal"></i></a>
@@ -32,7 +33,9 @@
     <div class="container-fluid bg-primary bg-header">
         <div class="row py-5">
             <div class="col-12 text-center">
-                <h1 class="display-4 text-white animated zoomIn">Karnaukh-WebDev</h1>
+                <a href="{% url 'index' %}">
+                    <h1 class="display-4 text-white animated zoomIn">Karnaukh-WebDev</h1>
+                </a>
             </div>
         </div>
     </div>

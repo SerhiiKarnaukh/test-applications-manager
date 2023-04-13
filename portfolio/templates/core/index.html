@@ -1,5 +1,8 @@
 {% extends "core/base.html" %}
 {% load static %}
+{% block title %}
+    Welcome |
+{% endblock title %}
 {% block content %}
     <!-- Portfolio Start -->
     <div class="container-fluid py-5 portfolio-list">
@@ -22,7 +25,7 @@
                                 <div class="p-4 text">
                                     <h4 class="mb-3">How to build a website</h4>
                                     <p>Dolor et eos labore stet justo sed est sed sed sed dolor stet amet</p>
-                                    <a class="text-uppercase link" href="">Read More <i class="fa fa-angle-right"></i></a>
+                                    <a class="text-uppercase link" href="{% url 'app_detail' %}">Read More <i class="fa fa-angle-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -40,7 +43,7 @@
                                 <div class="p-4 text">
                                     <h4 class="mb-3">How to build a website</h4>
                                     <p>Dolor et eos labore stet justo sed est sed sed sed dolor stet amet</p>
-                                    <a class="text-uppercase link" href="">Read More <i class="fa fa-angle-right"></i></a>
+                                    <a class="text-uppercase link" href="{% url 'app_detail' %}">Read More <i class="fa fa-angle-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -58,7 +61,7 @@
                                 <div class="p-4 text">
                                     <h4 class="mb-3">How to build a website</h4>
                                     <p>Dolor et eos labore stet justo sed est sed sed sed dolor stet amet</p>
-                                    <a class="text-uppercase link" href="">Read More <i class="fa fa-angle-right"></i></a>
+                                    <a class="text-uppercase link" href="{% url 'app_detail' %}">Read More <i class="fa fa-angle-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -76,7 +79,7 @@
                                 <div class="p-4 text">
                                     <h4 class="mb-3">How to build a website</h4>
                                     <p>Dolor et eos labore stet justo sed est sed sed sed dolor stet amet</p>
-                                    <a class="text-uppercase link" href="">Read More <i class="fa fa-angle-right"></i></a>
+                                    <a class="text-uppercase link" href="{% url 'app_detail' %}">Read More <i class="fa fa-angle-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -94,7 +97,7 @@
                                 <div class="p-4 text">
                                     <h4 class="mb-3">How to build a website</h4>
                                     <p>Dolor et eos labore stet justo sed est sed sed sed dolor stet amet</p>
-                                    <a class="text-uppercase link" href="">Read More <i class="fa fa-angle-right"></i></a>
+                                    <a class="text-uppercase link" href="{% url 'app_detail' %}">Read More <i class="fa fa-angle-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -112,43 +115,7 @@
                                 <div class="p-4 text">
                                     <h4 class="mb-3">How to build a website</h4>
                                     <p>Dolor et eos labore stet justo sed est sed sed sed dolor stet amet</p>
-                                    <a class="text-uppercase link" href="">Read More <i class="fa fa-angle-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="blog-item bg-light rounded overflow-hidden">
-                                <div class="blog-img position-relative overflow-hidden">
-                                    <img class="img-fluid"
-                                         src="https://picsum.photos/500/360"
-                                         alt="####"
-                                         height="auto"
-                                         width="auto"/>
-                                    <a class="position-absolute top-0 start-0 label text-white rounded-end mt-5 py-2 px-4"
-                                       href="">Web Design</a>
-                                </div>
-                                <div class="p-4 text">
-                                    <h4 class="mb-3">How to build a website</h4>
-                                    <p>Dolor et eos labore stet justo sed est sed sed sed dolor stet amet</p>
-                                    <a class="text-uppercase link" href="">Read More <i class="fa fa-angle-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="blog-item bg-light rounded overflow-hidden">
-                                <div class="blog-img position-relative overflow-hidden">
-                                    <img class="img-fluid"
-                                         src="https://picsum.photos/500/360"
-                                         alt="####"
-                                         height="auto"
-                                         width="auto"/>
-                                    <a class="position-absolute top-0 start-0 label text-white rounded-end mt-5 py-2 px-4"
-                                       href="">Web Design</a>
-                                </div>
-                                <div class="p-4 text">
-                                    <h4 class="mb-3">How to build a website</h4>
-                                    <p>Dolor et eos labore stet justo sed est sed sed sed dolor stet amet</p>
-                                    <a class="text-uppercase link" href="">Read More <i class="fa fa-angle-right"></i></a>
+                                    <a class="text-uppercase link" href="{% url 'app_detail' %}">Read More <i class="fa fa-angle-right"></i></a>
                                 </div>
                             </div>
                         </div>
