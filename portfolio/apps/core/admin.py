@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django import forms
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from django.utils.safestring import mark_safe
 
 from .models import Category, Tag, Project
 
@@ -14,21 +15,50 @@ class ProjectAdminForm(forms.ModelForm):
 
 
 class ProjectAdmin(admin.ModelAdmin):
+    save_on_top = True
+    form = ProjectAdminForm
     list_display = (
+        'id',
         'title',
+        'slug',
         'category',
-        'photo',
+        'created_at',
+        'get_photo',
+    )
+    list_display_links = (
+        'id',
+        'title',
     )
     search_fields = (
-        'name',
-        'description',
+        'title',
+        'content',
     )
     list_filter = (
         'created_at',
         'category',
     )
+    readonly_fields = (
+        'created_at',
+        'get_photo',
+    )
+    fields = (
+        'title',
+        'slug',
+        'category',
+        'tags',
+        'content',
+        'photo',
+        'get_photo',
+        'created_at',
+    )
     prepopulated_fields = {"slug": ("title", )}
-    form = ProjectAdminForm
+
+    def get_photo(self, obj):
+        if obj.photo:
+            return mark_safe(f'<img src="{obj.photo.url}" width="300">')
+        return '-'
+
+    get_photo.short_description = 'Image'
 
 
 class CategoryAdmin(admin.ModelAdmin):

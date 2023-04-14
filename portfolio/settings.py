@@ -29,7 +29,6 @@ ALLOWED_HOSTS.extend(
 # Application definition
 
 INSTALLED_APPS = [
-    'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -80,7 +79,6 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'product.context_processors.menu_categories',
                 'product.context_processors.top_categories',
-                'django.template.context_processors.request',
                 'cart.context_processors.counter',
             ],
         },

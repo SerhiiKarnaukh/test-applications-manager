@@ -22,6 +22,8 @@ class Tag(models.Model):
         return self.title
 
     class Meta:
+        verbose_name = 'Tag'
+        verbose_name_plural = 'Tags'
         ordering = ['title']
 
 
