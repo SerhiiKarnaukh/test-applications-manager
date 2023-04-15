@@ -154,7 +154,7 @@
                                 </ul>
                                 <a href="{{ product.get_absolute_url }}"
                                    class="h2 text-decoration-none text-dark">{{ product.name }}</a>
-                                <p class="card-text">{{ product.description | linebreaks | truncatewords:25 }}</p>
+                                <p class="card-text">{{ product.description | linebreaks | truncatewords_html:25 |safe }}</p>
                                 <p class="text-muted">Reviews ({{ product.countReview }})</p>
                             </div>
                         </div>

@@ -3,12 +3,9 @@ from django.urls import path
 from product import views
 from .views import FrontPage, contact, about, ProductDetail, CategoryDetail, ProductSearchListView
 
+# app_name = 'taberna'
+
 urlpatterns = [
-    # path('', include('djoser.urls')),
-    # path('', include('djoser.urls.authtoken')),
-    # path('latest-products/', views.LatestProductsList.as_view()),
-    # path('products/<slug:category_slug>/<slug:product_slug>/',
-    #      views.ProductAPIDetail.as_view()),
     path('', FrontPage.as_view(), name='frontpage'),
     path('store/', CategoryDetail.as_view(), name='store'),
     path('category/<slug:slug>/',

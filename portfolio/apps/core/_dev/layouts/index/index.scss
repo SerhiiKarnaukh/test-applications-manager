@@ -82,6 +82,9 @@ h6,
 .fw-medium {
     font-weight: 600 !important;
 }
+.brand-color {
+    color: $color-brand;
+}
 /*** Section Title ***/
 .section-title::before {
     position: absolute;

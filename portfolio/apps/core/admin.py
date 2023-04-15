@@ -21,6 +21,7 @@ class ProjectAdmin(admin.ModelAdmin):
         'id',
         'title',
         'slug',
+        # 'tags',
         'category',
         'created_at',
         'get_photo',
@@ -36,6 +37,7 @@ class ProjectAdmin(admin.ModelAdmin):
     list_filter = (
         'created_at',
         'category',
+        'tags',
     )
     readonly_fields = (
         'created_at',
@@ -47,6 +49,8 @@ class ProjectAdmin(admin.ModelAdmin):
         'category',
         'tags',
         'content',
+        'github_url',
+        'view_url',
         'photo',
         'get_photo',
         'created_at',

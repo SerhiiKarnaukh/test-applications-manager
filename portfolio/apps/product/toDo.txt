@@ -2,3 +2,4 @@
 - Fix form buttons
 - Enlarge font on cards in mobile size
 - Tests
+- app_name = 'taberna' in url.py

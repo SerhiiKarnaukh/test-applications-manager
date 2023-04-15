@@ -79,6 +79,9 @@
             text-decoration: underline;
         }
     }
+    a.active {
+        color: $color-brand !important;
+    }
 }
 .page-link {
     position: relative;
@@ -112,6 +115,14 @@
     }
 }
 
+.detail-tags {
+    a {
+        color: $color-brand;
+        &:hover {
+            color: #b33200;
+        }
+    }
+}
 .detail-btn-git {
     background-color: $color-brand;
     color: white;

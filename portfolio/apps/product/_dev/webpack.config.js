@@ -74,7 +74,7 @@ module.exports = {
       chunkFilename: '[id].css',
     }),
     new FaviconsWebpackPlugin({
-      logo: './resources/images/favicon.png',
+      logo: './resources/images/favicon.svg',
       cache: true,
       prefix: '../bundle/favicon',
       inject: true,

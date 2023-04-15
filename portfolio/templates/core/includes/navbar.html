@@ -9,7 +9,7 @@
     <div class="row gx-0">
         <div class="col-sm-8 text-center align-items-center text-sm-start">
             <div class="d-inline-flex align-items-center topbar-wrap">
-                <a href="{% url 'index' %}"><small class="me-3 text-light"><i class="fa fa-database me-2"></i>Test Applications Manager</small></a>
+                <a href="{% url 'core:index' %}"><small class="me-3 text-light"><i class="fa fa-database me-2"></i>Test Applications Manager</small></a>
             </div>
         </div>
         <div class="col-sm-4 text-center text-sm-end mb-2 mb-sm-0">
@@ -33,9 +33,15 @@
     <div class="container-fluid bg-primary bg-header">
         <div class="row py-5">
             <div class="col-12 text-center">
-                <a href="{% url 'index' %}">
-                    <h1 class="display-4 text-white animated zoomIn">Karnaukh-WebDev</h1>
+                <a href="{% url 'core:index' %}">
+                    <h1 class="display-4 text-white ">Karnaukh-WebDev</h1>
                 </a>
+                {% if 'category' in request.path %}<h4 class="display-6 text-white">{{ core_title }}</h4>{% endif %}
+                {% if 'tag' in request.path %}
+                    <h3 class="text-white">
+                        <span class="brand-color me-2">Tag:</span>{{ core_title }}
+                    </h3>
+                {% endif %}
             </div>
         </div>
     </div>

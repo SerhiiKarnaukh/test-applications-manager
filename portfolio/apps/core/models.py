@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class Category(models.Model):
@@ -7,6 +8,9 @@ class Category(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('core:category_detail', kwargs={'slug': self.slug})
 
     class Meta:
         verbose_name = 'Category'
@@ -20,6 +24,9 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('core:tag', kwargs={"slug": self.slug})
 
     class Meta:
         verbose_name = 'Tag'
@@ -42,6 +49,10 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('core:project_detail',
+                       args=[self.category.slug, self.slug])
 
     class Meta:
         verbose_name_plural = 'Projects'

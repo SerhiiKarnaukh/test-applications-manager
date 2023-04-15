@@ -1,7 +1,7 @@
 {% extends "core/base.html" %}
-{% comment %} {% block title %}
-    {{ product.name }} |
-{% endblock title %} {% endcomment %}
+{% block title %}
+    {{ project.title }} |
+{% endblock title %}
 {% block content %}
     <div class="container-fluid py-5">
         <div class="container py-5">
@@ -10,49 +10,47 @@
                     <!-- Blog Detail Start -->
                     <div class="mb-4">
                         <img class="img-fluid w-100 rounded mb-5"
-                             src="https://picsum.photos/500/350"
-                             alt=""/>
-                        <h1 class="mb-4">Diam dolor est labore duo ipsum clita sed et lorem tempor duo</h1>
-                        <p>
-                            Sadipscing labore amet rebum est et justo gubergren. Et eirmod ipsum sit diam ut
-                            magna lorem. Nonumy vero labore lorem sanctus rebum et lorem magna kasd, stet
-                            amet magna accusam consetetur eirmod. Kasd accusam sit ipsum sadipscing et at at
-                            sanctus et. Ipsum sit gubergren dolores et, consetetur justo invidunt at et
-                            aliquyam ut et vero clita. Diam sea sea no sed dolores diam nonumy, gubergren
-                            sit stet no diam kasd vero.
-                        </p>
-                        <p>
-                            Voluptua est takimata stet invidunt sed rebum nonumy stet, clita aliquyam dolores
-                            vero stet consetetur elitr takimata rebum sanctus. Sit sed accusam stet sit
-                            nonumy kasd diam dolores, sanctus lorem kasd duo dolor dolor vero sit et. Labore
-                            ipsum duo sanctus amet eos et. Consetetur no sed et aliquyam ipsum justo et,
-                            clita lorem sit vero amet amet est dolor elitr, stet et no diam sit. Dolor erat
-                            justo dolore sit invidunt.
-                        </p>
-                        <p>
-                            Diam dolor est labore duo invidunt ipsum clita et, sed et lorem voluptua tempor
-                            invidunt at est sanctus sanctus. Clita dolores sit kasd diam takimata justo diam
-                            lorem sed. Magna amet sed rebum eos. Clita no magna no dolor erat diam tempor
-                            rebum consetetur, sanctus labore sed nonumy diam lorem amet eirmod. No at tempor
-                            sea diam kasd, takimata ea nonumy elitr sadipscing gubergren erat. Gubergren at
-                            lorem invidunt sadipscing rebum sit amet ut ut, voluptua diam dolores at
-                            sadipscing stet. Clita dolor amet dolor ipsum vero ea ea eos.
-                        </p>
-                        <p>
-                            Voluptua est takimata stet invidunt sed rebum nonumy stet, clita aliquyam dolores
-                            vero stet consetetur elitr takimata rebum sanctus. Sit sed accusam stet sit
-                            nonumy kasd diam dolores, sanctus lorem kasd duo dolor dolor vero sit et. Labore
-                            ipsum duo sanctus amet eos et. Consetetur no sed et aliquyam ipsum justo et,
-                            clita lorem sit vero amet amet est dolor elitr, stet et no diam sit. Dolor erat
-                            justo dolore sit invidunt.
-                        </p>
+                             src="{{ project.photo.url }}"
+                             alt="{{ project.title }}"
+                             height="auto"
+                             width="auto"/>
+                        <h1 class="mb-4">{{ project.title }}</h1>
+                        <div class="mt-4 mb-4">
+                            <h6>
+                                Category: <span class="detail-tags"><a href="{{ project.category.get_absolute_url }}">{{ project.category }}</a></span>
+                            </h6>
+                            {% if project.tags.exists %}
+                                <h6>
+                                    Tags: <span class="detail-tags">
+                                    {% for tag in project.tags.all %}<a href="{{ tag.get_absolute_url }}" class="me-2">{{ tag.title }}</a>{% endfor %}
+                                </span>
+                            </h6>
+                        {% endif %}
                     </div>
-                    <a href="#" class="btn detail-btn-git py-2 px-4 me-4"><i class="fab fa-github fw-normal me-2"></i>GitHub</a>
-                    <a href="#" class="btn detail-btn-view py-2 px-4"><i class="fas fa-desktop me-2"></i>View App</a>
-                    <!-- Blog Detail End -->
+                    <div>{{ project.content |safe }}</div>
                 </div>
-                {% include "core/includes/sidebar.html" %}
+                {% if project.tags.exists %}
+                    <hr/>
+                    <div class="d-flex flex-wrap mb-4">
+                        {% for tag in project.tags.all %}
+                            <a href="{{ tag.get_absolute_url }}" class="btn btn-light m-1">{{ tag.title }}</a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if project.github_url %}
+                    <a href="{{ project.github_url }}"
+                       class="btn detail-btn-git py-2 px-4 me-4"
+                       target="_blank"><i class="fab fa-github fw-normal me-2"></i>GitHub</a>
+                {% endif %}
+                {% if project.view_url %}
+                    <a href="{{ project.view_url }}"
+                       class="btn detail-btn-view py-2 px-4"
+                       target="_blank"><i class="fas fa-desktop me-2"></i>View App</a>
+                {% endif %}
+                <!-- Blog Detail End -->
             </div>
+            {% include "core/includes/sidebar.html" %}
         </div>
     </div>
+</div>
 {% endblock content %}
