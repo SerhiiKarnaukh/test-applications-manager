@@ -171,6 +171,14 @@ EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS")
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
+
 CKEDITOR_CONFIGS = {
     'default': {
         'skin':

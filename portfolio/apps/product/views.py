@@ -8,6 +8,7 @@ from django.contrib import messages
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from .permissions import IsOwnerOrReadOnly
 from django.db.models import Count
 
 from .models import Product, Category, ReviewRating, ProductGallery
@@ -178,6 +179,7 @@ def submit_review(request, product_id):
 class LatestProductsAPIList(generics.ListAPIView):
     queryset = Product.objects.all().filter(is_available=True)[0:6]
     serializer_class = ProductSerializer
+    permission_classes = (IsOwnerOrReadOnly, )
 
 
 class ProductAPIDetail(generics.RetrieveUpdateDestroyAPIView):
