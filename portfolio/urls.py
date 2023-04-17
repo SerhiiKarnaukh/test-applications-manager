@@ -8,7 +8,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # for Django Rest Framework
-    # path('api/v1/', include('product.urls')),
+    path('api/v1/', include('djoser.urls')),
+    path('api/v1/', include('djoser.urls.authtoken')),
+
+    # for Django Templates
     path('cart/', include('cart.urls')),
     path('', include('core.urls')),
     path('store/', include('product.urls')),

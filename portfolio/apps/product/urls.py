@@ -20,4 +20,12 @@ urlpatterns = [
     path('search/', ProductSearchListView.as_view(), name='search'),
     path('contact/', contact, name='contact'),
     path('about/', about, name='about'),
+    # for Django Rest Framework
+    path('api/v1/latest-products/', views.LatestProductsAPIList.as_view()),
+    path('api/v1/products/search/', views.search_api),
+    path('api/v1/products/<slug:category_slug>/<slug:product_slug>/',
+         views.ProductAPIDetail.as_view()),
+    path('api/v1/products/<slug:category_slug>/',
+         views.CategoryAPIDetail.as_view()),
+    path('api/v1/product-categories/', views.ProductCategoryAPIView.as_view()),
 ]
