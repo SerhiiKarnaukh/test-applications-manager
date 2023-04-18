@@ -48,9 +48,12 @@ INSTALLED_APPS = [
     'orders',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-]
+CORS_ALLOWED_ORIGINS = []
+CORS_ALLOWED_ORIGINS.extend(
+    filter(
+        None,
+        os.environ.get('CORS_ALLOWED_ORIGINS', '').split(" "),
+    ))
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
