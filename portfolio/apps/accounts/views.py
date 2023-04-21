@@ -27,13 +27,11 @@ def register(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             username = email.split("@")[0]
-            is_active = False
             user = Account.objects.create_user(first_name=first_name,
                                                last_name=last_name,
                                                email=email,
                                                username=username,
-                                               password=password,
-                                               is_active=is_active)
+                                               password=password)
             user.phone_number = phone_number
             user.save()
 
