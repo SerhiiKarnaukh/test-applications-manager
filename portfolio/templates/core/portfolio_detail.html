@@ -16,41 +16,45 @@
                              width="auto"/>
                         <h1 class="mb-4">{{ project.title }}</h1>
                         <div class="mt-4 mb-4">
-                            <h6>
-                                Category: <span class="detail-tags"><a href="{{ project.category.get_absolute_url }}">{{ project.category }}</a></span>
+                            <h6 class="d-flex flex-wrap">
+                                <span class="me-2">Category:</span><a href="{{ project.category.get_absolute_url }}"
+   class="me-2 detail-tags">{{ project.category }}</a>
                             </h6>
                             {% if project.tags.exists %}
-                                <h6>
-                                    Tags: <span class="detail-tags">
-                                    {% for tag in project.tags.all %}<a href="{{ tag.get_absolute_url }}" class="me-2">{{ tag.title }}</a>{% endfor %}
-                                </span>
-                            </h6>
+                                <h6 class="d-flex flex-wrap">
+                                    <span class="me-2">Tags:</span>
+                                    {% for tag in project.tags.all %}
+                                        <a href="{{ tag.get_absolute_url }}" class="me-2 detail-tags">{{ tag.title }}</a>
+                                    {% endfor %}
+                                </h6>
+                            {% endif %}
+                        </div>
+                        <div>{{ project.content |safe }}</div>
+                    </div>
+                    {% if project.tags.exists %}
+                        <hr/>
+                        <div class="d-flex flex-wrap mb-4">
+                            {% for tag in project.tags.all %}
+                                <a href="{{ tag.get_absolute_url }}" class="btn btn-light m-1">{{ tag.title }}</a>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="d-flex flex-wrap">
+                        {% if project.github_url %}
+                            <a href="{{ project.github_url }}"
+                               class="btn detail-btn-git py-2 px-4 me-4 m-2"
+                               target="_blank"><i class="fab fa-github fw-normal me-2"></i>GitHub</a>
+                        {% endif %}
+                        {% if project.view_url %}
+                            <a href="{{ project.view_url }}"
+                               class="btn detail-btn-view py-2 px-4 m-2"
+                               target="_blank"><i class="fas fa-desktop me-2"></i>View App</a>
                         {% endif %}
                     </div>
-                    <div>{{ project.content |safe }}</div>
+                    <!-- Blog Detail End -->
                 </div>
-                {% if project.tags.exists %}
-                    <hr/>
-                    <div class="d-flex flex-wrap mb-4">
-                        {% for tag in project.tags.all %}
-                            <a href="{{ tag.get_absolute_url }}" class="btn btn-light m-1">{{ tag.title }}</a>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-                {% if project.github_url %}
-                    <a href="{{ project.github_url }}"
-                       class="btn detail-btn-git py-2 px-4 me-4"
-                       target="_blank"><i class="fab fa-github fw-normal me-2"></i>GitHub</a>
-                {% endif %}
-                {% if project.view_url %}
-                    <a href="{{ project.view_url }}"
-                       class="btn detail-btn-view py-2 px-4"
-                       target="_blank"><i class="fas fa-desktop me-2"></i>View App</a>
-                {% endif %}
-                <!-- Blog Detail End -->
+                {% include "core/includes/sidebar.html" %}
             </div>
-            {% include "core/includes/sidebar.html" %}
         </div>
     </div>
-</div>
 {% endblock content %}

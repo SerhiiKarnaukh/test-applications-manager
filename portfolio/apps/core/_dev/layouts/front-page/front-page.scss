@@ -116,11 +116,9 @@
 }
 
 .detail-tags {
-    a {
-        color: $color-brand;
-        &:hover {
-            color: #b33200;
-        }
+    color: $color-brand;
+    &:hover {
+        color: #b33200;
     }
 }
 .detail-btn-git {
@@ -140,8 +138,5 @@
         border: 1px solid;
         border-color: $dark-bg;
         color: $dark-bg;
-    }
-    @media (max-width: 363px) {
-        margin-top: 1rem;
     }
 }
