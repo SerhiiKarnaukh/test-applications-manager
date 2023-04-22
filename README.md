@@ -1,6 +1,7 @@
 # Test Applications Manager
 
 ### App on AWS: <https://django.karnaukh-webdev.com/>
+![TAM screenshot](https://github.com/SerhiiKarnaukh/test-applications-manager/blob/main/tam.jpg)
 
 ## For local development
 
