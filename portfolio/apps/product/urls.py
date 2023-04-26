@@ -7,7 +7,7 @@ from .views import FrontPage, contact, about, ProductDetail, CategoryDetail, Pro
 
 urlpatterns = [
     path('', FrontPage.as_view(), name='frontpage'),
-    path('store/', CategoryDetail.as_view(), name='store'),
+    path('shop/', CategoryDetail.as_view(), name='store'),
     path('category/<slug:slug>/',
          CategoryDetail.as_view(),
          name='category_detail'),
