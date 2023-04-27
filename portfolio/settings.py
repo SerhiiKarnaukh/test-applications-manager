@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'core',
     'product',
     'orders',
+    'social_posts',
+    'social_profiles',
 ]
 
 CORS_ALLOWED_ORIGINS = []
@@ -180,6 +182,15 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ]
+}
+DJOSER = {
+    'ACTIVATION_URL': 'accounts/activate/{uid}/{token}/',
+    'SEND_ACTIVATION_EMAIL': True,
+    'USER_ACTIVATION': {
+        'SEND_EMAIL': True,
+        'ACTIVATION_AFTER_REGISTRATION': True,
+        'SEND_CONFIRMATION_EMAIL': True,
+    },
 }
 
 CKEDITOR_CONFIGS = {

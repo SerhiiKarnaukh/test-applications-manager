@@ -139,12 +139,18 @@ def activate(request, uidb64, token):
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
-        messages.success(request,
-                         'Congratulations! Your account is activated.')
-        return redirect('login')
+        messages.success(
+            request,
+            'Congratulations! Your account is activated. You can login to application!'
+        )
+        return redirect('activate_result')
     else:
-        messages.error(request, 'Invalid activation link')
-        return redirect('register')
+        messages.error(request, 'Invalid activation link. Try again')
+        return redirect('activate_result')
+
+
+def activate_result(request):
+    return render(request, 'accounts/activate.html')
 
 
 @login_required(login_url='login')

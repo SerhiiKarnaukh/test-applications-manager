@@ -22,10 +22,14 @@
               crossorigin="anonymous"/>
     </head>
     <body>
-        {% include "core/includes/navbar.html" %}
+        {% if not request.resolver_match.url_name == 'activate_result' %}
+            {% include "core/includes/navbar.html" %}
+        {% endif %}
         {% block content %}
         {% endblock content %}
-        {% include "core/includes/footer.html" %}
+        {% if not request.resolver_match.url_name == 'activate_result' %}
+            {% include "core/includes/footer.html" %}
+        {% endif %}
         <script src="{% static 'core/bundle/jquery.js' %}" crossorigin="anonymous"></script>
         <script src="{% static 'core/bundle/bootstrap.js' %}" crossorigin="anonymous"></script>
         <script src="{% static 'core/bundle/index.js' %}" crossorigin="anonymous"></script>
