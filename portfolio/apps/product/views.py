@@ -1,18 +1,11 @@
-from rest_framework import generics, status
 from django.views.generic import ListView, DetailView
 from django.shortcuts import redirect, render
 from django.db.models import Q
-from django.http import Http404
+
 from django.contrib import messages
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from .permissions import IsOwnerOrReadOnly
-from django.db.models import Count
-
 from .models import Product, Category, ReviewRating, ProductGallery
-from .serializers import ProductSerializer, CategorySerializer, AllCategoriesSerializer
+
 from cart.models import CartItem
 from cart.views import _get_cart_id
 from .forms import ReviewForm
@@ -20,7 +13,6 @@ from orders.models import OrderProduct
 from django.core.paginator import Paginator
 
 
-# for Django Template Language
 class FrontPage(ListView):
     model = Product
     template_name = 'store/frontpage.html'
@@ -173,91 +165,3 @@ def submit_review(request, product_id):
                 messages.success(request,
                                  'Thank you! Your review has been submitted.')
                 return redirect(url)
-
-
-# for Django Rest Framework
-class LatestProductsAPIList(generics.ListAPIView):
-    queryset = Product.objects.all().filter(is_available=True)[0:6]
-    serializer_class = ProductSerializer
-    permission_classes = (IsOwnerOrReadOnly, )
-
-
-class ProductAPIDetail(generics.RetrieveUpdateDestroyAPIView):
-    lookup_url_kwarg = 'product_slug'
-    lookup_field = 'slug'
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-
-
-# class CategoryAPIDetail(APIView):
-
-#     def get_object(self, category_slug):
-#         try:
-#             return Category.objects.get(slug=category_slug)
-#         except Category.DoesNotExist:
-#             raise Http404
-
-#     def get(self, request, category_slug, format=None):
-#         category = self.get_object(category_slug)
-#         serializer = CategorySerializer(category)
-#         return Response(serializer.data)
-
-
-class CategoryAPIDetail(generics.RetrieveAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-
-    def get(self, request, *args, **kwargs):
-        try:
-            instance = self.get_object()
-        except Http404:
-            return Response({'error': 'Category not found.'},
-                            status=status.HTTP_404_NOT_FOUND)
-
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
-
-    def get_object(self):
-        queryset = self.filter_queryset(self.get_queryset())
-
-        # Perform the lookup filtering based on the slug parameter
-        slug = self.kwargs.get('category_slug', None)
-        if slug is not None:
-            queryset = queryset.filter(slug=slug)
-
-        try:
-            obj = queryset.get()
-        except queryset.model.DoesNotExist:
-            raise Http404("No matching query result was found.")
-
-        # May raise a permission denied
-        self.check_object_permissions(self.request, obj)
-
-        return obj
-
-
-class ProductCategoryAPIView(APIView):
-
-    def get(self, request):
-        categories = Category.objects.annotate(one=Count('products')).filter(
-            one__gt=0)
-        serializer = AllCategoriesSerializer(categories, many=True)
-        return Response(serializer.data)
-
-
-@api_view(['POST'])
-def search_api(request):
-    query = request.data.get('query', '')
-
-    if query:
-        products = Product.objects.filter(
-            Q(name__icontains=query) | Q(description__icontains=query))
-        serialized_products = []
-        for product in products:
-            product_data = ProductSerializer(product).data
-            product_data['image'] = request.build_absolute_uri(
-                product.image.url)
-            serialized_products.append(product_data)
-        return Response(serialized_products)
-    else:
-        return Response({"products": []})
