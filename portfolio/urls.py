@@ -28,6 +28,9 @@ urlpatterns = [
     path('store/', include('product.urls')),
     path('accounts/', include('accounts.urls')),
     path('orders/', include('orders.urls')),
+
+    # DRF
+    path('api/social-posts/', include('social_posts.urls')),
 ]
 
 if settings.DEBUG:
