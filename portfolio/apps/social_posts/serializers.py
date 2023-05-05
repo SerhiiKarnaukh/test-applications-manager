@@ -1,12 +1,12 @@
 from rest_framework import serializers
 
-from accounts.serializers import UserSerializer
+from social_profiles.serializers import ProfileSerializer
 
 from .models import Post
 
 
 class PostSerializer(serializers.ModelSerializer):
-    created_by = UserSerializer(read_only=True)
+    created_by = ProfileSerializer(read_only=True)
 
     class Meta:
         model = Post

@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.db.models import Q
 
 from rest_framework.decorators import api_view
 
@@ -51,3 +52,23 @@ def post_create(request):
         return JsonResponse(serializer.data, safe=False)
     else:
         return JsonResponse({'error': 'add something here later!...'})
+
+
+@api_view(['POST'])
+def search(request):
+    data = request.data
+    query = data['query']
+
+    profiles = Profile.objects.filter(
+        Q(first_name__icontains=query) | Q(last_name__icontains=query))
+    profile_serializer = ProfileSerializer(profiles, many=True)
+
+    posts = Post.objects.filter(body__icontains=query)
+    posts_serializer = PostSerializer(posts, many=True)
+
+    return JsonResponse(
+        {
+            'profiles': profile_serializer.data,
+            'posts': posts_serializer.data
+        },
+        safe=False)
