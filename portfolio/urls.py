@@ -31,6 +31,7 @@ urlpatterns = [
 
     # DRF
     path('api/social-posts/', include('social_posts.urls')),
+    path('api/social-profiles/', include('social_profiles.urls')),
 ]
 
 if settings.DEBUG:

@@ -12,11 +12,30 @@ from social_profiles.models import Profile
 
 @api_view(['GET'])
 def post_list(request):
+    request_user = None
+    if request.user.is_authenticated:
+        request_user = Profile.objects.get(user=request.user)
+
     posts = Post.objects.all()
+    posts_serializer = PostSerializer(posts,
+                                      context={'request': request},
+                                      many=True)
+    user_ids = []
+    if request_user is not None:
+        user_ids = [request_user.id]
+        for user in request_user.friends.all():
+            user_ids.append(user.id)
+    posts = Post.objects.filter(created_by_id__in=list(user_ids))
+    friends_posts = PostSerializer(posts,
+                                   context={'request': request},
+                                   many=True)
 
-    serializer = PostSerializer(posts, many=True)
-
-    return JsonResponse(serializer.data, safe=False)
+    return JsonResponse(
+        {
+            'posts': posts_serializer.data,
+            'friends_posts': friends_posts.data
+        },
+        safe=False)
 
 
 @api_view(['GET'])
@@ -25,8 +44,11 @@ def post_list_profile(request, slug):
     created_by_id = profile.id
     posts = Post.objects.filter(created_by_id=created_by_id)
 
-    posts_serializer = PostSerializer(posts, many=True)
-    profile_serializer = ProfileSerializer(profile)
+    posts_serializer = PostSerializer(posts,
+                                      context={'request': request},
+                                      many=True)
+    profile_serializer = ProfileSerializer(profile,
+                                           context={'request': request})
 
     return JsonResponse(
         {
@@ -61,10 +83,14 @@ def search(request):
 
     profiles = Profile.objects.filter(
         Q(first_name__icontains=query) | Q(last_name__icontains=query))
-    profile_serializer = ProfileSerializer(profiles, many=True)
+    profile_serializer = ProfileSerializer(profiles,
+                                           context={'request': request},
+                                           many=True)
 
     posts = Post.objects.filter(body__icontains=query)
-    posts_serializer = PostSerializer(posts, many=True)
+    posts_serializer = PostSerializer(posts,
+                                      context={'request': request},
+                                      many=True)
 
     return JsonResponse(
         {

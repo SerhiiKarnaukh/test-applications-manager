@@ -197,7 +197,7 @@ DJOSER = {
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME":
-    timedelta(minutes=5),
+    timedelta(minutes=6),
     "REFRESH_TOKEN_LIFETIME":
     timedelta(days=1),
     "ROTATE_REFRESH_TOKENS":

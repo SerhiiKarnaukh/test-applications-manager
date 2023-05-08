@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from accounts.models import Account
 
@@ -14,9 +15,8 @@ class Profile(models.Model):
     country = models.CharField(max_length=200, blank=True)
     avatar = models.ImageField(default='social/avatars/avatar.png',
                                upload_to='social/avatars/')
-    friends = models.ManyToManyField(Account,
-                                     blank=True,
-                                     related_name='friends')
+    friends = models.ManyToManyField('self')
+    friends_count = models.IntegerField(default=0)
     slug = models.SlugField(unique=True, blank=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -25,8 +25,6 @@ class Profile(models.Model):
         return f"{self.user.username}-{self.created.strftime('%d-%m-%Y')}"
 
     def save(self, *args, **kwargs):
-        ex = False
-
         if self.first_name == "":
             self.first_name = self.user.first_name
         if self.last_name == "":
@@ -34,13 +32,46 @@ class Profile(models.Model):
         if self.email == "":
             self.email = self.user.email
 
+        if self.pk is None:  # new instance, always create slug
+            self.create_slug()
+        else:
+            old_instance = Profile.objects.get(pk=self.pk)
+            if (self.first_name != old_instance.first_name
+                    or self.last_name != old_instance.last_name):
+                self.create_slug()
+        super().save(*args, **kwargs)
+
+    def create_slug(self):
         if self.first_name and self.last_name:
-            to_slug = slugify(str(self.first_name) + "-" + str(self.last_name))
+            to_slug = slugify(f"{self.first_name}-{self.last_name}")
             ex = Profile.objects.filter(slug=to_slug).exists()
             while ex:
-                to_slug = slugify(to_slug + "-" + str(get_random_code()))
+                to_slug = slugify(f"{to_slug}-{get_random_code()}")
                 ex = Profile.objects.filter(slug=to_slug).exists()
         else:
             to_slug = str(self.user.username)
         self.slug = to_slug
-        super().save(*args, **kwargs)
+
+
+class FriendshipRequest(models.Model):
+    SENT = 'sent'
+    ACCEPTED = 'accepted'
+    REJECTED = 'rejected'
+
+    STATUS_CHOICES = (
+        (SENT, 'Sent'),
+        (ACCEPTED, 'Accepted'),
+        (REJECTED, 'Rejected'),
+    )
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created_for = models.ForeignKey(Profile,
+                                    related_name='received_friendshiprequests',
+                                    on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(Profile,
+                                   related_name='created_friendshiprequests',
+                                   on_delete=models.CASCADE)
+    status = models.CharField(max_length=20,
+                              choices=STATUS_CHOICES,
+                              default=SENT)
