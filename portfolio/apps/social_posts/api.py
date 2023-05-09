@@ -4,7 +4,7 @@ from django.db.models import Q
 from rest_framework.decorators import api_view
 
 from .forms import PostForm
-from .models import Post
+from .models import Post, Like
 from .serializers import PostSerializer
 from social_profiles.serializers import ProfileSerializer
 from social_profiles.models import Profile
@@ -98,3 +98,21 @@ def search(request):
             'posts': posts_serializer.data
         },
         safe=False)
+
+
+@api_view(['POST'])
+def post_like(request, pk):
+    post = Post.objects.get(pk=pk)
+    request_user = Profile.objects.get(user=request.user)
+
+    if not post.likes.filter(created_by=request_user):
+        like = Like.objects.create(created_by=request_user)
+
+        post = Post.objects.get(pk=pk)
+        post.likes_count = post.likes_count + 1
+        post.likes.add(like)
+        post.save()
+
+        return JsonResponse({'message': 'like created'})
+    else:
+        return JsonResponse({'message': 'post already liked'})

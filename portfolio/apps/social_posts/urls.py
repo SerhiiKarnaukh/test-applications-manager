@@ -6,6 +6,7 @@ app_name = 'social_posts'
 
 urlpatterns = [
     path('', api.post_list, name='post_list'),
+    path('<uuid:pk>/like/', api.post_like, name='post_like'),
     path('profile/<slug:slug>/',
          api.post_list_profile,
          name='post_list_profile'),
