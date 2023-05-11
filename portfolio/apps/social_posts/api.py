@@ -4,8 +4,8 @@ from django.db.models import Q
 from rest_framework.decorators import api_view
 
 from .forms import PostForm
-from .models import Post, Like
-from .serializers import PostSerializer
+from .models import Post, Like, Comment
+from .serializers import PostSerializer, CommentSerializer, PostDetailSerializer
 from social_profiles.serializers import ProfileSerializer
 from social_profiles.models import Profile
 
@@ -36,6 +36,18 @@ def post_list(request):
             'friends_posts': friends_posts.data
         },
         safe=False)
+
+
+@api_view(['GET'])
+def post_detail(request, pk):
+    post = Post.objects.get(pk=pk)
+
+    return JsonResponse({
+        'post':
+        PostDetailSerializer(post, context={
+            'request': request
+        }).data
+    })
 
 
 @api_view(['GET'])
@@ -116,3 +128,19 @@ def post_like(request, pk):
         return JsonResponse({'message': 'like created'})
     else:
         return JsonResponse({'message': 'post already liked'})
+
+
+@api_view(['POST'])
+def post_create_comment(request, pk):
+    request_user = Profile.objects.get(user=request.user)
+    comment = Comment.objects.create(body=request.data.get('body'),
+                                     created_by=request_user)
+
+    post = Post.objects.get(pk=pk)
+    post.comments.add(comment)
+    post.comments_count = post.comments_count + 1
+    post.save()
+
+    serializer = CommentSerializer(comment, context={'request': request})
+
+    return JsonResponse(serializer.data, safe=False)
