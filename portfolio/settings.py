@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'orders',
     'social_posts',
     'social_profiles',
+    'social_chat',
 ]
 
 CORS_ALLOWED_ORIGINS = []
