@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from social_profiles.serializers import ProfileSerializer
 
-from .models import Post, Comment
+from .models import Post, Comment, Trend
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -47,4 +47,15 @@ class PostDetailSerializer(serializers.ModelSerializer):
             'created_by',
             'created_at_formatted',
             'comments',
+        )
+
+
+class TrendSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Trend
+        fields = (
+            'id',
+            'hashtag',
+            'occurences',
         )

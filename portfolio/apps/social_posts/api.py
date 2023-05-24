@@ -4,8 +4,8 @@ from django.db.models import Q
 from rest_framework.decorators import api_view
 
 from .forms import PostForm
-from .models import Post, Like, Comment
-from .serializers import PostSerializer, CommentSerializer, PostDetailSerializer
+from .models import Post, Like, Comment, Trend
+from .serializers import PostSerializer, CommentSerializer, PostDetailSerializer, TrendSerializer
 from social_profiles.serializers import ProfileSerializer
 from social_profiles.models import Profile
 
@@ -17,6 +17,11 @@ def post_list(request):
         request_user = Profile.objects.get(user=request.user)
 
     posts = Post.objects.all()
+
+    trend = request.GET.get('trend', '')
+    if trend:
+        posts = posts.filter(body__icontains='#' + trend)
+
     posts_serializer = PostSerializer(posts,
                                       context={'request': request},
                                       many=True)
@@ -142,5 +147,12 @@ def post_create_comment(request, pk):
     post.save()
 
     serializer = CommentSerializer(comment, context={'request': request})
+
+    return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(['GET'])
+def get_trends(request):
+    serializer = TrendSerializer(Trend.objects.all(), many=True)
 
     return JsonResponse(serializer.data, safe=False)

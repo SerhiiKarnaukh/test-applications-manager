@@ -23,6 +23,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             'slug',
             'avatar_url',
             'friends_count',
+            'posts_count',
         )
 
 

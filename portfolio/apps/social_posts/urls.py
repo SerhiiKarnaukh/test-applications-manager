@@ -16,4 +16,5 @@ urlpatterns = [
          name='post_list_profile'),
     path('create/', api.post_create, name='post_create'),
     path('search/', api.search, name='search'),
+    path('trends/', api.get_trends, name='get_trends'),
 ]
