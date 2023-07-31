@@ -9,6 +9,7 @@ from django.template.defaultfilters import slugify
 class Profile(models.Model):
     first_name = models.CharField(max_length=200, blank=True)
     last_name = models.CharField(max_length=200, blank=True)
+    username = models.CharField(max_length=50, unique=True)
     user = models.OneToOneField(Account, on_delete=models.CASCADE)
     bio = models.TextField(default="no bio...", max_length=300)
     email = models.EmailField(max_length=200, blank=True)
@@ -22,16 +23,39 @@ class Profile(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
+
     def __str__(self):
         return f"{self.user.username}-{self.created.strftime('%d-%m-%Y')}"
 
     def save(self, *args, **kwargs):
+        account_instance = self.user
+        account_fields_updated = False
+        if self.first_name != account_instance.first_name:
+            account_instance.first_name = self.first_name
+            account_fields_updated = True
+        if self.last_name != account_instance.last_name:
+            account_instance.last_name = self.last_name
+            account_fields_updated = True
+        if self.email != account_instance.email:
+            account_instance.email = self.email
+            account_fields_updated = True
+        if self.username != account_instance.username:
+            account_instance.username = self.username
+            account_fields_updated = True
+
+        if account_fields_updated:
+            account_instance.save()
+
         if self.first_name == "":
             self.first_name = self.user.first_name
         if self.last_name == "":
             self.last_name = self.user.last_name
         if self.email == "":
             self.email = self.user.email
+        if self.username == "":
+            self.username = self.user.username
 
         if self.pk is None:  # new instance, always create slug
             self.create_slug()
@@ -39,6 +63,7 @@ class Profile(models.Model):
             old_instance = Profile.objects.get(pk=self.pk)
             if (self.first_name != old_instance.first_name
                     or self.last_name != old_instance.last_name):
+
                 self.create_slug()
         super().save(*args, **kwargs)
 

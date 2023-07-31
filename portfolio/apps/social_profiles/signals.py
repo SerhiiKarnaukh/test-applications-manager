@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from accounts.models import Account
 from django.dispatch import receiver
 from .models import Profile
@@ -8,6 +8,21 @@ from .models import Profile
 def post_save_create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+    else:
+        instance.profile.save()
+
+
+@receiver(pre_save, sender=Profile)
+def delete_old_avatar(sender, instance, **kwargs):
+    if instance.pk:
+        try:
+            old_avatar = Profile.objects.get(pk=instance.pk).avatar
+        except Profile.DoesNotExist:
+            return
+
+        new_avatar = instance.avatar
+        if old_avatar and old_avatar != new_avatar:
+            old_avatar.delete(save=False)
 
 
 # @receiver(post_save, sender=Relationship)
