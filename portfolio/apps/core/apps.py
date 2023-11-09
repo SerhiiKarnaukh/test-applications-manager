@@ -4,4 +4,4 @@ from django.apps import AppConfig
 class CoreConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'core'
-    verbose_name = 'Test Applications Manager'
+    verbose_name = '01.Test Applications Manager'

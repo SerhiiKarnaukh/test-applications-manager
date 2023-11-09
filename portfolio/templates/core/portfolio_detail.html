@@ -13,7 +13,7 @@
                              src="{{ project.photo.url }}"
                              alt="{{ project.title }}"
                              height="auto"
-                             width="auto"/>
+                             width="auto" />
                         <h1 class="mb-4">{{ project.title }}</h1>
                         <div class="mt-4 mb-4">
                             <h6 class="d-flex flex-wrap">
@@ -32,7 +32,7 @@
                         <div>{{ project.content |safe }}</div>
                     </div>
                     {% if project.tags.exists %}
-                        <hr/>
+                        <hr />
                         <div class="d-flex flex-wrap mb-4">
                             {% for tag in project.tags.all %}
                                 <a href="{{ tag.get_absolute_url }}" class="btn btn-light m-1">{{ tag.title }}</a>

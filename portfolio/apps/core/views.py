@@ -8,7 +8,7 @@ class CategoryDetail(ListView):
     model = Project
     template_name = 'core/index.html'
     context_object_name = 'projects'
-    allow_empty = False
+    allow_empty = True
 
     def create_store_data(self, **kwargs):
         context = kwargs

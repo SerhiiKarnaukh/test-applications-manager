@@ -6,20 +6,20 @@
             {% block title %}
             {% endblock title %}
         Karnaukh-WebDev</title>
-        <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <meta name="keywords" content="meta keywords"/>
-        <meta name="description" content="meta description"/>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="keywords" content="meta keywords" />
+        <meta name="description" content="meta description" />
         {% include "core/favicons.html" %}
         <link href="{% static 'core/bundle/bootstrap.css' %}"
               rel="stylesheet"
-              crossorigin="anonymous"/>
+              crossorigin="anonymous" />
         <link href="{% static 'core/bundle/index.css' %}"
               rel="stylesheet"
-              crossorigin="anonymous"/>
+              crossorigin="anonymous" />
         <link href="{% static 'product/font-awesome/css/fontawesome.min.css' %}"
               rel="stylesheet"
-              crossorigin="anonymous"/>
+              crossorigin="anonymous" />
     </head>
     <body>
         {% if not request.resolver_match.url_name == 'activate_result' %}
