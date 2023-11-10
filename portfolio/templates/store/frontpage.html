@@ -21,8 +21,10 @@
                     <div class="row p-5">
                         <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
                             <img class="img-fluid"
+                                 height="auto"
+                                 width="auto"
                                  src="{% static 'product/images/banner/banner-01.png' %}"
-                                 alt="main-banner"/>
+                                 alt="main-banner" />
                         </div>
                         <div class="col-lg-6 mb-0 d-flex align-items-center">
                             <div class="text-align-left align-self-center">
@@ -43,8 +45,10 @@
                     <div class="row p-5">
                         <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
                             <img class="img-fluid"
+                                 height="auto"
+                                 width="auto"
                                  src="{% static 'product/images/banner/banner-02.png' %}"
-                                 alt="main-banner"/>
+                                 alt="main-banner" />
                         </div>
                         <div class="col-lg-6 mb-0 d-flex align-items-center">
                             <div class="text-align-left">
@@ -63,8 +67,10 @@
                     <div class="row p-5">
                         <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
                             <img class="img-fluid"
+                                 height="auto"
+                                 width="auto"
                                  src="{% static 'product/images/banner/banner-03.png' %}"
-                                 alt="main-banner"/>
+                                 alt="main-banner" />
                         </div>
                         <div class="col-lg-6 mb-0 d-flex align-items-center">
                             <div class="text-align-left">
@@ -109,8 +115,10 @@
                 <div class="col-12 col-md-4 p-5 mt-3">
                     <a href="{{ category.get_absolute_url }}">
                         <img src="{{ category.cat_image.url }}"
+                             height="auto"
+                             width="auto"
                              class="rounded-circle img-fluid border"
-                             alt="{{ category.name }}"/>
+                             alt="{{ category.name }}" />
                     </a>
                     <h5 class="text-center mt-3 mb-3">{{ category.name }}</h5>
                     <p class="text-center">
@@ -138,8 +146,10 @@
                         <div class="card h-100">
                             <a href="{{ product.get_absolute_url }}">
                                 <img src="{{ product.image.url }}"
+                                     height="auto"
+                                     width="auto"
                                      class="card-img-top"
-                                     alt="{{ product.name }}"/>
+                                     alt="{{ product.name }}" />
                             </a>
                             <div class="card-body">
                                 <ul class="list-unstyled d-flex justify-content-between rating-star">
