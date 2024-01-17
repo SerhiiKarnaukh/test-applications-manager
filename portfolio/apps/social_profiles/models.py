@@ -16,7 +16,7 @@ class Profile(models.Model):
     country = models.CharField(max_length=200, blank=True)
     avatar = models.ImageField(default='social/avatars/avatar.png',
                                upload_to='social/avatars/')
-    friends = models.ManyToManyField('self')
+    friends = models.ManyToManyField('self', default=None)
     friends_count = models.IntegerField(default=0)
     posts_count = models.IntegerField(default=0)
     slug = models.SlugField(unique=True, blank=True)
@@ -30,23 +30,23 @@ class Profile(models.Model):
         return f"{self.user.username}-{self.created.strftime('%d-%m-%Y')}"
 
     def save(self, *args, **kwargs):
-        account_instance = self.user
-        account_fields_updated = False
-        if self.first_name != account_instance.first_name:
-            account_instance.first_name = self.first_name
-            account_fields_updated = True
-        if self.last_name != account_instance.last_name:
-            account_instance.last_name = self.last_name
-            account_fields_updated = True
-        if self.email != account_instance.email:
-            account_instance.email = self.email
-            account_fields_updated = True
-        if self.username != account_instance.username:
-            account_instance.username = self.username
-            account_fields_updated = True
+        if self.pk is not None:
+            account_instance = self.user
+            account_fields_updated = False
+            if self.first_name != account_instance.first_name:
+                account_instance.first_name = self.first_name
+                account_fields_updated = True
+            if self.last_name != account_instance.last_name:
+                account_instance.last_name = self.last_name
+                account_fields_updated = True
+            if self.email != account_instance.email:
+                account_instance.email = self.email
+                account_fields_updated = True
+            if self.username != account_instance.username:
+                account_instance.username = self.username
 
-        if account_fields_updated:
-            account_instance.save()
+            if account_fields_updated:
+                account_instance.save()
 
         if self.first_name == "":
             self.first_name = self.user.first_name

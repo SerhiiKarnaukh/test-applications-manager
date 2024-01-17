@@ -2,11 +2,28 @@ from django.http import JsonResponse
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics
+
 from .forms import ProfileForm
 from .models import Profile, FriendshipRequest
 
-from .serializers import ProfileSerializer, FriendshipRequestSerializer
+from .serializers import ProfileSerializer, FriendshipRequestSerializer, SocialProfileCreateSerializer
+
+
+class SocialProfileCreateView(generics.CreateAPIView):
+    serializer_class = SocialProfileCreateSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        account_instance = serializer.save()
+        account_instance.is_active = True
+        account_instance.save()
+
+        Profile.objects.create(user=account_instance)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 @api_view(['GET'])

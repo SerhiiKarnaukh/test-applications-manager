@@ -1,6 +1,7 @@
 # Test Applications Manager
 
 ### App on AWS: <https://django.karnaukh-webdev.com/>
+
 ![TAM screenshot](https://github.com/SerhiiKarnaukh/test-applications-manager/blob/main/tam.jpg)
 
 ## For local development
@@ -10,7 +11,7 @@ docker-compose build
 docker-compose run --rm app sh -c "python manage.py makemigrations"
 docker-compose run --rm app sh -c "python manage.py migrate"
 docker-compose run --rm app sh -c "python manage.py createsuperuser"
-docker-compose up
+docker-compose up -d --build
 ```
 
 ### Front-end Store
