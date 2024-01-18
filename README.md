@@ -17,7 +17,7 @@ docker-compose up -d --build
 ### Front-end Store
 
 ```
-nvm use 20.9.0
+nvm use 20.11.0
 cd portfolio/apps/product/_dev
 npm install
 npm run w
@@ -26,7 +26,7 @@ npm run w
 ### Front-end Core
 
 ```
-nvm use 19.7.0
+nvm use 20.11.0
 cd portfolio/apps/core/_dev
 npm install
 npm run w
