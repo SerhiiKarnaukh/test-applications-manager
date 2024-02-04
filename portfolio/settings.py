@@ -59,6 +59,29 @@ CORS_ALLOWED_ORIGINS.extend(
         os.environ.get('CORS_ALLOWED_ORIGINS', '').split(" "),
     ))
 
+CORS_ORIGIN_WHITELIST = [
+    'https://django.karnaukh-webdev.com'
+    # Add any other trusted domains here
+]
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://django.karnaukh-webdev.com'
+]
+
+
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_DOMAIN = '.karnaukh-webdev.com'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -200,7 +223,7 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME":
     timedelta(minutes=6),
     "REFRESH_TOKEN_LIFETIME":
-    timedelta(days=1),
+    timedelta(days=7),
     "ROTATE_REFRESH_TOKENS":
     False,
     "BLACKLIST_AFTER_ROTATION":

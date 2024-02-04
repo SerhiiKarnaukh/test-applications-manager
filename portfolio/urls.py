@@ -22,14 +22,16 @@ urlpatterns = [
          TokenVerifyView.as_view(),
          name='token_verify'),
 
-    # for Django Templates
-    path('cart/', include('cart.urls')),
+    # for Applications Manager
     path('', include('core.urls')),
+
+    # for Taberna
+    path('cart/', include('cart.urls')),
     path('store/', include('product.urls')),
     path('accounts/', include('accounts.urls')),
     path('orders/', include('orders.urls')),
 
-    # DRF
+    # for Social Network
     path('api/social-posts/', include('social_posts.urls')),
     path('api/social-profiles/', include('social_profiles.urls')),
     path('api/social-chat/', include('social_chat.urls')),
