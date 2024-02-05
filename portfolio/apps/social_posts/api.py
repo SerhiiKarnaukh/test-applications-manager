@@ -89,7 +89,7 @@ def post_create(request):
         profile.posts_count = profile.posts_count + 1
         profile.save()
 
-        serializer = PostSerializer(post)
+        serializer = PostSerializer(post, context={'request': request})
 
         return JsonResponse(serializer.data, safe=False)
     else:
