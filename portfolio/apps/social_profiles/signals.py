@@ -12,7 +12,7 @@ def delete_old_avatar(sender, instance, **kwargs):
             return
 
         new_avatar = instance.avatar
-        if old_avatar and old_avatar != new_avatar:
+        if old_avatar and old_avatar != new_avatar and old_avatar.name != 'social/avatars/avatar.png':
             old_avatar.delete(save=False)
 
 
