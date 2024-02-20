@@ -7,6 +7,7 @@ bundle
 # local env files
 .env.local
 .env.*.local
+celerybeat-schedule
 
 # Log files
 npm-debug.log*

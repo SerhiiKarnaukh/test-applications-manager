@@ -18,8 +18,9 @@ from social_posts.models import Post, Trend
 
 def extract_hashtags(text, trends):
     for word in text.split():
-        if word[0] == '#':
-            trends.append(word[1:])
+        if len(word) > 1 and word[0] == '#':
+            hashtag = word[1:]
+            trends.append(hashtag)
 
     return trends
 
@@ -32,7 +33,14 @@ this_hour = timezone.now().replace(minute=0, second=0, microsecond=0)
 twenty_four_hours = this_hour - timedelta(hours=24)
 
 for post in Post.objects.filter(created_at__gte=twenty_four_hours):
-    extract_hashtags(post.body, trends)
+    extract_hashtags(post.body, trends),
+
+if not trends:
+    all_posts = Post.objects.all().order_by('-created_at')
+    for post in all_posts:
+        extract_hashtags(post.body, trends)
+        if len(trends) >= 5:
+            break
 
 for trend in Counter(trends).most_common(10):
     Trend.objects.create(hashtag=trend[0], occurences=trend[1])

@@ -2,6 +2,8 @@ services:
   app:
     build:
       context: .
+      args:
+        - --rm
     restart: always
     volumes:
       - static-data:/vol/web
@@ -12,6 +14,7 @@ services:
       - SQL_USER=${SQL_USER}
       - SQL_PASSWORD=${SQL_PASSWORD}
       - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=False
       - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
       - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
       - EMAIL_HOST=${EMAIL_HOST}
@@ -21,6 +24,7 @@ services:
       - EMAIL_USE_TLS=${EMAIL_USE_TLS}
     depends_on:
       - db
+      - redis
 
   db:
     image: postgres:15-alpine
@@ -32,17 +36,91 @@ services:
       - POSTGRES_USER=${SQL_USER}
       - POSTGRES_PASSWORD=${SQL_PASSWORD}
 
+  redis:
+    restart: always
+    image: redis:7.0.11-alpine
+    ports:
+      - '6379:6379'
+    volumes:
+      - redisdata:/data
+
+  celery:
+    container_name: celery
+    restart: always
+    build: .
+    command: celery -A portfolio worker -l info
+    volumes:
+      - static-data:/vol/web
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=False
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - SQL_ENGINE=${SQL_ENGINE}
+      - SQL_HOST=db
+      - SQL_DATABASE=${SQL_DATABASE}
+      - SQL_USER=${SQL_USER}
+      - SQL_PASSWORD=${SQL_PASSWORD}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=587
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - EMAIL_USE_TLS=${EMAIL_USE_TLS}
+    depends_on:
+      - redis
+
+  celery-beat:
+    container_name: celery-beat
+    restart: always
+    build: .
+    command: celery -A portfolio beat -l info -s /tmp/celerybeat-schedule
+    volumes:
+      - static-data:/vol/web
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=False
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - SQL_ENGINE=${SQL_ENGINE}
+      - SQL_HOST=db
+      - SQL_DATABASE=${SQL_DATABASE}
+      - SQL_USER=${SQL_USER}
+      - SQL_PASSWORD=${SQL_PASSWORD}
+    depends_on:
+      - redis
+
   proxy:
     build:
-      context: ./proxy
+      context: ./docker/proxy
     restart: always
     depends_on:
       - app
     ports:
-      - 80:8000
+      - 80:80
+      - 443:443
     volumes:
       - static-data:/vol/static
+      - certbot-web:/vol/www
+      - proxy-dhparams:/vol/proxy
+      - certbot-certs:/etc/letsencrypt
+    environment:
+      - DOMAIN=${DJANGO_ALLOWED_HOSTS}
+
+  certbot:
+    build:
+      context: ./docker/certbot
+    command: echo "Skipping..."
+    environment:
+      - EMAIL=${ACME_DEFAULT_EMAIL}
+      - DOMAIN=${DJANGO_ALLOWED_HOSTS}
+    volumes:
+      - certbot-web:/vol/www
+      - certbot-certs:/etc/letsencrypt/
+    depends_on:
+      - proxy
 
 volumes:
   postgres-data:
   static-data:
+  certbot-web:
+  proxy-dhparams:
+  certbot-certs:
+  redisdata:

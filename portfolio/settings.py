@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, 'apps'))
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.environ.get("DEBUG", default=1)))
+DEBUG = os.environ.get("DEBUG", default=False) == "True"
 
 ALLOWED_HOSTS = []
 ALLOWED_HOSTS.extend(
@@ -118,6 +118,22 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'portfolio.wsgi.application'
+
+ASGI_APPLICATION = 'portfolio.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],
+        },
+    },
+}
+
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER",
+                                   "redis://redis:6379/0")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND",
+                                       "redis://redis:6379/0")
 
 AUTH_USER_MODEL = 'accounts.Account'
 

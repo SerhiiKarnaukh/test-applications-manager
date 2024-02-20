@@ -12,6 +12,9 @@ docker-compose run --rm app sh -c "python manage.py makemigrations"
 docker-compose run --rm app sh -c "python manage.py migrate"
 docker-compose run --rm app sh -c "python manage.py createsuperuser"
 docker-compose up -d --build
+
+for test trends:
+docker-compose run --rm app sh -c "python portfolio/apps/scripts/generate_trends.py"
 ```
 
 ### Front-end Store
