@@ -1,5 +1,12 @@
 from django.http import JsonResponse
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.sites.shortcuts import get_current_site
+
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -7,6 +14,7 @@ from rest_framework import status, generics
 
 from .forms import ProfileForm
 from .models import Profile, FriendshipRequest
+from accounts.models import Account
 
 from .serializers import ProfileSerializer, FriendshipRequestSerializer, SocialProfileCreateSerializer
 
@@ -15,16 +23,54 @@ class SocialProfileCreateView(generics.CreateAPIView):
     serializer_class = SocialProfileCreateSerializer
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        account_instance = serializer.save()
-        account_instance.is_active = True
-        account_instance.save()
+        try:
+            response = super().create(request, *args, **kwargs)
+            user_id = response.data.get('id')
+            existing_user = Account.objects.get(id=user_id)
 
-        Profile.objects.create(user=account_instance)
+            # send activation email
+            current_site = get_current_site(request)
+            mail_subject = 'Please activate your account'
+            message = render_to_string(
+                'accounts/account_verification_email.html', {
+                    'user': existing_user,
+                    'domain': current_site,
+                    'uid': urlsafe_base64_encode(force_bytes(existing_user.pk)),
+                    'token': default_token_generator.make_token(existing_user),
+                })
+            to_email = existing_user.email
+            send_email = EmailMessage(mail_subject, message, to=[to_email])
+            send_email.send()
 
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+            self.create_profile(existing_user)
+
+            return response
+
+        except Exception as e:
+
+            error_message = str(e)
+            if 'unique' in error_message and 'email' in error_message:
+                email = self.request.data.get('email')
+                existing_user = Account.objects.filter(email=email).first()
+                if existing_user:
+                    if not hasattr(existing_user, 'profile'):
+                        self.create_profile(existing_user)
+                        return Response({"detail": "social_profile_created"},
+                                        status=status.HTTP_200_OK)
+
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            return Response(serializer.data,
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    def create_profile(self, user):
+        Profile.objects.create(
+            user=user,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            username=user.username,
+            email=user.email,
+        )
 
 
 @api_view(['GET'])
