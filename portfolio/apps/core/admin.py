@@ -1,17 +1,25 @@
 from django.contrib import admin
 from django import forms
-from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from django_ckeditor_5.widgets import CKEditor5Widget
 from django.utils.safestring import mark_safe
 
 from .models import Category, Tag, Project
 
 
 class ProjectAdminForm(forms.ModelForm):
-    content = forms.CharField(widget=CKEditorUploadingWidget())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["content"].required = False
 
     class Meta:
         model = Project
         fields = '__all__'
+        widgets = {
+            "content": CKEditor5Widget(
+                attrs={"class": "django_ckeditor_5"}, config_name="extends"
+            )
+        }
 
 
 class ProjectAdmin(admin.ModelAdmin):
