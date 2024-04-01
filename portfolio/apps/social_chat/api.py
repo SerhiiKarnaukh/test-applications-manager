@@ -1,3 +1,5 @@
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from django.http import JsonResponse
 
 from rest_framework.decorators import api_view
@@ -67,6 +69,14 @@ def conversation_send_message(request, pk):
         body=request.data.get('body'),
         created_by=request_user,
         sent_to=sent_to)
+
+    # send websocket message
+    channel_layer = get_channel_layer()
+    group_name = f'social_chat_{conversation.id}'
+    async_to_sync(channel_layer.group_send)(group_name, {
+        'type': 'send_message',
+        'message': request.data.get('body')
+    })
 
     serializer = ConversationMessageSerializer(conversation_message,
                                                context={'request': request})
