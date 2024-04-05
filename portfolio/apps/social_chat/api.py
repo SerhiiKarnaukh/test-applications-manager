@@ -70,15 +70,14 @@ def conversation_send_message(request, pk):
         created_by=request_user,
         sent_to=sent_to)
 
+    serializer = ConversationMessageSerializer(conversation_message,
+                                               context={'request': request})
     # send websocket message
     channel_layer = get_channel_layer()
     group_name = f'social_chat_{conversation.id}'
     async_to_sync(channel_layer.group_send)(group_name, {
         'type': 'send_message',
-        'message': request.data.get('body')
+        'message': serializer.data
     })
-
-    serializer = ConversationMessageSerializer(conversation_message,
-                                               context={'request': request})
 
     return JsonResponse(serializer.data, safe=False)
