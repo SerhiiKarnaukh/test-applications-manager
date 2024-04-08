@@ -14,8 +14,7 @@ class Profile(models.Model):
     bio = models.TextField(default="no bio...", max_length=300)
     email = models.EmailField(max_length=200, blank=True)
     country = models.CharField(max_length=200, blank=True)
-    avatar = models.ImageField(default='social/avatars/avatar.png',
-                               upload_to='social/avatars/')
+    avatar = models.ImageField(upload_to='social/avatars/')
     friends = models.ManyToManyField('self', default=None)
     friends_count = models.IntegerField(default=0)
     posts_count = models.IntegerField(default=0)
