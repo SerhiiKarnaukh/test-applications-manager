@@ -3,7 +3,7 @@ from django.db.models import Q
 
 from rest_framework.decorators import api_view
 
-from .forms import PostForm
+from .forms import PostForm, AttachmentForm
 from .models import Post, Like, Comment, Trend
 from .serializers import PostSerializer, CommentSerializer, PostDetailSerializer, TrendSerializer
 from social_profiles.serializers import ProfileSerializer
@@ -77,14 +77,33 @@ def post_list_profile(request, slug):
 
 @api_view(['POST'])
 def post_create(request):
-    form = PostForm(request.data)
+    form = PostForm(request.POST)
     user = request.user
     profile = Profile.objects.get(user=user)
+
+    images = [
+        value for key, value in request.FILES.items()
+        if key.startswith('images')
+    ]
+
+    attachments = []
+
+    for image in images:
+        attachment_form = AttachmentForm(data=None, files={'image': image})
+        if attachment_form.is_valid():
+            attachment = attachment_form.save(commit=False)
+            attachment.created_by = profile
+            attachment.save()
+            attachments.append(attachment)
 
     if form.is_valid():
         post = form.save(commit=False)
         post.created_by = profile
         post.save()
+
+        if attachments:
+            for attachment in attachments:
+                post.attachments.add(attachment)
 
         profile.posts_count = profile.posts_count + 1
         profile.save()
