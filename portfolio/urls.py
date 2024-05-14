@@ -35,6 +35,7 @@ urlpatterns = [
     path('api/social-posts/', include('social_posts.urls')),
     path('api/social-profiles/', include('social_profiles.urls')),
     path('api/social-chat/', include('social_chat.urls')),
+    path('api/social-notifications/', include('social_notification.urls')),
 ]
 
 if settings.DEBUG:

@@ -3,6 +3,7 @@ from django.db.models import Q
 
 from rest_framework.decorators import api_view
 
+from social_notification.utils import create_notification
 from .forms import PostForm, AttachmentForm
 from .models import Post, Like, Comment, Trend
 from .serializers import PostSerializer, CommentSerializer, PostDetailSerializer, TrendSerializer
@@ -151,6 +152,8 @@ def post_like(request, pk):
         post.likes_count = post.likes_count + 1
         post.likes.add(like)
         post.save()
+
+        create_notification(request, 'post_like', post_id=post.id)
 
         return JsonResponse({'message': 'like created'})
     else:
