@@ -20,7 +20,7 @@ docker-compose run --rm app sh -c "python portfolio/apps/scripts/generate_trends
 ### Front-end Store
 
 ```
-nvm use 20.11.0
+nvm use 20.14.0
 cd portfolio/apps/product/_dev
 npm install
 npm run w
@@ -29,7 +29,7 @@ npm run w
 ### Front-end Core
 
 ```
-nvm use 20.11.0
+nvm use 20.14.0
 cd portfolio/apps/core/_dev
 npm install
 npm run w
