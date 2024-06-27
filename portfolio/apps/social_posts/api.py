@@ -171,6 +171,8 @@ def post_create_comment(request, pk):
     post.comments_count = post.comments_count + 1
     post.save()
 
+    create_notification(request, 'post_comment', post_id=post.id)
+
     serializer = CommentSerializer(comment, context={'request': request})
 
     return JsonResponse(serializer.data, safe=False)

@@ -12,6 +12,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status, generics
 
+from social_notification.utils import create_notification
 from .forms import ProfileForm
 from .models import Profile, FriendshipRequest
 from accounts.models import Account
@@ -129,9 +130,11 @@ def send_friendship_request(request, slug):
     check2 = FriendshipRequest.objects.filter(created_for=user).filter(
         created_by=request_user)
 
-    if not check1 and not check2:
-        FriendshipRequest.objects.create(created_for=user,
-                                         created_by=request_user)
+    if not check1 or not check2:
+        friend_request = FriendshipRequest.objects.create(created_for=user,
+                                                          created_by=request_user)
+
+        create_notification(request, 'new_friendrequest', friendrequest_id=friend_request.id)
 
         return JsonResponse({'message': 'friendship request created'})
     else:
@@ -152,6 +155,8 @@ def handle_request(request, slug, status):
     user.save()
     request_user.friends_count = request_user.friends_count + 1
     request_user.save()
+
+    create_notification(request, 'accepted_friendrequest', friendrequest_id=friendship_request.id)
 
     return JsonResponse({'message': 'friendship request updated'})
 
