@@ -15,6 +15,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from django.contrib.staticfiles.handlers import ASGIStaticFilesHandler
 
 from .apps.social_chat import routing as social_chat_routing
+from .apps.social_notification import routing as social_notification_routing
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio.settings')
 
@@ -25,7 +26,7 @@ if os.environ.get('DEBUG') == 'True':
         ASGIStaticFilesHandler(get_asgi_application()),
         'websocket':
         AuthMiddlewareStack(
-            URLRouter(social_chat_routing.websocket_urlpatterns))
+            URLRouter(social_chat_routing.websocket_urlpatterns + social_notification_routing.websocket_urlpatterns))
 
     })
 else:
@@ -34,5 +35,5 @@ else:
         get_asgi_application(),
         'websocket':
         AuthMiddlewareStack(
-            URLRouter(social_chat_routing.websocket_urlpatterns))
+            URLRouter(social_chat_routing.websocket_urlpatterns + social_notification_routing.websocket_urlpatterns))
     })

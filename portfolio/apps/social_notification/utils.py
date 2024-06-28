@@ -1,7 +1,20 @@
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
 from .models import Notification
 
 from social_posts.models import Post
 from social_profiles.models import Profile, FriendshipRequest
+
+
+def send_notification(account, message):
+    channel_layer = get_channel_layer()
+    user_id = account.id
+    group_name = f'notifications_{user_id}'
+    async_to_sync(channel_layer.group_send)(group_name, {
+        'type': 'send_notification',
+        'message': message
+    })
 
 
 def create_notification(request, type_of_notification, post_id=None, friendrequest_id=None):
@@ -36,5 +49,8 @@ def create_notification(request, type_of_notification, post_id=None, friendreque
         post_id=post_id,
         created_for=created_for
     )
+
+    if created_for:
+        send_notification(created_for, type_of_notification)
 
     return notification
