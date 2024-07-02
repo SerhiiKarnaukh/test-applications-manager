@@ -8,6 +8,7 @@ urlpatterns = [
     path('register/', api.SocialProfileCreateView.as_view(), name='user-register'),
     path('editprofile/', api.editprofile, name='editprofile'),
     path('editpassword/', api.editpassword, name='editpassword'),
+    path('friends/suggested/', api.my_friendship_suggestions, name='my_friendship_suggestions'),
     path('friends/<slug:slug>/', api.friends, name='friends'),
     path('friends/<slug:slug>/request/',
          api.send_friendship_request,

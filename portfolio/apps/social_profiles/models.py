@@ -17,6 +17,7 @@ class Profile(models.Model):
     avatar = models.ImageField(upload_to='social/avatars/')
     friends = models.ManyToManyField('self', default=None)
     friends_count = models.IntegerField(default=0)
+    people_you_may_know = models.ManyToManyField('self')
     posts_count = models.IntegerField(default=0)
     slug = models.SlugField(unique=True, blank=True)
     updated = models.DateTimeField(auto_now=True)

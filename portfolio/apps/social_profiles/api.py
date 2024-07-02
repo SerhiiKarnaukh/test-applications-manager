@@ -161,6 +161,17 @@ def handle_request(request, slug, status):
     return JsonResponse({'message': 'friendship request updated'})
 
 
+@api_view(['GET'])
+def my_friendship_suggestions(request):
+    pass
+    request_user = Profile.objects.get(user=request.user)
+    serializer = ProfileSerializer(request_user.people_you_may_know.all(), many=True, context={
+        'request': request
+    })
+
+    return JsonResponse(serializer.data, safe=False)
+
+
 @api_view(['POST'])
 def editprofile(request):
     user = request.user

@@ -6,9 +6,11 @@ from rest_framework.decorators import api_view
 from social_notification.utils import create_notification
 from .forms import PostForm, AttachmentForm
 from .models import Post, Like, Comment, Trend
+
 from .serializers import PostSerializer, CommentSerializer, PostDetailSerializer, TrendSerializer
+
 from social_profiles.serializers import ProfileSerializer
-from social_profiles.models import Profile
+from social_profiles.models import Profile, FriendshipRequest
 
 
 @api_view(['GET'])
@@ -59,6 +61,7 @@ def post_detail(request, pk):
 @api_view(['GET'])
 def post_list_profile(request, slug):
     profile = Profile.objects.get(slug=slug)
+    request_user = Profile.objects.get(user=request.user)
     created_by_id = profile.id
     posts = Post.objects.filter(created_by_id=created_by_id)
 
@@ -68,10 +71,22 @@ def post_list_profile(request, slug):
     profile_serializer = ProfileSerializer(profile,
                                            context={'request': request})
 
+    can_send_friendship_request = True
+
+    if request_user in profile.friends.all():
+        can_send_friendship_request = False
+
+    check1 = FriendshipRequest.objects.filter(created_for=request_user).filter(created_by=profile)
+    check2 = FriendshipRequest.objects.filter(created_for=profile).filter(created_by=request_user)
+
+    if check1 or check2:
+        can_send_friendship_request = False
+
     return JsonResponse(
         {
             'posts': posts_serializer.data,
-            'profile': profile_serializer.data
+            'profile': profile_serializer.data,
+            'can_send_friendship_request': can_send_friendship_request
         },
         safe=False)
 

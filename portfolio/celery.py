@@ -16,4 +16,9 @@ app.conf.beat_schedule = {
         'schedule': crontab(hour=4, minute=0),
         'options': {'timezone': 'Europe/Kiev'},
     },
+    'create_social_friend_suggestions': {
+        'task': 'social_profiles.tasks.create_social_friend_suggestions',
+        'schedule': crontab(hour=5, minute=0),
+        'options': {'timezone': 'Europe/Kiev'},
+    },
 }
