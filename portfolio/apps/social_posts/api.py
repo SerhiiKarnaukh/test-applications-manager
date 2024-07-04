@@ -19,36 +19,43 @@ def post_list(request):
     if request.user.is_authenticated:
         request_user = Profile.objects.get(user=request.user)
 
-    posts = Post.objects.all()
-
-    trend = request.GET.get('trend', '')
-    if trend:
-        posts = posts.filter(body__icontains='#' + trend)
-
-    posts_serializer = PostSerializer(posts,
-                                      context={'request': request},
-                                      many=True)
     user_ids = []
     if request_user is not None:
         user_ids = [request_user.id]
         for user in request_user.friends.all():
             user_ids.append(user.id)
-    posts = Post.objects.filter(created_by_id__in=list(user_ids))
-    friends_posts = PostSerializer(posts,
-                                   context={'request': request},
-                                   many=True)
+        posts = Post.objects.filter(created_by_id__in=list(user_ids))
+    else:
+        posts = Post.objects.filter(is_private=False)
+
+    trend = request.GET.get('trend', '')
+    if trend:
+        posts = posts.filter(body__icontains='#' + trend).filter(is_private=False)
+
+    posts_serializer = PostSerializer(posts,
+                                      context={'request': request},
+                                      many=True)
 
     return JsonResponse(
         {
             'posts': posts_serializer.data,
-            'friends_posts': friends_posts.data
         },
         safe=False)
 
 
 @api_view(['GET'])
 def post_detail(request, pk):
-    post = Post.objects.get(pk=pk)
+    request_user = None
+    user_ids = []
+    if request.user.is_authenticated:
+        request_user = Profile.objects.get(user=request.user)
+
+    if request_user is not None:
+        user_ids.append(request_user.id)
+        for user in request_user.friends.all():
+            user_ids.append(user.id)
+
+    post = Post.objects.filter(Q(created_by_id__in=list(user_ids)) | Q(is_private=False)).get(pk=pk)
 
     return JsonResponse({
         'post':
@@ -61,26 +68,34 @@ def post_detail(request, pk):
 @api_view(['GET'])
 def post_list_profile(request, slug):
     profile = Profile.objects.get(slug=slug)
-    request_user = Profile.objects.get(user=request.user)
+    request_user = None
+    if request.user.is_authenticated:
+        request_user = Profile.objects.get(user=request.user)
     created_by_id = profile.id
     posts = Post.objects.filter(created_by_id=created_by_id)
+
+    if request_user is not None:
+        if request_user not in profile.friends.all() and request_user.id != profile.id:
+            posts = posts.filter(is_private=False)
+
+        can_send_friendship_request = True
+        if request_user in profile.friends.all():
+            can_send_friendship_request = False
+
+        check1 = FriendshipRequest.objects.filter(created_for=request_user).filter(created_by=profile)
+        check2 = FriendshipRequest.objects.filter(created_for=profile).filter(created_by=request_user)
+
+        if check1 or check2:
+            can_send_friendship_request = False
+    else:
+        can_send_friendship_request = False
+        posts = posts.filter(is_private=False)
 
     posts_serializer = PostSerializer(posts,
                                       context={'request': request},
                                       many=True)
     profile_serializer = ProfileSerializer(profile,
                                            context={'request': request})
-
-    can_send_friendship_request = True
-
-    if request_user in profile.friends.all():
-        can_send_friendship_request = False
-
-    check1 = FriendshipRequest.objects.filter(created_for=request_user).filter(created_by=profile)
-    check2 = FriendshipRequest.objects.filter(created_for=profile).filter(created_by=request_user)
-
-    if check1 or check2:
-        can_send_friendship_request = False
 
     return JsonResponse(
         {
@@ -135,6 +150,10 @@ def post_create(request):
 def search(request):
     data = request.data
     query = data['query']
+    request_user = None
+    user_ids = []
+    if request.user.is_authenticated:
+        request_user = Profile.objects.get(user=request.user)
 
     profiles = Profile.objects.filter(
         Q(first_name__icontains=query) | Q(last_name__icontains=query))
@@ -142,7 +161,15 @@ def search(request):
                                            context={'request': request},
                                            many=True)
 
-    posts = Post.objects.filter(body__icontains=query)
+    if request_user is not None:
+        user_ids.append(request_user.id)
+        for user in request_user.friends.all():
+            user_ids.append(user.id)
+
+    posts = Post.objects.filter(
+        Q(body__icontains=query, is_private=False) |
+        Q(created_by_id__in=list(user_ids), body__icontains=query)
+    )
     posts_serializer = PostSerializer(posts,
                                       context={'request': request},
                                       many=True)
