@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.db.models import Q
+import os
 
 from rest_framework.decorators import api_view
 
@@ -225,3 +226,31 @@ def get_trends(request):
     serializer = TrendSerializer(Trend.objects.all(), many=True)
 
     return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(['DELETE'])
+def post_delete(request, pk):
+    request_user = Profile.objects.get(user=request.user)
+    post = Post.objects.filter(created_by=request_user).get(pk=pk)
+
+    for attachment in post.attachments.all():
+        if attachment.image:
+            if os.path.isfile(attachment.image.path):
+                os.remove(attachment.image.path)
+        attachment.delete()
+    post.delete()
+
+    request_user.posts_count = request_user.posts_count - 1
+    request_user.save()
+
+    return JsonResponse({'message': 'post deleted'})
+
+
+@api_view(['POST'])
+def post_report(request, pk):
+    request_user = Profile.objects.get(user=request.user)
+    post = Post.objects.get(pk=pk)
+    post.reported_by_users.add(request_user)
+    post.save()
+
+    return JsonResponse({'message': 'post reported'})
