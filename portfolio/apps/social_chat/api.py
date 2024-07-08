@@ -3,6 +3,7 @@ from asgiref.sync import async_to_sync
 from django.http import JsonResponse
 
 from rest_framework.decorators import api_view
+from social_notification.utils import create_notification
 
 from social_profiles.models import Profile
 
@@ -72,6 +73,9 @@ def conversation_send_message(request, pk):
 
     serializer = ConversationMessageSerializer(conversation_message,
                                                context={'request': request})
+
+    create_notification(request, 'chat_message', conversation_message_id=conversation_message.id)
+
     # send websocket message
     channel_layer = get_channel_layer()
     group_name = f'social_chat_{conversation.id}'

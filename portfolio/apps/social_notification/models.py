@@ -12,13 +12,16 @@ class Notification(models.Model):
     REJECTEDFRIENDREQUEST = 'rejected_friendrequest'
     POST_LIKE = 'post_like'
     POST_COMMENT = 'post_comment'
+    CHAT_MESSAGE = 'chat_message'
 
     CHOICES_TYPE_OF_NOTIFICATION = (
         (NEWFRIENDREQUEST, 'New friendrequest'),
         (ACCEPTEDFRIENDREQUEST, 'Accepted friendrequest'),
         (REJECTEDFRIENDREQUEST, 'Rejected friendrequest'),
         (POST_LIKE, 'Post like'),
-        (POST_COMMENT, 'Post comment')
+        (POST_COMMENT, 'Post comment'),
+        (CHAT_MESSAGE, 'Chat message'),
+
     )
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

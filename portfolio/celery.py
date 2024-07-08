@@ -21,4 +21,9 @@ app.conf.beat_schedule = {
         'schedule': crontab(hour=5, minute=0),
         'options': {'timezone': 'Europe/Kiev'},
     },
+    'delete-old-rejected-friendship-requests': {
+        'task': 'social_profiles.tasks.delete_old_rejected_friendship_requests',
+        'schedule': crontab(hour=4, minute=30),
+        'options': {'timezone': 'Europe/Kiev'},
+    },
 }

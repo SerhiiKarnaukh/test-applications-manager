@@ -5,6 +5,7 @@ from .models import Notification
 
 from social_posts.models import Post
 from social_profiles.models import Profile, FriendshipRequest
+from social_chat.models import ConversationMessage
 
 
 def send_notification(account, message):
@@ -17,7 +18,7 @@ def send_notification(account, message):
     })
 
 
-def create_notification(request, type_of_notification, post_id=None, friendrequest_id=None):
+def create_notification(request, type_of_notification, post_id=None, friendrequest_id=None, conversation_message_id=None):
     created_for = None
     request_user = Profile.objects.get(user=request.user)
 
@@ -35,12 +36,16 @@ def create_notification(request, type_of_notification, post_id=None, friendreque
         body = f'{request_user.full_name()} sent you a friend request!'
     elif type_of_notification == 'accepted_friendrequest':
         friendrequest = FriendshipRequest.objects.get(pk=friendrequest_id)
-        created_for = friendrequest.created_for
+        created_for = friendrequest.created_by
         body = f'{request_user.full_name()} accepted your friend request!'
     elif type_of_notification == 'rejected_friendrequest':
         friendrequest = FriendshipRequest.objects.get(pk=friendrequest_id)
-        created_for = friendrequest.created_for
+        created_for = friendrequest.created_by
         body = f'{request_user.full_name()} rejected your friend request!'
+    elif type_of_notification == 'chat_message':
+        conversation_message = ConversationMessage.objects.get(pk=conversation_message_id)
+        created_for = conversation_message.sent_to
+        body = f'{request_user.full_name()} sent you a message!'
 
     notification = Notification.objects.create(
         body=body,

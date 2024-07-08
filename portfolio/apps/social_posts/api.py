@@ -86,8 +86,12 @@ def post_list_profile(request, slug):
         check1 = FriendshipRequest.objects.filter(created_for=request_user).filter(created_by=profile)
         check2 = FriendshipRequest.objects.filter(created_for=profile).filter(created_by=request_user)
 
-        if check1 or check2:
+        if check1.exists() or check2.exists():
             can_send_friendship_request = False
+            if check1.exists() and check1.first().status == 'rejected':
+                can_send_friendship_request = 'rejected'
+            if check2.exists() and check2.first().status == 'rejected':
+                can_send_friendship_request = 'rejected'
     else:
         can_send_friendship_request = False
         posts = posts.filter(is_private=False)

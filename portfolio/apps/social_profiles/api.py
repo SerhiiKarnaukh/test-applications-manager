@@ -150,13 +150,16 @@ def handle_request(request, slug, status):
     friendship_request.status = status
     friendship_request.save()
 
-    user.friends.add(request_user)
-    user.friends_count = user.friends_count + 1
-    user.save()
-    request_user.friends_count = request_user.friends_count + 1
-    request_user.save()
+    if status == 'accepted':
+        user.friends.add(request_user)
+        user.friends_count = user.friends_count + 1
+        user.save()
+        request_user.friends_count = request_user.friends_count + 1
+        request_user.save()
 
-    create_notification(request, 'accepted_friendrequest', friendrequest_id=friendship_request.id)
+        create_notification(request, 'accepted_friendrequest', friendrequest_id=friendship_request.id)
+    elif status == 'rejected':
+        create_notification(request, 'rejected_friendrequest', friendrequest_id=friendship_request.id)
 
     return JsonResponse({'message': 'friendship request updated'})
 
