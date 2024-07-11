@@ -43,10 +43,11 @@ INSTALLED_APPS = [
     'corsheaders',
     'djoser',
     'accounts',
-    'cart',
     'core',
-    'product',
-    'orders',
+    'taberna_profiles',
+    'taberna_cart',
+    'taberna_product',
+    'taberna_orders',
     'social_posts',
     'social_profiles',
     'social_chat',
@@ -110,9 +111,9 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'core.context_processors.menu_categories',
                 'core.context_processors.core_tags',
-                'product.context_processors.menu_categories',
-                'product.context_processors.top_categories',
-                'cart.context_processors.counter',
+                'taberna_product.context_processors.menu_categories',
+                'taberna_product.context_processors.top_categories',
+                'taberna_cart.context_processors.counter',
             ],
         },
     },
@@ -209,7 +210,7 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-# SMTP configuration
+# SMTP configurations
 EMAIL_HOST = os.environ.get("EMAIL_HOST")
 EMAIL_PORT = os.environ.get("EMAIL_PORT")
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")

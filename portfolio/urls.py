@@ -24,12 +24,13 @@ urlpatterns = [
 
     # for Applications Manager
     path('', include('core.urls')),
+    path('accounts/', include('accounts.urls')),
 
     # for Taberna
-    path('cart/', include('cart.urls')),
-    path('store/', include('product.urls')),
-    path('accounts/', include('accounts.urls')),
-    path('orders/', include('orders.urls')),
+    path('taberna-cart/', include('taberna_cart.urls')),
+    path('taberna-store/', include('taberna_product.urls')),
+    path('taberna-profiles/', include('taberna_profiles.urls')),
+    path('taberna-orders/', include('taberna_orders.urls')),
 
     # for Social Network
     path('api/social-posts/', include('social_posts.urls')),

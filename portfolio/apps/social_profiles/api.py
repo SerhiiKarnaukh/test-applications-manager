@@ -33,7 +33,7 @@ class SocialProfileCreateView(generics.CreateAPIView):
             current_site = get_current_site(request)
             mail_subject = 'Please activate your account'
             message = render_to_string(
-                'accounts/account_verification_email.html', {
+                'taberna_profiles/account_verification_email.html', {
                     'user': existing_user,
                     'domain': current_site,
                     'uid': urlsafe_base64_encode(force_bytes(existing_user.pk)),

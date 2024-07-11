@@ -1,0 +1,185 @@
+{% extends "taberna_store/base.html" %}
+{% block title %}
+    Checkout |
+{% endblock title %}
+{% load static %}
+{% block content %}
+    <div class="checkout-section">
+        <div class="container">
+            <form action="{% url 'place_order' %}" method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-5 mb-md-0">
+                        <h2 class="h3 mb-3 text-black">Billing Details</h2>
+                        <div class="p-3 p-lg-5 border">
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <label for="c_fname" class="text-black">
+                                        First Name <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="c_fname"
+                                           name="first_name"
+                                           required/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="c_lname" class="text-black">
+                                        Last Name <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="c_lname"
+                                           name="last_name"
+                                           required/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <label for="c_email_address" class="text-black">
+                                        Email Address <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="email"
+                                           class="form-control"
+                                           id="c_email_address"
+                                           name="email"
+                                           required/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="c_phone" class="text-black">
+                                        Phone <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="c_phone"
+                                           name="phone"
+                                           placeholder="Phone Number"
+                                           required/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <label for="c_address" class="text-black">
+                                        Address Line 1 <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="c_address"
+                                           name="address_line_1"
+                                           placeholder="Street address"
+                                           required/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <label for="c_address" class="text-black">Address Line 2</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="c_address"
+                                           name="address_line_2"
+                                           placeholder="Street address"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <label for="c_city" class="text-black">
+                                        City <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" id="c_city" name="city"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="c_state" class="text-black">
+                                        State <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" id="c_state" name="state" required/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <label for="c_country" class="text-black">
+                                        Country <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="c_country"
+                                           name="country"
+                                           placeholder="Country"
+                                           required/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="c_order_notes" class="text-black">Order Notes</label>
+                                <textarea maxlength="100"
+                                          name="order_note"
+                                          id="c_order_notes"
+                                          cols="30"
+                                          rows="5"
+                                          class="form-control"
+                                          placeholder="Write your notes here..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row mb-5">
+                            <div class="col-md-12">
+                                <h2 class="h3 mb-3 text-black">Your Order</h2>
+                                <div class="p-3 p-lg-5 border">
+                                    <table class="table site-block-order-table mb-5">
+                                        <thead>
+                                            <th>Product</th>
+                                            <th>Total</th>
+                                        </thead>
+                                        <tbody>
+                                            {% for cart_item in cart_items %}
+                                                <tr>
+                                                    <td>
+                                                        <a href="{{ cart_item.product.get_absolute_url }}"
+                                                           class="title text-dark">{{ cart_item.product.name }}</a> <strong class="mx-2">x</strong> {{ cart_item.quantity }}
+                                                        <p class="text-muted small">
+                                                            {% if cart_item.variations.all %}
+                                                                {% for item in cart_item.variations.all %}
+                                                                    {{ item.variation_category | capfirst }} : {{ item.variation_value | capfirst }}
+                                                                    <br/>
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        </p>
+                                                    </td>
+                                                    <td>$ {{ cart_item.sub_total }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            <tr>
+                                                <td class="text-black font-weight-bold">
+                                                    <strong>Cart Subtotal</strong>
+                                                </td>
+                                                <td class="text-black">$ {{ total }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-black font-weight-bold">
+                                                    <strong>Tax</strong>
+                                                </td>
+                                                <td class="text-black">$ {{ tax }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-black font-weight-bold">
+                                                    <strong>Order Total</strong>
+                                                </td>
+                                                <td class="text-black font-weight-bold">
+                                                    <strong>$ {{ grand_total }}</strong>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="form-group">
+                                        <button type="submit" name="submit" class="btn btn-primary py-2 btn-block">Place Order</button>
+                                        <a href="{% url 'store' %}" class="btn btn-primary py-2 mt-3 btn-block">Continue Shopping</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <!-- </form> -->
+        </div>
+    </div>
+{% endblock content %}
