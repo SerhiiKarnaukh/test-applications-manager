@@ -20,7 +20,7 @@ urlpatterns = [
     path('search/', ProductSearchListView.as_view(), name='search'),
     path('contact/', contact, name='contact'),
     path('about/', about, name='about'),
-    # for Django Rest Framework
+    # for Vue.js application
     path('api/v1/latest-products/', api.LatestProductsAPIList.as_view()),
     path('api/v1/products/search/', api.search_api),
     path('api/v1/products/<slug:category_slug>/<slug:product_slug>/',
