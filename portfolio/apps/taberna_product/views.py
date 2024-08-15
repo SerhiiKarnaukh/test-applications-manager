@@ -56,7 +56,6 @@ class ProductDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = self.get_object()
-        request_user = UserProfile.objects.get(user=self.request.user)
         category = product.category
         context['related_products'] = Product.objects.filter(
             category=category).exclude(id=product.id)
@@ -66,7 +65,8 @@ class ProductDetail(DetailView):
         context['reviews'] = ReviewRating.objects.filter(
             product__slug=product.slug, status=True)
         context['order_product'] = None
-        if self.request.user.is_authenticated:
+        if self.request.user.is_authenticated and UserProfile.objects.filter(user=self.request.user).exists():
+            request_user = UserProfile.objects.get(user=self.request.user)
             try:
                 order_product = OrderProduct.objects.get(
                     user=request_user, product=product)
