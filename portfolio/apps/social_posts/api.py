@@ -200,7 +200,8 @@ def post_like(request, pk):
         post.likes.add(like)
         post.save()
 
-        create_notification(request, 'post_like', post_id=post.id)
+        if post.created_by != request_user:
+            create_notification(request, 'post_like', post_id=post.id)
 
         return JsonResponse({'message': 'like created'})
     else:
