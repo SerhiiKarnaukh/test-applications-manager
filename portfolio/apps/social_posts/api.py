@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.db.models import Q
 import os
+import re
 
 from rest_framework.decorators import api_view
 
@@ -29,9 +30,12 @@ def post_list(request):
     else:
         posts = Post.objects.filter(is_private=False)
 
-    trend = request.GET.get('trend', '')
+    trend = request.GET.get('trend', '').lower()
     if trend:
-        posts = posts.filter(body__icontains='#' + trend).filter(is_private=False)
+        hashtag_pattern = r'#' + re.escape(trend) + r'(\b|[^a-zA-Z0-9_])'
+        posts = posts.filter(
+            Q(body__iregex=hashtag_pattern)
+        )
 
     posts_serializer = PostSerializer(posts,
                                       context={'request': request},

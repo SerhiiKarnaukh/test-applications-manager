@@ -2,6 +2,7 @@ from celery import shared_task
 from django.utils import timezone
 from datetime import timedelta
 from collections import Counter
+import re
 
 from .models import Post, Trend
 
@@ -11,7 +12,8 @@ def create_social_posts_trends():
     def extract_hashtags(text, trends):
         for word in text.split():
             if len(word) > 1 and word[0] == '#':
-                hashtag = word[1:]
+                hashtag = word[1:].lower()
+                hashtag = re.sub(r'\W+$', '', hashtag)
                 trends.append(hashtag)
 
         return trends
