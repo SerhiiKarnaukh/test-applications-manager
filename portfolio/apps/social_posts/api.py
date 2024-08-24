@@ -4,15 +4,22 @@ import os
 import re
 
 from rest_framework.decorators import api_view
+from rest_framework.pagination import PageNumberPagination
 
 from social_notification.utils import create_notification
 from .forms import PostForm, AttachmentForm
+
 from .models import Post, Like, Comment, Trend
+from social_profiles.models import Profile, FriendshipRequest
 
 from .serializers import PostSerializer, CommentSerializer, PostDetailSerializer, TrendSerializer
-
 from social_profiles.serializers import ProfileSerializer
-from social_profiles.models import Profile, FriendshipRequest
+
+
+class PostPagination(PageNumberPagination):
+    page_size = 3
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 
 @api_view(['GET'])
@@ -37,15 +44,13 @@ def post_list(request):
             Q(body__iregex=hashtag_pattern)
         )
 
-    posts_serializer = PostSerializer(posts,
-                                      context={'request': request},
-                                      many=True)
+    paginator = PostPagination()
+    paginated_posts = paginator.paginate_queryset(posts, request)
+    posts_serializer = PostSerializer(paginated_posts, context={'request': request}, many=True)
 
-    return JsonResponse(
-        {
-            'posts': posts_serializer.data,
-        },
-        safe=False)
+    return paginator.get_paginated_response({
+        'posts': posts_serializer.data
+    })
 
 
 @api_view(['GET'])
@@ -100,19 +105,18 @@ def post_list_profile(request, slug):
         can_send_friendship_request = False
         posts = posts.filter(is_private=False)
 
-    posts_serializer = PostSerializer(posts,
-                                      context={'request': request},
-                                      many=True)
+    paginator = PostPagination()
+    paginated_posts = paginator.paginate_queryset(posts, request)
+    posts_serializer = PostSerializer(paginated_posts, context={'request': request}, many=True)
+
     profile_serializer = ProfileSerializer(profile,
                                            context={'request': request})
 
-    return JsonResponse(
-        {
-            'posts': posts_serializer.data,
-            'profile': profile_serializer.data,
-            'can_send_friendship_request': can_send_friendship_request
-        },
-        safe=False)
+    return paginator.get_paginated_response({
+        'posts': posts_serializer.data,
+        'profile': profile_serializer.data,
+        'can_send_friendship_request': can_send_friendship_request
+    })
 
 
 @api_view(['POST'])
@@ -155,10 +159,9 @@ def post_create(request):
         return JsonResponse({'error': 'add something here later!...'})
 
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 def search(request):
-    data = request.data
-    query = data['query']
+    query = request.data.get('query') if request.method == 'POST' else request.query_params.get('query')
     request_user = None
     user_ids = []
     if request.user.is_authenticated:
@@ -179,16 +182,14 @@ def search(request):
         Q(body__icontains=query, is_private=False) |
         Q(created_by_id__in=list(user_ids), body__icontains=query)
     )
-    posts_serializer = PostSerializer(posts,
-                                      context={'request': request},
-                                      many=True)
+    paginator = PostPagination()
+    paginated_posts = paginator.paginate_queryset(posts, request)
+    posts_serializer = PostSerializer(paginated_posts, context={'request': request}, many=True)
 
-    return JsonResponse(
-        {
-            'profiles': profile_serializer.data,
-            'posts': posts_serializer.data
-        },
-        safe=False)
+    return paginator.get_paginated_response({
+        'profiles': profile_serializer.data,
+        'posts': posts_serializer.data
+    })
 
 
 @api_view(['POST'])
