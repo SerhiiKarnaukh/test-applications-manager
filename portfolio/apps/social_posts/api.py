@@ -25,7 +25,7 @@ class PostPagination(PageNumberPagination):
 @api_view(['GET'])
 def post_list(request):
     request_user = None
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and Profile.objects.filter(user=request.user).exists():
         request_user = Profile.objects.get(user=request.user)
 
     user_ids = []
