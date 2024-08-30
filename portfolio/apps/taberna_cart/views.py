@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from taberna_product.models import Product, Variation
+from taberna_profiles.models import UserProfile
 from .models import Cart, CartItem
 from django.contrib.auth.decorators import login_required
 
@@ -14,9 +15,9 @@ def _get_cart_id(request):
 
 
 def add_cart(request, product_id):
-    current_user = request.user
+    current_user = UserProfile.objects.get(user=request.user)
     product = Product.objects.get(id=product_id)
-    if current_user.is_authenticated:
+    if request.user.is_authenticated and UserProfile.objects.filter(user=request.user).exists():
         product_variation = []
         if request.method == 'POST':
             for item in request.POST:
@@ -174,9 +175,10 @@ def cart(request, total=0, quantity=0, cart_items=None):
     try:
         tax = 0
         grand_total = 0
-        if request.user.is_authenticated:
+        current_user = UserProfile.objects.get(user=request.user)
+        if request.user.is_authenticated and UserProfile.objects.filter(user=request.user).exists():
             cart_items = CartItem.objects.filter(
-                user=request.user, is_active=True).order_by('-id')
+                user=current_user, is_active=True).order_by('-id')
         else:
             cart = Cart.objects.get(cart_id=_get_cart_id(request))
             cart_items = CartItem.objects.filter(
