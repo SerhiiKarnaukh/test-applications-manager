@@ -57,3 +57,18 @@ class Project(models.Model):
     class Meta:
         verbose_name_plural = 'Projects'
         ordering = ['-created_at']
+
+
+class ProjectGallery(models.Model):
+    project = models.ForeignKey(Project,
+                                related_name='projectgallery',
+                                default=None,
+                                on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='portfolio/project_gallery/', max_length=255)
+
+    def __str__(self):
+        return self.project.title
+
+    class Meta:
+        verbose_name = 'projectgallery'
+        verbose_name_plural = 'project gallery'

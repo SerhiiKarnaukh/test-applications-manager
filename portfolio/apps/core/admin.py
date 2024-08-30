@@ -1,9 +1,18 @@
 from django.contrib import admin
 from django import forms
-from django_ckeditor_5.widgets import CKEditor5Widget
 from django.utils.safestring import mark_safe
 
-from .models import Category, Tag, Project
+from django_ckeditor_5.widgets import CKEditor5Widget
+import admin_thumbnails
+
+
+from .models import Category, Tag, Project, ProjectGallery
+
+
+@admin_thumbnails.thumbnail('image')
+class ProjectGalleryInline(admin.TabularInline):
+    model = ProjectGallery
+    extra = 1
 
 
 class ProjectAdminForm(forms.ModelForm):
@@ -64,6 +73,7 @@ class ProjectAdmin(admin.ModelAdmin):
         'created_at',
     )
     prepopulated_fields = {"slug": ("title", )}
+    inlines = [ProjectGalleryInline]
 
     def get_photo(self, obj):
         if obj.photo:
