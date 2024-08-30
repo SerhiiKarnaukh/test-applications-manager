@@ -15,9 +15,9 @@ def _get_cart_id(request):
 
 
 def add_cart(request, product_id):
-    current_user = UserProfile.objects.get(user=request.user)
     product = Product.objects.get(id=product_id)
     if request.user.is_authenticated and UserProfile.objects.filter(user=request.user).exists():
+        current_user = UserProfile.objects.get(user=request.user)
         product_variation = []
         if request.method == 'POST':
             for item in request.POST:
@@ -137,9 +137,10 @@ def remove_cart(request, product_id, cart_item_id):
 
     product = get_object_or_404(Product, id=product_id)
     try:
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and UserProfile.objects.filter(user=request.user).exists():
+            current_user = UserProfile.objects.get(user=request.user)
             cart_item = CartItem.objects.get(product=product,
-                                             user=request.user,
+                                             user=current_user,
                                              id=cart_item_id)
         else:
             cart = Cart.objects.get(cart_id=_get_cart_id(request))
@@ -158,9 +159,10 @@ def remove_cart(request, product_id, cart_item_id):
 
 def remove_cart_item(request, product_id, cart_item_id):
     product = get_object_or_404(Product, id=product_id)
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and UserProfile.objects.filter(user=request.user).exists():
+        current_user = UserProfile.objects.get(user=request.user)
         cart_item = CartItem.objects.get(product=product,
-                                         user=request.user,
+                                         user=current_user,
                                          id=cart_item_id)
     else:
         cart = Cart.objects.get(cart_id=_get_cart_id(request))
@@ -175,8 +177,8 @@ def cart(request, total=0, quantity=0, cart_items=None):
     try:
         tax = 0
         grand_total = 0
-        current_user = UserProfile.objects.get(user=request.user)
         if request.user.is_authenticated and UserProfile.objects.filter(user=request.user).exists():
+            current_user = UserProfile.objects.get(user=request.user)
             cart_items = CartItem.objects.filter(
                 user=current_user, is_active=True).order_by('-id')
         else:
@@ -206,8 +208,9 @@ def checkout(request, total=0, quantity=0, cart_items=None):
     try:
         tax = 0
         grand_total = 0
-        if request.user.is_authenticated:
-            cart_items = CartItem.objects.filter(user=request.user,
+        if request.user.is_authenticated and UserProfile.objects.filter(user=request.user).exists():
+            current_user = UserProfile.objects.get(user=request.user)
+            cart_items = CartItem.objects.filter(user=current_user,
                                                  is_active=True)
         else:
             cart = Cart.objects.get(cart_id=_get_cart_id(request))
