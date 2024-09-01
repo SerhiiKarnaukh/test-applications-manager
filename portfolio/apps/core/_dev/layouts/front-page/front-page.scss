@@ -20,9 +20,13 @@
     a {
         text-decoration: none;
     }
-    background: linear-gradient(rgba(9, 30, 62, 0.7), rgba(9, 30, 62, 0.7)),
-        url(./img/header.jpg) center center no-repeat;
-    background-size: cover;
+
+    & {
+        background:
+            linear-gradient(rgba(9, 30, 62, 0.7), rgba(9, 30, 62, 0.7)),
+            url(./img/header.jpg) center center no-repeat;
+        background-size: cover;
+    }
 }
 
 .portfolio-list {
