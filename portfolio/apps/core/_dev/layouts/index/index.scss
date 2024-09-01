@@ -54,12 +54,16 @@ body {
 #spinner {
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.5s ease-out, visibility 0s linear 0.5s;
+    transition:
+        opacity 0.5s ease-out,
+        visibility 0s linear 0.5s;
     z-index: 99999;
 }
 
 #spinner.show {
-    transition: opacity 0.5s ease-out, visibility 0s linear 0s;
+    transition:
+        opacity 0.5s ease-out,
+        visibility 0s linear 0s;
     visibility: visible;
     opacity: 1;
 }
@@ -178,4 +182,36 @@ h6,
 
 .blog-item:hover .blog-img img {
     transform: scale(1.15);
+}
+
+// carousel
+.carousel-control-prev-icon {
+    color: #ff4800;
+    background-image: none;
+    font-size: 2rem;
+}
+
+.carousel-control-next-icon {
+    color: #ff4800;
+    background-image: none;
+    font-size: 2rem;
+}
+
+.carousel-item {
+    height: 45vh;
+}
+
+.carousel-item img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+#carouselExampleAutoplaying {
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+#carouselExampleAutoplaying .carousel-item img {
+    border-radius: 6px;
 }
