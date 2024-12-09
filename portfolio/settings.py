@@ -387,3 +387,5 @@ CKEDITOR_5_CONFIGS = {
         }
     }
 }
+
+TABERNA_TAX_RATE = 0.02

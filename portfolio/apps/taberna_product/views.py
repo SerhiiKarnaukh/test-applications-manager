@@ -9,7 +9,7 @@ from taberna_profiles.models import UserProfile
 from taberna_orders.models import OrderProduct
 from taberna_cart.models import CartItem
 
-from taberna_cart.views import _get_cart_id
+from taberna_cart.utils import get_cart_id
 
 from .forms import ReviewForm
 
@@ -60,7 +60,7 @@ class ProductDetail(DetailView):
         context['related_products'] = Product.objects.filter(
             category=category).exclude(id=product.id)
         context['in_cart'] = CartItem.objects.filter(
-            cart__cart_id=_get_cart_id(self.request),
+            cart__cart_id=get_cart_id(self.request),
             product__slug=product.slug).exists()
         context['reviews'] = ReviewRating.objects.filter(
             product__slug=product.slug, status=True)

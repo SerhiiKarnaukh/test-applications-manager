@@ -1,6 +1,6 @@
 from .models import Cart, CartItem
 from taberna_profiles.models import UserProfile
-from .views import _get_cart_id
+from .utils import get_cart_id
 
 
 def counter(request):
@@ -9,7 +9,7 @@ def counter(request):
         return {}
     else:
         try:
-            cart = Cart.objects.filter(cart_id=_get_cart_id(request))
+            cart = Cart.objects.filter(cart_id=get_cart_id(request))
             if request.user.is_authenticated and UserProfile.objects.filter(user=request.user).exists():
                 request_user = UserProfile.objects.get(user=request.user)
                 cart_items = CartItem.objects.all().filter(user=request_user)

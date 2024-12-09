@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from taberna_cart.views import _get_cart_id
+from taberna_cart.utils import get_cart_id
 
 from taberna_cart.models import Cart, CartItem
 from taberna_orders.models import Order, OrderProduct
@@ -74,7 +74,7 @@ def login(request):
 
         if user is not None:
             try:
-                cart = Cart.objects.get(cart_id=_get_cart_id(request))
+                cart = Cart.objects.get(cart_id=get_cart_id(request))
                 is_cart_item_exists = CartItem.objects.filter(
                     cart=cart).exists()
                 if is_cart_item_exists:
