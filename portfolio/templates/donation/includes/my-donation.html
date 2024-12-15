@@ -1,0 +1,22 @@
+{% extends "../base.html" %}
+{% block content %}
+    <br>
+    <div class="container text-center bg-white custom-card">
+        <br>
+        <h4>Send a donation</h4>
+        <i class="fa fa-child fa-2x" aria-hidden="true"></i>
+        <br>
+        <p>Charity fun run!</p>
+        <hr>
+        <i class="fa fa-heart fa-3x text-danger" aria-hidden="true"></i>
+        <hr>
+        <p>Feel free to send a $10 donation.</p>
+        <button id="stripe-checkout"
+                type="submit"
+                class="btn btn-info text-white w-75">
+            <i class="fa fa-credit-card" aria-hidden="true"></i> &nbsp; Pay with Stripe
+        </button>
+        <br>
+        <br>
+    </div>
+{% endblock content %}

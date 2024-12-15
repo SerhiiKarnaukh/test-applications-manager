@@ -37,6 +37,10 @@ urlpatterns = [
     path('api/social-profiles/', include('social_profiles.urls')),
     path('api/social-chat/', include('social_chat.urls')),
     path('api/social-notifications/', include('social_notification.urls')),
+
+    # for Donation
+    path('donation/', include('donation.urls')),
+
 ]
 
 if settings.DEBUG:
