@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'social_profiles',
     'social_chat',
     'social_notification',
+    'donation',
 ]
 
 CORS_ALLOWED_ORIGINS = []
