@@ -7,14 +7,19 @@ services:
         - --rm
     command: >
       sh -c "python manage.py wait_for_db &&
-             python manage.py migrate &&
-             uvicorn portfolio.asgi:application --host 0.0.0.0 --port 8000 --workers 4 --log-level debug --reload"
+            python manage.py migrate &&
+            if [ \"$APP_LOCAL_SERVER\" = \"uvicorn\" ]; then
+              uvicorn portfolio.asgi:application --host 0.0.0.0 --port 8000 --workers 4 --log-level debug --reload;
+            else
+              python manage.py runserver 0.0.0.0:8000;
+            fi"
     ports:
       - 8000:8000
     volumes:
       - .:/app
       - ./data/web:/vol/web
     environment:
+      - APP_LOCAL_SERVER=${APP_LOCAL_SERVER}
       - SECRET_KEY=${SECRET_KEY}
       - DEBUG=True
       - SQL_ENGINE=${SQL_ENGINE}
