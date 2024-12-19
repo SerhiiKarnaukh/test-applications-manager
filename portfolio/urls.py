@@ -39,6 +39,7 @@ urlpatterns = [
     path('api/social-notifications/', include('social_notification.urls')),
 
     # for Donation
+    path('paypal/', include("paypal.standard.ipn.urls")),
     path('donation/', include('donation.urls')),
 
 ]

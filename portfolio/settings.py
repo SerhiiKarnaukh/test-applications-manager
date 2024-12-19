@@ -53,7 +53,12 @@ INSTALLED_APPS = [
     'social_chat',
     'social_notification',
     'donation',
+    'paypal.standard.ipn'
 ]
+
+MIGRATION_MODULES = {
+    'ipn': None
+}
 
 CORS_ALLOWED_ORIGINS = []
 CORS_ALLOWED_ORIGINS.extend(
@@ -390,3 +395,7 @@ CKEDITOR_5_CONFIGS = {
 }
 
 TABERNA_TAX_RATE = 0.02
+
+# PayPal Settings
+PAYPAL_RECEIVER_EMAIL = os.environ.get("PAYPAL_RECEIVER_EMAIL")
+PAYPAL_TEST = os.environ.get("PAYPAL_TEST")

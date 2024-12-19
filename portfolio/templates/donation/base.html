@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -5,10 +6,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="keywords" content="meta keywords" />
         <meta name="description" content="meta description" />
-        <link rel="stylesheet"
-              href="https://bootswatch.com/5/litera/bootstrap.min.css">
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        {% include "core/favicons.html" %}
+        <link href="{% static 'core/bundle/bootstrap.css' %}"
+              rel="stylesheet"
+              crossorigin="anonymous" />
+        <link href="{% static 'core/font-awesome/css/fontawesome.min.css' %}"
+              rel="stylesheet"
+              crossorigin="anonymous" />
     </head>
     <title>DonateUA</title>
     <body>
