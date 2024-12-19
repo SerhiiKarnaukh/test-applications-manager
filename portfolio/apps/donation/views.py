@@ -1,19 +1,27 @@
 from django.shortcuts import render
+from random import choice
 
 from django.urls import reverse
 from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 import uuid
 
+from . models import Donation
+
 
 def my_donation(request):
     scheme = request.scheme
     host = request.get_host()
 
+    try:
+        donation = choice(Donation.objects.all())
+    except IndexError:
+        donation = type('Donation', (), {"amount": 10, "title": "Default Donation"})
+
     paypal_dict = {
         "business": settings.PAYPAL_RECEIVER_EMAIL,
-        "amount": 20,
-        "item_name": "Donate to charity",
+        "amount": donation.amount,
+        "item_name": donation.title,
         'no_shipping': '2',
         "invoice": str(uuid.uuid4()),
         "currency_code": "USD",
