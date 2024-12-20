@@ -10,7 +10,7 @@ from . models import Donation
 
 
 def my_donation(request):
-    scheme = request.scheme
+    scheme = "https" if settings.DEBUG is False else request.scheme
     host = request.get_host()
 
     try:
@@ -25,7 +25,7 @@ def my_donation(request):
         'no_shipping': '2',
         "invoice": str(uuid.uuid4()),
         "currency_code": "USD",
-        "notify_url": f"https://{host}{reverse('paypal-ipn')}",
+        "notify_url": f"{scheme}://{host}{reverse('paypal-ipn')}",
         "return_url": f"{scheme}://{host}{reverse('payment-success')}",
         "cancel_return": f"{scheme}://{host}{reverse('payment-failed')}",
     }
