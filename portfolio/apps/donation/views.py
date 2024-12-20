@@ -36,6 +36,9 @@ def my_donation(request):
 
 
 def payment_success(request):
+    import time
+
+    time.sleep(10)
 
     return render(request, 'donation/includes/payment-success.html')
 
