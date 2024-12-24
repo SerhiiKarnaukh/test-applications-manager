@@ -15,9 +15,10 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="invoice-logo">
-                                    <img src="{% static '/images/logo.png' %}"
+                                    <img src="{% static 'taberna_product/bundle/favicon/apple-touch-icon-1024x1024.png' %}"
                                          alt="Invoice logo"
-                                         style="max-height: 40px">
+                                         style="max-height: 100px;
+                                                mix-blend-mode: multiply">
                                 </div>
                             </div>
                             <div class="col-lg-6">
@@ -70,6 +71,7 @@
                                                     <tr>
                                                         <td>
                                                             {{ item.product.product_name }}
+                                                            {{ item.product.name }}
                                                             <p class="text-muted small">
                                                                 {% if item.variations.all %}
                                                                     {% for i in item.variations.all %}

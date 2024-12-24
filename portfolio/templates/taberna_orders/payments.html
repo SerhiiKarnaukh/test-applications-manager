@@ -95,12 +95,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <p class="text-center mx-auto mb-3">
-                                    <img src="{% static 'taberna_product/images/payments.png' %}"
-                                         height="26"
-                                         width="auto"
-                                         alt="" />
-                                </p>
+                                <div class="container text-center mb-3 ">{{ paypal.render }}</div>
                                 <div class="alert alert-danger" role="alert">
                                     <b>Please Note: </b>This is a demo website. Do not try to make real payments.
                                 </div>

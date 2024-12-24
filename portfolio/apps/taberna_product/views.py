@@ -5,8 +5,6 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 
 from .models import Product, Category, ReviewRating, ProductGallery
-from taberna_profiles.models import UserProfile
-from taberna_orders.models import OrderProduct
 from taberna_cart.models import CartItem
 
 from taberna_cart.utils import get_cart_id
@@ -64,15 +62,6 @@ class ProductDetail(DetailView):
             product__slug=product.slug).exists()
         context['reviews'] = ReviewRating.objects.filter(
             product__slug=product.slug, status=True)
-        context['order_product'] = None
-        if self.request.user.is_authenticated and UserProfile.objects.filter(user=self.request.user).exists():
-            request_user = UserProfile.objects.get(user=self.request.user)
-            try:
-                order_product = OrderProduct.objects.get(
-                    user=request_user, product=product)
-                context['order_product'] = order_product
-            except OrderProduct.DoesNotExist:
-                pass
 
         all_gallery_images = ProductGallery.objects.filter(product=product)
         gallery_paginator = Paginator(all_gallery_images, 3)

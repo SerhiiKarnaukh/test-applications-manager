@@ -1,0 +1,21 @@
+{% extends "taberna_store/base.html" %}
+{% load static %}
+{% block content %}
+    <div class="container py-5 main-bg">
+        <center>
+            <i class="fas fa-times fa-3x text-danger"
+               style="font-size: 72px;
+                      margin-bottom: 20px;
+                      color: #28A745">
+            </i>
+        </center>
+        <h2 class="text-center">Payment Failed</h2>
+        <br />
+        <div class="text-center">
+            <a href="{% url 'store' %}" class="btn btn-success">Shop more</a>
+        </div>
+        <div class="invoice-footer mt-3">
+            <p class="text-center">Please try again later!</p>
+        </div>
+    </div>
+{% endblock content %}

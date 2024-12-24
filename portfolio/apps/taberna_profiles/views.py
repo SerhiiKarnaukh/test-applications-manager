@@ -124,8 +124,9 @@ def activate_result(request):
 
 @login_required(login_url='login')
 def dashboard(request):
+    user = request.user
     orders = Order.objects.order_by('-created_at').filter(
-        user_id=request.user.id, is_ordered=True)
+        user=user.userprofile, is_ordered=True)
     orders_count = orders.count()
 
     userprofile = UserProfile.objects.get(user_id=request.user.id)
@@ -228,7 +229,7 @@ def change_password(request):
 
 @login_required(login_url='login')
 def my_orders(request):
-    orders = Order.objects.filter(user=request.user,
+    orders = Order.objects.filter(user=request.user.userprofile,
                                   is_ordered=True).order_by('-created_at')
     context = {
         'orders': orders,

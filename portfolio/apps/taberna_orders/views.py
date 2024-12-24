@@ -1,84 +1,18 @@
-import json
-from django.shortcuts import render, redirect
-from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.core.mail import EmailMessage
-from django.template.loader import render_to_string
+from django.conf import settings
+from django.urls import reverse
+
+from paypal.standard.forms import PayPalPaymentsForm
+from paypal.standard.ipn.models import PayPalIPN
 
 from .models import Order, Payment, OrderProduct
 from taberna_cart.models import CartItem
-from taberna_product.models import Product
 
 from .forms import OrderForm
 
 from .utils import create_order_from_form, generate_order_number
 from taberna_cart.utils import calculate_cart_totals
-
-
-def payments(request):
-    body = json.loads(request.body)
-    order = Order.objects.get(user=request.user,
-                              is_ordered=False,
-                              order_number=body['orderID'])
-
-    # Store transaction details inside Payment model
-    payment = Payment(
-        user=request.user,
-        payment_id=body['transID'],
-        payment_method=body['payment_method'],
-        amount_paid=order.order_total,
-        status=body['status'],
-    )
-    payment.save()
-
-    order.payment = payment
-    order.is_ordered = True
-    order.save()
-
-    # Move the cart items to Order Product table
-    cart_items = CartItem.objects.filter(user=request.user)
-
-    for item in cart_items:
-        orderproduct = OrderProduct()
-        orderproduct.order_id = order.id
-        orderproduct.payment = payment
-        orderproduct.user_id = request.user.id
-        orderproduct.product_id = item.product_id
-        orderproduct.quantity = item.quantity
-        orderproduct.product_price = item.product.price
-        orderproduct.ordered = True
-        orderproduct.save()
-
-        cart_item = CartItem.objects.get(id=item.id)
-        product_variation = cart_item.variations.all()
-        orderproduct = OrderProduct.objects.get(id=orderproduct.id)
-        orderproduct.variations.set(product_variation)
-        orderproduct.save()
-
-        # Reduce the quantity of the sold products
-        product = Product.objects.get(id=item.product_id)
-        product.stock -= item.quantity
-        product.save()
-
-    # Clear cart
-    CartItem.objects.filter(user=request.user).delete()
-
-    # Send order recieved email to customer
-    mail_subject = 'Thank you for your order!'
-    message = render_to_string('orders/order_recieved_email.html', {
-        'user': request.user,
-        'order': order,
-    })
-    to_email = request.user.email
-    send_email = EmailMessage(mail_subject, message, to=[to_email])
-    send_email.send()
-
-    # Send order number and transaction id back to sendData method via JsonResponse
-    data = {
-        'order_number': order.order_number,
-        'transID': payment.payment_id,
-    }
-    return JsonResponse(data)
 
 
 def place_order(request):
@@ -93,10 +27,26 @@ def place_order(request):
 
     if request.method == 'POST':
         form = OrderForm(request.POST)
+        scheme = "https" if settings.DEBUG is False else request.scheme
+        host = request.get_host()
         if form.is_valid():
             order = create_order_from_form(form, user_profile, grand_total, tax, request)
             order.order_number = generate_order_number(order)
             order.save()
+
+            paypal_dict = {
+                "business": settings.PAYPAL_RECEIVER_EMAIL,
+                "amount": grand_total,
+                "item_name": "Ordering Taberna store products",
+                'no_shipping': '2',
+                "invoice": order.order_number,
+                "currency_code": "USD",
+                "notify_url": f"{scheme}://{host}{reverse('paypal-ipn')}",
+                "return_url": f"{scheme}://{host}{reverse('order_complete', kwargs={'order_number':order.order_number})}",
+                "cancel_return": f"{scheme}://{host}{reverse('order_failed')}",
+            }
+
+            paypal_form = PayPalPaymentsForm(initial=paypal_dict)
 
             context = {
                 'order': order,
@@ -105,6 +55,7 @@ def place_order(request):
                 'quantity': quantity,
                 'tax': tax,
                 'grand_total': grand_total,
+                'paypal': paypal_form
             }
             return render(request, 'taberna_orders/payments.html', context)
         else:
@@ -113,11 +64,13 @@ def place_order(request):
     return redirect('checkout')
 
 
-def order_complete(request):
-    order_number = request.GET.get('order_number')
-    transID = request.GET.get('payment_id')
+def order_complete(request, order_number):
+    import time
+
+    time.sleep(10)
 
     try:
+        ipn = get_object_or_404(PayPalIPN, invoice=order_number)
         order = Order.objects.get(order_number=order_number, is_ordered=True)
         ordered_products = OrderProduct.objects.filter(order_id=order.id)
 
@@ -125,7 +78,7 @@ def order_complete(request):
         for i in ordered_products:
             subtotal += i.product_price * i.quantity
 
-        payment = Payment.objects.get(payment_id=transID)
+        payment = Payment.objects.get(payment_id=ipn.txn_id)
 
         context = {
             'order': order,
@@ -138,3 +91,8 @@ def order_complete(request):
         return render(request, 'taberna_orders/order_complete.html', context)
     except (Payment.DoesNotExist, Order.DoesNotExist):
         return redirect('home')
+
+
+def order_failed(request):
+
+    return render(request, 'taberna_orders/order_failed.html')
