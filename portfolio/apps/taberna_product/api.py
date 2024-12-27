@@ -5,8 +5,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db.models import Count
-from .serializers import ProductSerializer, CategorySerializer, AllCategoriesSerializer
-from .models import Product, Category
+from .serializers import ProductSerializer, CategorySerializer, AllCategoriesSerializer, ReviewRatingSerializer
+from .models import Product, Category, ReviewRating
 
 
 class LatestProductsAPIList(generics.ListAPIView):
@@ -14,11 +14,27 @@ class LatestProductsAPIList(generics.ListAPIView):
     serializer_class = ProductSerializer
 
 
-class ProductAPIDetail(generics.RetrieveUpdateDestroyAPIView):
+class ProductAPIDetail(generics.RetrieveAPIView):
     lookup_url_kwarg = 'product_slug'
     lookup_field = 'slug'
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+    def get(self, request, *args, **kwargs):
+        product = self.get_object()
+        related_products = Product.objects.filter(
+            category=product.category
+        ).exclude(id=product.id)
+        reviews = ReviewRating.objects.filter(product=product, status=True)
+
+        data = {
+            "product": self.get_serializer(product).data,
+            "related_products": ProductSerializer(
+                related_products, many=True, context={"request": request}
+            ).data,
+            "reviews": ReviewRatingSerializer(reviews, many=True).data,
+        }
+        return Response(data)
 
 
 class CategoryAPIDetail(generics.RetrieveAPIView):

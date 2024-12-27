@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Category, Product, ProductGallery
+from .models import Category, Product, ProductGallery, ReviewRating
 
 
 class ProductGallerySerializer(serializers.ModelSerializer):
@@ -35,6 +35,25 @@ class ProductSerializer(serializers.ModelSerializer):
         for image_data in images_data.values():
             ProductGallery.objects.create(product=product, image=image_data)
         return product
+
+
+class ReviewRatingSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ReviewRating
+        fields = [
+            "id",
+            "user",
+            "subject",
+            "review",
+            "rating",
+            "created_at",
+            "updated_at",
+        ]
+
+    def get_user(self, obj):
+        return f'{obj.user.user.first_name} {obj.user.user.last_name}'
 
 
 class CategorySerializer(serializers.ModelSerializer):
