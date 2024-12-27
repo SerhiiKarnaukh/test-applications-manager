@@ -1,6 +1,6 @@
 from django.views.generic import ListView, DetailView
 from django.shortcuts import redirect, render
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.core.paginator import Paginator
 from django.contrib import messages
 
@@ -17,25 +17,25 @@ class FrontPage(ListView):
     template_name = 'taberna_store/frontpage.html'
     context_object_name = 'products'
 
-    def create_store_data(self, **kwargs):
-        context = kwargs
-        products = Product.objects.all().filter(
-            is_available=True).select_related('category')
-        reviews = None
-        for product in products:
-            reviews = ReviewRating.objects.filter(product_id=product.id,
-                                                  status=True)
-        context['reviews'] = reviews
-        return context
+    def get_queryset(self):
+        return (
+            Product.objects.filter(is_available=True)
+            .select_related('category')
+            .prefetch_related(
+                Prefetch(
+                    'reviewrating_set',
+                    queryset=ReviewRating.objects.filter(status=True),
+                    to_attr='filtered_reviews'
+                )
+            )[:6]
+        )
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        c_def = self.create_store_data()
-        return dict(list(context.items()) + list(c_def.items()))
-
-    def get_queryset(self):
-        return Product.objects.all().filter(
-            is_available=True).select_related('category')[0:6]
+        context['reviews'] = {
+            product.id: product.filtered_reviews for product in context['products']
+        }
+        return context
 
 
 def contact(request):
@@ -133,9 +133,10 @@ class ProductSearchListView(ListView):
 
 def submit_review(request, product_id):
     url = request.META.get('HTTP_REFERER')
+    user_profile = request.user.userprofile
     if request.method == 'POST':
         try:
-            reviews = ReviewRating.objects.get(user__id=request.user.id,
+            reviews = ReviewRating.objects.get(user__id=user_profile.id,
                                                product__id=product_id)
             form = ReviewForm(request.POST, instance=reviews)
             form.save()
@@ -151,7 +152,7 @@ def submit_review(request, product_id):
                 data.review = form.cleaned_data['review']
                 data.ip = request.META.get('REMOTE_ADDR')
                 data.product_id = product_id
-                data.user_id = request.user.id
+                data.user_id = user_profile.id
                 data.save()
                 messages.success(request,
                                  'Thank you! Your review has been submitted.')
