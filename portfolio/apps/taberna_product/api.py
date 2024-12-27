@@ -4,7 +4,6 @@ from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .permissions import IsOwnerOrReadOnly
 from django.db.models import Count
 from .serializers import ProductSerializer, CategorySerializer, AllCategoriesSerializer
 from .models import Product, Category
@@ -13,7 +12,6 @@ from .models import Product, Category
 class LatestProductsAPIList(generics.ListAPIView):
     queryset = Product.objects.all().filter(is_available=True)[0:6]
     serializer_class = ProductSerializer
-    permission_classes = (IsOwnerOrReadOnly, )
 
 
 class ProductAPIDetail(generics.RetrieveUpdateDestroyAPIView):

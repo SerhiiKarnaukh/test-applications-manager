@@ -1,6 +1,6 @@
 from django.views.generic import ListView, DetailView
 from django.shortcuts import redirect, render
-from django.db.models import Q, Prefetch
+from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib import messages
 
@@ -18,24 +18,8 @@ class FrontPage(ListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        return (
-            Product.objects.filter(is_available=True)
-            .select_related('category')
-            .prefetch_related(
-                Prefetch(
-                    'reviewrating_set',
-                    queryset=ReviewRating.objects.filter(status=True),
-                    to_attr='filtered_reviews'
-                )
-            )[:6]
-        )
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['reviews'] = {
-            product.id: product.filtered_reviews for product in context['products']
-        }
-        return context
+        return Product.objects.all().filter(
+            is_available=True).select_related('category')[0:6]
 
 
 def contact(request):
