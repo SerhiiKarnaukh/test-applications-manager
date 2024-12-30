@@ -1,17 +1,6 @@
 from rest_framework import serializers
-from djoser.serializers import UserCreateSerializer
 
 from .models import Profile, FriendshipRequest
-
-
-class SocialProfileCreateSerializer(UserCreateSerializer):
-
-    class Meta(UserCreateSerializer.Meta):
-        fields = ('id', 'email', 'username', 'password',  'first_name', 'last_name',)
-
-    def create(self, validated_data):
-        user = super().create(validated_data)
-        return user
 
 
 class ProfileSerializer(serializers.ModelSerializer):

@@ -5,18 +5,20 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status, generics
 
-from social_notification.utils import create_notification
 from .forms import ProfileForm
+
 from .models import Profile, FriendshipRequest
 from accounts.models import Account
 
-from .serializers import ProfileSerializer, FriendshipRequestSerializer, SocialProfileCreateSerializer
+from .serializers import ProfileSerializer, FriendshipRequestSerializer
+from accounts.serializers import ProfileCreateSerializer
 
 from accounts.utils import send_activation_email
+from social_notification.utils import create_notification
 
 
 class SocialProfileCreateView(generics.CreateAPIView):
-    serializer_class = SocialProfileCreateSerializer
+    serializer_class = ProfileCreateSerializer
 
     def create(self, request, *args, **kwargs):
         try:

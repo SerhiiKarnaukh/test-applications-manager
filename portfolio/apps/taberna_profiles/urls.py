@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from . import api
 
 urlpatterns = [
     path('register/', views.register, name='register'),
@@ -21,4 +22,7 @@ urlpatterns = [
     path('order_detail/<int:order_id>/',
          views.order_detail,
          name='order_detail'),
+
+    # API
+    path('api/register/', api.TabernaProfileCreateView.as_view(), name='taberna-api-register'),
 ]

@@ -1,15 +1,12 @@
-# from rest_framework import serializers
 
-# from .models import Account
+from djoser.serializers import UserCreateSerializer
 
 
-# class UserSerializer(serializers.ModelSerializer):
+class ProfileCreateSerializer(UserCreateSerializer):
 
-#     class Meta:
-#         model = Account
-#         fields = (
-#             'id',
-#             'first_name',
-#             'last_name',
-#             'email',
-#         )
+    class Meta(UserCreateSerializer.Meta):
+        fields = ('id', 'email', 'username', 'password',  'first_name', 'last_name',)
+
+    def create(self, validated_data):
+        user = super().create(validated_data)
+        return user
