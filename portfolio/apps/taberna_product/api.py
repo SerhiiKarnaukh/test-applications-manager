@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db.models import Count
 from .serializers import ProductSerializer, CategorySerializer, AllCategoriesSerializer, ReviewRatingSerializer
-from .models import Product, Category, ReviewRating
+from .models import Product, Category, ReviewRating, Variation
 
 
 class LatestProductsAPIList(generics.ListAPIView):
@@ -27,12 +27,18 @@ class ProductAPIDetail(generics.RetrieveAPIView):
         ).exclude(id=product.id)
         reviews = ReviewRating.objects.filter(product=product, status=True)
 
+        variations = {
+            "colors": Variation.objects.colors().filter(product=product).values('id', 'variation_value'),
+            "sizes": Variation.objects.sizes().filter(product=product).values('id', 'variation_value'),
+        }
+
         data = {
             "product": self.get_serializer(product).data,
             "related_products": ProductSerializer(
                 related_products, many=True, context={"request": request}
             ).data,
             "reviews": ReviewRatingSerializer(reviews, many=True).data,
+            "variations": variations,
         }
         return Response(data)
 
