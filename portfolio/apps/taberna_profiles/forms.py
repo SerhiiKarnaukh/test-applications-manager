@@ -28,6 +28,25 @@ class RegistrationForm(forms.ModelForm):
         if password != confirm_password:
             raise forms.ValidationError("Password does not match!")
 
+    def validate_unique(self):
+        """
+        Override validate_unique to disable automatic uniqueness checks.
+        """
+        pass
+
+    def clean_email(self):
+        """Custom email validation."""
+        email = self.cleaned_data.get('email')
+        try:
+            account = Account.objects.get(email=email)
+            if hasattr(account, 'userprofile'):
+                raise forms.ValidationError(
+                    'An account with this email already exists.'
+                )
+        except Account.DoesNotExist:
+            pass  # If no account exists, validation passes
+        return email
+
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
         self.fields['first_name'].widget.attrs[

@@ -18,6 +18,8 @@ class MyAccountManager(BaseUserManager):
         if not username:
             raise ValueError('User must have an username')
 
+        username = self.generate_unique_username(username)
+
         user = self.model(
             email=self.normalize_email(email),
             username=username,
@@ -42,6 +44,15 @@ class MyAccountManager(BaseUserManager):
         user.is_superadmin = True
         user.save(using=self._db)
         return user
+
+    def generate_unique_username(self, base_username):
+        base_username = base_username.lower()
+        username = base_username
+        counter = 1
+        while Account.objects.filter(username=username).exists():
+            username = f"{base_username}_{counter}"
+            counter += 1
+        return username
 
 
 class Account(AbstractBaseUser):

@@ -15,47 +15,43 @@ from taberna_orders.models import Order, OrderProduct
 from .models import UserProfile
 
 from .utils import handle_cart_after_login, redirect_to_next_or_dashboard
+from accounts.utils import send_activation_email
 
 
 def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            phone_number = form.cleaned_data['phone_number']
             email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            username = email.split("@")[0]
-            user = Account.objects.create_user(first_name=first_name,
-                                               last_name=last_name,
-                                               email=email,
-                                               username=username,
-                                               password=password)
-            user.phone_number = phone_number
-            user.save()
+            try:
+                user = Account.objects.get(email=email)
+                if not hasattr(user, 'userprofile'):
+                    # Create a user profile
+                    UserProfile.objects.create(
+                        user=user,
+                    )
+                messages.info(request, 'The user profile was created successfully. Please log in.')
+                return redirect('login')
+            except Account.DoesNotExist:
 
-            # Create a user profile
-            profile = UserProfile()
-            profile.user_id = user.id
-            profile.profile_picture = 'default/default-user.png'
-            profile.save()
+                user = Account.objects.create_user(
+                    first_name=form.cleaned_data['first_name'],
+                    last_name=form.cleaned_data['last_name'],
+                    email=email,
+                    username=email.split("@")[0],
+                    password=form.cleaned_data['password']
+                )
+                user.phone_number = form.cleaned_data['phone_number']
+                user.save()
+                # Create a user profile
+                UserProfile.objects.create(
+                    user=user,
+                )
+                # User registration activation
+                send_activation_email(user, request)
 
-            # User registration activation
-            current_site = get_current_site(request)
-            mail_subject = 'Please activate your account'
-            message = render_to_string(
-                'taberna_profiles/account_verification_email.html', {
-                    'user': user,
-                    'domain': current_site,
-                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                    'token': default_token_generator.make_token(user),
-                })
-            to_email = email
-            send_email = EmailMessage(mail_subject, message, to=[to_email])
-            send_email.send()
-            return redirect('/accounts/login/?command=verification&email=' +
-                            email)
+                return redirect(
+                    '/taberna-profiles/login/?command=verification&email=' + email)
     else:
         form = RegistrationForm()
     context = {

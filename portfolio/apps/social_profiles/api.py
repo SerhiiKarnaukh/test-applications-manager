@@ -1,12 +1,5 @@
 from django.http import JsonResponse
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.sites.shortcuts import get_current_site
-
-from django.core.mail import EmailMessage
-from django.template.loader import render_to_string
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -19,6 +12,8 @@ from accounts.models import Account
 
 from .serializers import ProfileSerializer, FriendshipRequestSerializer, SocialProfileCreateSerializer
 
+from accounts.utils import send_activation_email
+
 
 class SocialProfileCreateView(generics.CreateAPIView):
     serializer_class = SocialProfileCreateSerializer
@@ -30,18 +25,7 @@ class SocialProfileCreateView(generics.CreateAPIView):
             existing_user = Account.objects.get(id=user_id)
 
             # send activation email
-            current_site = get_current_site(request)
-            mail_subject = 'Please activate your account'
-            message = render_to_string(
-                'taberna_profiles/account_verification_email.html', {
-                    'user': existing_user,
-                    'domain': current_site,
-                    'uid': urlsafe_base64_encode(force_bytes(existing_user.pk)),
-                    'token': default_token_generator.make_token(existing_user),
-                })
-            to_email = existing_user.email
-            send_email = EmailMessage(mail_subject, message, to=[to_email])
-            send_email.send()
+            send_activation_email(existing_user, request)
 
             self.create_profile(existing_user)
 
