@@ -17,4 +17,6 @@ urlpatterns = [
     # API
     path('api/cart/', api.CartAPIView.as_view(), name='taberna_api_cart'),
     path('api/add-to-cart/<int:product_id>/', api.AddToCartView.as_view(), name='taberna_api_add_to_cart'),
+    path('api/cart-remove/<int:product_id>/<int:cart_item_id>/',
+         api.RemoveCartItemAPIView.as_view(), name='taberna_api_remove_cart'),
 ]
