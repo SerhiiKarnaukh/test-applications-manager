@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Category, Product, ProductGallery, ReviewRating
+from .models import Category, Product, ProductGallery, ReviewRating, Variation
 
 
 class ProductGallerySerializer(serializers.ModelSerializer):
@@ -78,3 +78,9 @@ class AllCategoriesSerializer(serializers.ModelSerializer):
             "name",
             "get_absolute_url",
         )
+
+
+class VariationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Variation
+        fields = ('id', 'variation_category', 'variation_value')
