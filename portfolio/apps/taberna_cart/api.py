@@ -65,3 +65,17 @@ class RemoveCartItemAPIView(APIView):
 
         except (Cart.DoesNotExist, CartItem.DoesNotExist):
             return Response({"error": "Cart item does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class RemoveCartItemFullyAPIView(APIView):
+    def delete(self, request, product_id, cart_item_id):
+        product = get_object_or_404(Product, id=product_id)
+
+        try:
+            cart_item = get_cart_item(request, product, cart_item_id)
+            cart_item.delete()
+
+            return Response({"message": "Cart item deleted successfully"}, status=status.HTTP_200_OK)
+
+        except (Cart.DoesNotExist, CartItem.DoesNotExist):
+            return Response({"error": "Cart item does not exist"}, status=status.HTTP_404_NOT_FOUND)
