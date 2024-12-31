@@ -15,5 +15,6 @@ urlpatterns = [
     path('checkout/', checkout, name='checkout'),
 
     # API
-    path('api/cart/', api.CartAPIView.as_view(), name='taberna-api-cart'),
+    path('api/cart/', api.CartAPIView.as_view(), name='taberna_api_cart'),
+    path('api/add-to-cart/<int:product_id>/', api.AddToCartView.as_view(), name='taberna_api_add_to_cart'),
 ]
