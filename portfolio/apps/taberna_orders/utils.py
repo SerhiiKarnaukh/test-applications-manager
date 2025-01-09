@@ -1,5 +1,9 @@
 import datetime
-from .models import Order
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+
+from .models import Order, Payment, OrderProduct
+from taberna_cart.models import CartItem
 
 
 def create_order_from_form(form, user_profile, grand_total, tax, request):
@@ -32,3 +36,58 @@ def generate_order_number(order):
     """
     current_date = datetime.date.today().strftime("%Y%m%d")
     return f"{current_date}{order.id}"
+
+
+def create_payment(user, txn_id, payment_method, amount_paid, status):
+    payment = Payment(
+        user=user,
+        payment_id=txn_id,
+        payment_method=payment_method,
+        amount_paid=amount_paid,
+        status=status,
+    )
+    payment.save()
+    return payment
+
+
+def update_order(order, payment):
+    order.payment = payment
+    order.is_ordered = True
+    order.save()
+
+
+def create_order_products(order, payment, user):
+    cart_items = CartItem.objects.filter(user=user)
+    for item in cart_items:
+        order_product = OrderProduct.objects.create(
+            order=order,
+            payment=payment,
+            user=user,
+            product=item.product,
+            quantity=item.quantity,
+            product_price=item.product.price,
+            ordered=True,
+        )
+        order_product.variations.set(item.variations.all())
+        order_product.save()
+
+        # Reduce product stock
+        product = item.product
+        product.stock -= item.quantity
+        product.save()
+
+
+def clear_cart(user):
+    CartItem.objects.filter(user=user).delete()
+
+
+def send_order_email(order):
+    user = order.user
+    mail_subject = 'Thank you for your order!'
+    message = render_to_string('taberna_orders/order_received_email.html', {
+        'user': user.user,
+        'order': order,
+    })
+    to_email = user.user.email
+    email = EmailMessage(mail_subject, message, to=[to_email])
+    email.send()
