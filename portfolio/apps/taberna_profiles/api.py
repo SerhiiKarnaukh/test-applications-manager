@@ -1,11 +1,15 @@
 from rest_framework.response import Response
 from rest_framework import status, generics
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import ListAPIView
 
 
 from .models import UserProfile
 from accounts.models import Account
+from taberna_orders.models import Order
 
 from accounts.serializers import ProfileCreateSerializer
+from taberna_orders.serializers import OrderSerializer
 
 from accounts.utils import send_activation_email
 
@@ -45,3 +49,11 @@ class TabernaProfileCreateView(generics.CreateAPIView):
 
     def create_profile(self, user):
         UserProfile.objects.create(user=user)
+
+
+class UserOrdersListView(ListAPIView):
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user.userprofile, is_ordered=True).order_by("-created_at")
