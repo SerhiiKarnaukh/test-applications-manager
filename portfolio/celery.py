@@ -26,4 +26,9 @@ app.conf.beat_schedule = {
         'schedule': crontab(hour=4, minute=30),
         'options': {'timezone': 'Europe/Kiev'},
     },
+    'delete_old_carts': {
+        'task': 'taberna_cart.tasks.delete_old_carts',
+        'schedule': crontab(hour=3, minute=0),
+        'options': {'timezone': 'Europe/Kiev'},
+    },
 }
