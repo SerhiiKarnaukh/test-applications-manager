@@ -1,5 +1,6 @@
 from django.conf import settings
 from decimal import Decimal
+import uuid
 
 from .models import Cart, CartItem
 
@@ -18,6 +19,8 @@ def get_product_variations(product, post_data):
     """Getting product variations from POST data."""
     variations = []
     for key, value in post_data.items():
+        if key == "cart_id":
+            continue
         try:
             variation = Variation.objects.get(
                 product=product,
@@ -30,14 +33,22 @@ def get_product_variations(product, post_data):
     return variations
 
 
-def get_or_create_cart(request):
-    """Receiving or creating a shopping cart for an unauthenticated user."""
-    try:
-        cart = Cart.objects.get(cart_id=get_cart_id(request))
-    except Cart.DoesNotExist:
-        cart = Cart.objects.create(cart_id=get_cart_id(request))
-        cart.save()
-    return cart
+def create_new_cart(cart_id=None):
+    """Creates a new cart with a given or random ID."""
+    new_cart_id = cart_id or str(uuid.uuid4())[:8].replace('-', '').lower()
+    return Cart.objects.create(cart_id=new_cart_id)
+
+
+def get_or_create_cart(request, cart_id=None):
+    """
+    Receiving or creating a shopping cart for an unauthenticated user.
+    """
+    if cart_id:
+        cart = Cart.objects.filter(id=cart_id).first()
+        return cart or create_new_cart()
+
+    cart = Cart.objects.filter(cart_id=get_cart_id(request)).first()
+    return cart or create_new_cart(get_cart_id(request))
 
 
 def handle_cart_item(cart_items, product_variation, product, user=None, cart=None):
@@ -74,28 +85,45 @@ def handle_cart_item(cart_items, product_variation, product, user=None, cart=Non
         item.save()
 
 
+def get_cart_for_request(request, user):
+    """
+    Helper function to retrieve the cart for the current user or guest.
+    """
+    if user.is_authenticated and UserProfile.objects.filter(user=user).exists():
+        return None, UserProfile.objects.get(user=user)
+
+    cart_id = None
+    if hasattr(request, 'query_params'):
+        cart_id = request.query_params.get('cart_id')
+
+    if cart_id:
+        cart = Cart.objects.filter(id=cart_id).first()
+    else:
+        cart = Cart.objects.get(cart_id=get_cart_id(request))
+
+    return cart, None
+
+
 def get_cart_item(request, product, cart_item_id):
     """
     Helper function to retrieve the cart item for the current user or guest.
     """
-    if request.user.is_authenticated and UserProfile.objects.filter(user=request.user).exists():
-        current_user = UserProfile.objects.get(user=request.user)
-        return CartItem.objects.get(product=product, user=current_user, id=cart_item_id)
-    else:
-        cart = Cart.objects.get(cart_id=get_cart_id(request))
-        return CartItem.objects.get(product=product, cart=cart, id=cart_item_id)
+    cart, user_profile = get_cart_for_request(request, request.user)
+
+    if user_profile:
+        return CartItem.objects.get(product=product, user=user_profile, id=cart_item_id)
+    return CartItem.objects.get(product=product, cart=cart, id=cart_item_id)
 
 
 def get_cart_items(user, request):
     """
     Helper function to retrieve ALL cart items for the current user or guest.
     """
-    if user.is_authenticated and UserProfile.objects.filter(user=user).exists():
-        current_user = UserProfile.objects.get(user=user)
-        return CartItem.objects.filter(user=current_user, is_active=True).order_by('-id')
-    else:
-        cart = Cart.objects.get(cart_id=get_cart_id(request))
-        return CartItem.objects.filter(cart=cart, is_active=True).order_by('-id')
+    cart, user_profile = get_cart_for_request(request, user)
+
+    if user_profile:
+        return CartItem.objects.filter(user=user_profile, is_active=True).order_by('-id')
+    return CartItem.objects.filter(cart=cart, is_active=True).order_by('-id')
 
 
 def calculate_cart_totals(cart_items):
