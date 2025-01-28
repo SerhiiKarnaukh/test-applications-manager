@@ -10,7 +10,14 @@ def handle_cart_after_login(request, user_profile):
     Processes the cart after the user logs in.
     """
     try:
-        cart = Cart.objects.get(cart_id=get_cart_id(request))
+        cart_id = None
+        if hasattr(request, 'query_params'):
+            cart_id = request.data.get('cart_id')
+
+        if cart_id:
+            cart = Cart.objects.filter(id=cart_id).first()
+        else:
+            cart = Cart.objects.get(cart_id=get_cart_id(request))
         cart_items = CartItem.objects.filter(cart=cart)
         if not cart_items.exists():
             return

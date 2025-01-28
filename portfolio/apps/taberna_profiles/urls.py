@@ -26,4 +26,5 @@ urlpatterns = [
     # API
     path('api/register/', api.TabernaProfileCreateView.as_view(), name='taberna-api-register'),
     path('api/v1/orders/', api.UserOrdersListView.as_view(), name="taberna-api-user-orders"),
+    path('api/v1/token/', api.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]
