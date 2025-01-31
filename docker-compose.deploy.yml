@@ -24,6 +24,8 @@ services:
       - EMAIL_USE_TLS=${EMAIL_USE_TLS}
       - PAYPAL_RECEIVER_EMAIL=${PAYPAL_RECEIVER_EMAIL}
       - PAYPAL_TEST=${PAYPAL_TEST}
+      - STRIPE_PUBLIC_KEY=${STRIPE_PUBLIC_KEY}
+      - STRIPE_PRIVATE_KEY=${STRIPE_PRIVATE_KEY}
     depends_on:
       - db
       - redis
@@ -69,6 +71,8 @@ services:
       - EMAIL_USE_TLS=${EMAIL_USE_TLS}
       - PAYPAL_RECEIVER_EMAIL=${PAYPAL_RECEIVER_EMAIL}
       - PAYPAL_TEST=${PAYPAL_TEST}
+      - STRIPE_PUBLIC_KEY=${STRIPE_PUBLIC_KEY}
+      - STRIPE_PRIVATE_KEY=${STRIPE_PRIVATE_KEY}
     depends_on:
       - redis
 

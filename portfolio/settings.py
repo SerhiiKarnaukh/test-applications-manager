@@ -399,3 +399,7 @@ TABERNA_TAX_RATE = 0.02
 # PayPal Settings
 PAYPAL_RECEIVER_EMAIL = os.environ.get("PAYPAL_RECEIVER_EMAIL")
 PAYPAL_TEST = os.environ.get("PAYPAL_TEST")
+
+# Stripe Settings
+STRIPE_PUBLIC_KEY = os.environ.get("STRIPE_PUBLIC_KEY")
+STRIPE_PRIVATE_KEY = os.environ.get("STRIPE_PRIVATE_KEY")

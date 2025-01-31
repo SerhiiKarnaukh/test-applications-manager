@@ -8,6 +8,8 @@ import uuid
 
 from . models import Donation
 
+import stripe
+
 
 def my_donation(request):
     scheme = "https" if settings.DEBUG is False else request.scheme
@@ -32,7 +34,28 @@ def my_donation(request):
 
     paypal_form = PayPalPaymentsForm(initial=paypal_dict)
 
-    return render(request, 'donation/includes/my-donation.html', {'paypal_form': paypal_form})
+    # Stripe functionality
+
+    stripe.api_key = settings.STRIPE_PRIVATE_KEY
+
+    session = stripe.checkout.Session.create(
+        line_items=[{
+
+            'price': 'price_1QmdgAG66aV2KD4hrcaEg29I',
+
+            'quantity': 1,
+
+        }],
+
+        mode='payment',
+
+        success_url=request.build_absolute_uri(reverse('payment-success')) + '?session_id={CHECKOUT_SESSION_ID}',
+
+        cancel_url=request.build_absolute_uri(reverse('payment-failed'))
+    )
+
+    return render(request, 'donation/includes/my-donation.html',
+                  {'paypal_form': paypal_form, 'session_id': session.id, 'stripe_public_key': settings.STRIPE_PUBLIC_KEY})
 
 
 def payment_success(request):
