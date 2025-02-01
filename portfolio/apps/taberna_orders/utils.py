@@ -1,6 +1,8 @@
+import stripe
 import datetime
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from django.conf import settings
 
 from .models import Order, Payment, OrderProduct
 from taberna_cart.models import CartItem
@@ -91,3 +93,16 @@ def send_order_email(order):
     to_email = user.user.email
     email = EmailMessage(mail_subject, message, to=[to_email])
     email.send()
+
+
+def stripe_charge_create(request, amount, order):
+    # https://docs.stripe.com/api/charges/create
+    stripe_token = request.data.get('stripe_token')
+    stripe.api_key = settings.STRIPE_PRIVATE_KEY
+    stripe.Charge.create(
+        amount=int(amount * 100),
+        currency='USD',
+        description=f'Order #{order.order_number}',
+        source=stripe_token,
+        receipt_email=request.user.email
+    )

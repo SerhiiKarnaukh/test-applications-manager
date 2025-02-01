@@ -9,7 +9,7 @@ from taberna_cart.models import CartItem
 from .forms import OrderForm
 
 from .utils import (create_order_from_form, generate_order_number, create_payment,
-                    update_order, create_order_products, clear_cart, send_order_email)
+                    update_order, create_order_products, clear_cart, send_order_email, stripe_charge_create)
 from taberna_cart.utils import calculate_cart_totals
 
 
@@ -33,13 +33,17 @@ class PlaceOrderAPIView(APIView):
 
             try:
                 with transaction.atomic():
+                    stripe_charge_create(request, grand_total, order)
                     payment = create_payment(order.user, order.id, 'Stripe', order.order_total, 'Completed')
                     update_order(order, payment)
                     create_order_products(order, payment, order.user)
                     clear_cart(order.user)
                     send_order_email(order)
             except Exception as e:
-                print(f"Error processing payment: {e}")
+                return Response(
+                    {"errors": {"message": str(e), "type": e.__class__.__name__}},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
             return Response({
                 "order": {
