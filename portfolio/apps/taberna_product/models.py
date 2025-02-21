@@ -42,6 +42,7 @@ class Product(models.Model):
     stock = models.IntegerField()
     is_available = models.BooleanField(default=True)
     date_added = models.DateTimeField(auto_now_add=True)
+    stripe_product_id = models.CharField(max_length=30, blank=True, null=True, unique=True)
     modified_date = models.DateTimeField(auto_now=True)
 
     class Meta:
