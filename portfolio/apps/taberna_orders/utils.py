@@ -106,3 +106,7 @@ def stripe_charge_create(request, amount, order):
         source=stripe_token,
         receipt_email=request.user.email
     )
+
+
+def stripe_session_create(request, amount, order):
+    pass

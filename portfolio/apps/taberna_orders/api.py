@@ -13,7 +13,7 @@ from .utils import (create_order_from_form, generate_order_number, create_paymen
 from taberna_cart.utils import calculate_cart_totals
 
 
-class PlaceOrderAPIView(APIView):
+class PlaceOrderStripeChargeAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -58,3 +58,7 @@ class PlaceOrderAPIView(APIView):
             }, status=status.HTTP_201_CREATED)
         else:
             return Response({"errors": form.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PlaceOrderStripeSessionAPIView(APIView):
+    pass
