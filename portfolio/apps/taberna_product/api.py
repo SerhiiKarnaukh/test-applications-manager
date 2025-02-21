@@ -10,7 +10,8 @@ from .models import Product, Category, ReviewRating, Variation
 
 
 class LatestProductsAPIList(generics.ListAPIView):
-    queryset = Product.objects.all().filter(is_available=True)[0:6]
+    queryset = Product.objects.filter(is_available=True).exclude(
+        stripe_product_id__isnull=True).exclude(stripe_product_id="")[:6]
     serializer_class = ProductSerializer
 
 
@@ -24,7 +25,8 @@ class ProductAPIDetail(generics.RetrieveAPIView):
         product = self.get_object()
         related_products = Product.objects.filter(
             category=product.category
-        ).exclude(id=product.id)
+        ).exclude(id=product.id).exclude(
+            stripe_product_id__isnull=True).exclude(stripe_product_id="")
         reviews = ReviewRating.objects.filter(product=product, status=True)
 
         variations = {
@@ -91,7 +93,14 @@ def search_api(request):
 
     if query:
         products = Product.objects.filter(
-            Q(name__icontains=query) | Q(description__icontains=query))
+            Q(name__icontains=query) | Q(description__icontains=query)
+        ).filter(
+            is_available=True
+        ).exclude(
+            stripe_product_id__isnull=True
+        ).exclude(
+            stripe_product_id=""
+        )
         serialized_products = []
         for product in products:
             product_data = ProductSerializer(product).data

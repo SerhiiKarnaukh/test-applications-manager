@@ -57,7 +57,7 @@ class ReviewRatingSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    products = ProductSerializer(many=True)
+    products = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
@@ -67,6 +67,10 @@ class CategorySerializer(serializers.ModelSerializer):
             "get_absolute_url",
             "products",
         )
+
+    def get_products(self, obj):
+        filtered_products = obj.products.filter(stripe_product_id__isnull=False).exclude(stripe_product_id="")
+        return ProductSerializer(filtered_products, many=True, context=self.context).data
 
 
 class AllCategoriesSerializer(serializers.ModelSerializer):
