@@ -120,5 +120,24 @@ def get_tax_rate():
     return None
 
 
-def stripe_session_create():
-    print(get_tax_rate().id)
+def stripe_session_create(cart_items, customer_email, base_url):
+    # print(get_tax_rate().id)
+    line_items = []
+    for item in cart_items:
+        prices = stripe.Price.list(product=item.product.stripe_product_id)
+        price = prices.data[0]
+        line_items.append({
+            'price': price.id,
+            'quantity': item.quantity,
+        })
+
+    checkout_session = stripe.checkout.Session.create(
+        line_items=line_items,
+        payment_method_types=['card'],
+        mode='payment',
+        customer_creation='always',
+        success_url=f'{base_url}/taberna/cart/success?session_id={{CHECKOUT_SESSION_ID}}',
+        cancel_url=f'{base_url}/taberna/cart/failed?session_id={{CHECKOUT_SESSION_ID}}',
+        customer_email=customer_email,
+    )
+    return checkout_session

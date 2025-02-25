@@ -62,4 +62,38 @@ class PlaceOrderStripeChargeAPIView(APIView):
 
 
 class PlaceOrderStripeSessionAPIView(APIView):
-    stripe_session_create()
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user_profile = request.user.userprofile
+        cart_items = CartItem.objects.filter(user=user_profile)
+
+        if not cart_items.exists():
+            return Response({"error": "Your cart is empty!"}, status=status.HTTP_400_BAD_REQUEST)
+
+        total, quantity, tax, grand_total = calculate_cart_totals(cart_items)
+
+        form = OrderForm(request.data)
+        if form.is_valid():
+            # order = create_order_from_form(form, user_profile, grand_total, tax, request)
+            # order.order_number = generate_order_number(order)
+            # order.save()
+
+            try:
+                with transaction.atomic():
+                    # stripe_charge_create(request, grand_total, order)
+                    base_url = request.META['HTTP_ORIGIN']
+                    checkout_session = stripe_session_create(cart_items, 'test@mail.com', base_url)
+                    # payment = create_payment(order.user, order.id, 'Stripe', order.order_total, 'Completed')
+                    # update_order(order, payment)
+                    # create_order_products(order, payment, order.user)
+                    # clear_cart(order.user)
+                    # send_order_email(order)
+            except Exception as e:
+                return Response(
+                    {"errors": {"message": str(e), "type": e.__class__.__name__}},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            return Response({"checkout_url": checkout_session.url}, status=status.HTTP_200_OK)
+        else:
+            return Response({"errors": form.errors}, status=status.HTTP_400_BAD_REQUEST)
