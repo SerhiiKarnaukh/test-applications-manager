@@ -9,7 +9,8 @@ from taberna_cart.models import CartItem
 from .forms import OrderForm
 
 from .utils import (create_order_from_form, generate_order_number, create_payment,
-                    update_order, create_order_products, clear_cart, send_order_email, stripe_charge_create)
+                    update_order, create_order_products, clear_cart, send_order_email, stripe_charge_create,
+                    stripe_session_create)
 from taberna_cart.utils import calculate_cart_totals
 
 
@@ -61,4 +62,4 @@ class PlaceOrderStripeChargeAPIView(APIView):
 
 
 class PlaceOrderStripeSessionAPIView(APIView):
-    pass
+    stripe_session_create()

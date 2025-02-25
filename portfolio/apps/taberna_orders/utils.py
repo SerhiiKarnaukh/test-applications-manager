@@ -7,6 +7,8 @@ from django.conf import settings
 from .models import Order, Payment, OrderProduct
 from taberna_cart.models import CartItem
 
+stripe.api_key = settings.STRIPE_PRIVATE_KEY
+
 
 def create_order_from_form(form, user_profile, grand_total, tax, request):
     """
@@ -98,7 +100,6 @@ def send_order_email(order):
 def stripe_charge_create(request, amount, order):
     # https://docs.stripe.com/api/charges/create
     stripe_token = request.data.get('stripe_token')
-    stripe.api_key = settings.STRIPE_PRIVATE_KEY
     stripe.Charge.create(
         amount=int(amount * 100),
         currency='USD',
@@ -108,5 +109,16 @@ def stripe_charge_create(request, amount, order):
     )
 
 
-def stripe_session_create(request, amount, order):
-    pass
+def get_tax_rate():
+    try:
+        tax_rates = stripe.TaxRate.list(active=True).data
+        for tax_rate in tax_rates:
+            if tax_rate.display_name == "VAT":
+                return tax_rate
+    except stripe.error.StripeError as e:
+        print(f"Error when receiving tax: {e}")
+    return None
+
+
+def stripe_session_create():
+    print(get_tax_rate().id)
