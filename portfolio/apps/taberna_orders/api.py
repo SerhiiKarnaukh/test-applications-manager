@@ -75,15 +75,16 @@ class PlaceOrderStripeSessionAPIView(APIView):
 
         form = OrderForm(request.data)
         if form.is_valid():
-            # order = create_order_from_form(form, user_profile, grand_total, tax, request)
-            # order.order_number = generate_order_number(order)
-            # order.save()
+            order = create_order_from_form(form, user_profile, grand_total, tax, request)
+            order.order_number = generate_order_number(order)
+            order.save()
 
             try:
                 with transaction.atomic():
-                    # stripe_charge_create(request, grand_total, order)
                     base_url = request.META['HTTP_ORIGIN']
-                    checkout_session = stripe_session_create(cart_items, 'test@mail.com', base_url)
+                    checkout_session = stripe_session_create(cart_items, order.email, base_url)
+                    order.stripe_checkout_session_id = checkout_session.id
+                    order.save()
                     # payment = create_payment(order.user, order.id, 'Stripe', order.order_total, 'Completed')
                     # update_order(order, payment)
                     # create_order_products(order, payment, order.user)
