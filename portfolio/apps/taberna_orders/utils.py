@@ -121,14 +121,15 @@ def get_tax_rate():
 
 
 def stripe_session_create(cart_items, customer_email, base_url):
-    # print(get_tax_rate().id)
     line_items = []
+    tax_rate = get_tax_rate()
     for item in cart_items:
         prices = stripe.Price.list(product=item.product.stripe_product_id)
         price = prices.data[0]
         line_items.append({
             'price': price.id,
             'quantity': item.quantity,
+            'tax_rates': [tax_rate.id] if tax_rate else []
         })
 
     checkout_session = stripe.checkout.Session.create(
