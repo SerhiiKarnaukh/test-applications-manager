@@ -1,7 +1,11 @@
+import stripe
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.conf import settings
 from django.urls import reverse
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 
 from paypal.standard.forms import PayPalPaymentsForm
 from paypal.standard.ipn.models import PayPalIPN
@@ -11,8 +15,11 @@ from taberna_cart.models import CartItem
 
 from .forms import OrderForm
 
-from .utils import create_order_from_form, generate_order_number
+from .utils import (create_order_from_form, generate_order_number, create_payment,
+                    update_order, create_order_products, clear_cart, send_order_email)
 from taberna_cart.utils import calculate_cart_totals
+
+stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
 
 def place_order(request):
@@ -96,3 +103,35 @@ def order_complete(request, order_number):
 def order_failed(request):
 
     return render(request, 'taberna_orders/order_failed.html')
+
+
+@require_POST
+@csrf_exempt
+def stripe_webhook(request):
+    endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
+    payload = request.body
+    signature_header = request.META['HTTP_STRIPE_SIGNATURE']
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, signature_header, endpoint_secret
+        )
+    except stripe.error.StripeError:
+        return HttpResponse(status=400)
+
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        stripe_session_id = session.get('id')
+        order = get_object_or_404(Order, stripe_checkout_session_id=stripe_session_id)
+
+        if order.is_ordered:
+            return HttpResponse(status=400)
+
+        payment = create_payment(order.user, order.id, 'Stripe', order.order_total, 'Completed')
+        update_order(order, payment)
+        create_order_products(order, payment, order.user)
+        clear_cart(order.user)
+        send_order_email(order)
+
+    return HttpResponse(status=200)

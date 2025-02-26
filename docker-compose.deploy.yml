@@ -26,6 +26,7 @@ services:
       - PAYPAL_TEST=${PAYPAL_TEST}
       - STRIPE_PUBLIC_KEY=${STRIPE_PUBLIC_KEY}
       - STRIPE_PRIVATE_KEY=${STRIPE_PRIVATE_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
     depends_on:
       - db
       - redis
@@ -73,6 +74,7 @@ services:
       - PAYPAL_TEST=${PAYPAL_TEST}
       - STRIPE_PUBLIC_KEY=${STRIPE_PUBLIC_KEY}
       - STRIPE_PRIVATE_KEY=${STRIPE_PRIVATE_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
     depends_on:
       - redis
 

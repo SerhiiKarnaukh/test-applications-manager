@@ -6,6 +6,7 @@ urlpatterns = [
     path('place_order/', views.place_order, name='place_order'),
     path('order_complete/<int:order_number>/', views.order_complete, name='order_complete'),
     path('order_failed/', views.order_failed, name='order_failed'),
+    path('stripe_webhook/', views.stripe_webhook, name='stripe_webhook'),
 
     # API
     path('api/v1/place_order_stripe_charge/',

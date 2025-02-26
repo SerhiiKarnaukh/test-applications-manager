@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from django.conf import settings
 
 from .models import Order
 from taberna_cart.models import CartItem
@@ -97,7 +98,11 @@ class PlaceOrderStripeSessionAPIView(APIView):
 
 
 class OrderPaymentSuccessAPIView(APIView):
+
     def post(self, request, *args, **kwargs):
+        if not settings.DEBUG:
+            return Response({"error": "This endpoint is available only in DEBUG mode"}, status=status.HTTP_403_FORBIDDEN)
+
         stripe_session_id = request.data.get("stripe_session_id")
         order = get_object_or_404(Order, stripe_checkout_session_id=stripe_session_id)
 
