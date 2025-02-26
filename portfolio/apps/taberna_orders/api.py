@@ -3,7 +3,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 
+from .models import Order
 from taberna_cart.models import CartItem
 
 from .forms import OrderForm
@@ -71,7 +73,7 @@ class PlaceOrderStripeSessionAPIView(APIView):
         if not cart_items.exists():
             return Response({"error": "Your cart is empty!"}, status=status.HTTP_400_BAD_REQUEST)
 
-        total, quantity, tax, grand_total = calculate_cart_totals(cart_items)
+        _, _, tax, grand_total = calculate_cart_totals(cart_items)
 
         form = OrderForm(request.data)
         if form.is_valid():
@@ -85,11 +87,6 @@ class PlaceOrderStripeSessionAPIView(APIView):
                     checkout_session = stripe_session_create(cart_items, order.email, base_url)
                     order.stripe_checkout_session_id = checkout_session.id
                     order.save()
-                    # payment = create_payment(order.user, order.id, 'Stripe', order.order_total, 'Completed')
-                    # update_order(order, payment)
-                    # create_order_products(order, payment, order.user)
-                    # clear_cart(order.user)
-                    # send_order_email(order)
             except Exception as e:
                 return Response(
                     {"errors": {"message": str(e), "type": e.__class__.__name__}},
@@ -98,3 +95,36 @@ class PlaceOrderStripeSessionAPIView(APIView):
             return Response({"checkout_url": checkout_session.url}, status=status.HTTP_200_OK)
         else:
             return Response({"errors": form.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class OrderPaymentSuccessAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        stripe_session_id = request.data.get("stripe_session_id")
+        order = get_object_or_404(Order, stripe_checkout_session_id=stripe_session_id)
+
+        if order.is_ordered:
+            return Response({"message": "Order already processed"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            with transaction.atomic():
+                payment = create_payment(order.user, order.id, 'Stripe', order.order_total, 'Completed')
+                update_order(order, payment)
+                create_order_products(order, payment, order.user)
+                clear_cart(order.user)
+                send_order_email(order)
+
+            return Response({"message": "Order successfully completed"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class OrderPaymentFailedAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        stripe_session_id = request.data.get("stripe_session_id")
+        order = get_object_or_404(Order, stripe_checkout_session_id=stripe_session_id)
+
+        try:
+            order.delete()
+            return Response({"message": "Order deleted due to failed payment"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
