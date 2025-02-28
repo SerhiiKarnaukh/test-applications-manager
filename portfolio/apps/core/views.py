@@ -30,9 +30,9 @@ class CategoryDetail(ListView):
     def get_queryset(self, **kwargs):
         if 'slug' in self.kwargs:
             return Project.objects.filter(
-                category__slug=self.kwargs['slug']).select_related('category')
-        else:
-            return Project.objects.all().select_related('category')
+                category__slug=self.kwargs['slug']
+            ).select_related('category').order_by('ordering', '-created_at')
+        return Project.objects.all().select_related('category').order_by('ordering', '-created_at')
 
 
 class ProjectDetail(DetailView):

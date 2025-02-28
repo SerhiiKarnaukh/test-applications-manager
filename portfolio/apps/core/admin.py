@@ -37,12 +37,14 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'title',
+        'ordering',
         'slug',
         # 'tags',
         'category',
         'created_at',
         'get_photo',
     )
+    list_editable = ('ordering',)
     list_display_links = (
         'id',
         'title',
@@ -62,6 +64,7 @@ class ProjectAdmin(admin.ModelAdmin):
     )
     fields = (
         'title',
+        'ordering',
         'slug',
         'category',
         'tags',
@@ -72,6 +75,7 @@ class ProjectAdmin(admin.ModelAdmin):
         'get_photo',
         'created_at',
     )
+    ordering = ['ordering', '-created_at']
     prepopulated_fields = {"slug": ("title", )}
     inlines = [ProjectGalleryInline]
 

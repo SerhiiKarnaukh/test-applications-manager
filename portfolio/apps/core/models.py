@@ -46,6 +46,7 @@ class Project(models.Model):
                                  on_delete=models.PROTECT,
                                  related_name='projects')
     tags = models.ManyToManyField(Tag, blank=True, related_name='projects')
+    ordering = models.PositiveIntegerField(default=0, verbose_name="Ordering")
 
     def __str__(self):
         return self.title
