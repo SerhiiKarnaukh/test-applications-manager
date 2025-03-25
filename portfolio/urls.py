@@ -42,6 +42,9 @@ urlpatterns = [
     path('paypal/', include("paypal.standard.ipn.urls")),
     path('donation/', include('donation.urls')),
 
+    # for AI Lab
+    path('ai_lab/', include('ai_lab.urls')),
+
 ]
 
 if settings.DEBUG:

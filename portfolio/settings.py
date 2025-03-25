@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     'social_chat',
     'social_notification',
     'donation',
-    'paypal.standard.ipn'
+    'paypal.standard.ipn',
+    'ai_lab'
 ]
 
 MIGRATION_MODULES = {
@@ -404,3 +405,6 @@ PAYPAL_TEST = os.environ.get("PAYPAL_TEST")
 STRIPE_PUBLIC_KEY = os.environ.get("STRIPE_PUBLIC_KEY")
 STRIPE_PRIVATE_KEY = os.environ.get("STRIPE_PRIVATE_KEY")
 STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
+
+# OpenAI API
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")

@@ -39,6 +39,7 @@ services:
       - STRIPE_PUBLIC_KEY=${STRIPE_PUBLIC_KEY}
       - STRIPE_PRIVATE_KEY=${STRIPE_PRIVATE_KEY}
       - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
       - db
       - redis
@@ -95,6 +96,7 @@ services:
       - STRIPE_PUBLIC_KEY=${STRIPE_PUBLIC_KEY}
       - STRIPE_PRIVATE_KEY=${STRIPE_PRIVATE_KEY}
       - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
       - redis
 
