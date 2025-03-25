@@ -3,13 +3,13 @@ from django import forms
 from django.utils.safestring import mark_safe
 
 from django_ckeditor_5.widgets import CKEditor5Widget
-import admin_thumbnails
+# import admin_thumbnails
 
 
 from .models import Category, Tag, Project, ProjectGallery
 
 
-@admin_thumbnails.thumbnail('image')
+# @admin_thumbnails.thumbnail('image')
 class ProjectGalleryInline(admin.TabularInline):
     model = ProjectGallery
     extra = 1
