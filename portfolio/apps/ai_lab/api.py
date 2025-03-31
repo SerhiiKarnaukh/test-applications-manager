@@ -4,6 +4,8 @@ from rest_framework.permissions import AllowAny
 from django.conf import settings
 from openai import OpenAI
 
+from core.utils import print_object
+
 
 class AiLabTestView(APIView):
     permission_classes = [AllowAny]
@@ -12,12 +14,29 @@ class AiLabTestView(APIView):
         question = request.data.get("question")
         api_key = settings.OPENAI_API_KEY
         client = OpenAI(api_key=api_key)
-        completion = client.chat.completions.create(
+        response = client.responses.create(
             model="gpt-4o",
-            messages=[{
-                "role": "user",
-                "content": question
-            }]
-        )
+            input=[
+                {
+                    "role": "system",
+                    "content": [
+                        {
+                            "type": "input_text",
+                            "text": "Answer briefly and in the form of a joke"
+                        }
+                    ]
+                },
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "input_text",
+                            "text": question
+                        }
+                    ]
+                },
+            ],)
 
-        return Response({"message": completion.choices[0].message.content})
+        print_object(response)
+
+        return Response({"message": response.output_text})
