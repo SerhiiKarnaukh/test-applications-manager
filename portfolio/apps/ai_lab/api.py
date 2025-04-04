@@ -3,7 +3,6 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from openai import OpenAI
 from .tools import TOOLS
 
 from .utils import StockAPI
@@ -11,6 +10,7 @@ from .utils import StockAPI
 
 class OpenAIService:
     def __init__(self):
+        from openai import OpenAI
         self.client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
     def get_ai_response(self, messages, tools):
