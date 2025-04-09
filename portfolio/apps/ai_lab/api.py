@@ -1,3 +1,6 @@
+import os
+import requests
+import uuid
 import json
 from django.conf import settings
 from rest_framework.views import APIView
@@ -19,8 +22,14 @@ class OpenAIService:
         )
         return response.output[0]
 
+    def get_img_gen_response(self, prompt):
+        response = self.client.images.generate(
+            model="dall-e-3", prompt=prompt,
+        )
+        return response.data[0].url
 
-class AiLabTestView(APIView):
+
+class AiLabChatView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -52,3 +61,46 @@ class AiLabTestView(APIView):
             return Response({"message": second_response.content[0].text})
 
         return Response({"message": response_output.content[0].text})
+
+
+class AiLabImageGeneratorView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        prompt = request.data.get("question")
+        if not prompt:
+            return Response({"error": "Prompt is required."}, status=400)
+
+        try:
+            image_url = self.generate_image(prompt)
+            full_url = self.download_and_save_image(image_url, request)
+
+            return Response({"message": full_url})
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+
+    def generate_image(self, prompt):
+        openai_service = OpenAIService()
+        return openai_service.get_img_gen_response(prompt)
+
+    def download_and_save_image(self, image_url, request):
+        img_response = requests.get(image_url, stream=True)
+        if img_response.status_code != 200:
+            raise Exception("Failed to download image.")
+
+        content_type = img_response.headers.get("Content-Type")
+        if not content_type or not content_type.startswith("image/"):
+            raise Exception("URL does not point to an image.")
+
+        filename = f"{uuid.uuid4().hex}.png"
+        generated_images_dir = os.path.join(settings.MEDIA_ROOT, "generated_images")
+        os.makedirs(generated_images_dir, exist_ok=True)
+
+        filepath = os.path.join(generated_images_dir, filename)
+        with open(filepath, "wb") as f:
+            for chunk in img_response.iter_content(1024):
+                f.write(chunk)
+
+        media_url = os.path.join(settings.MEDIA_URL, "generated_images", filename)
+        full_url = request.build_absolute_uri(media_url)
+        return full_url

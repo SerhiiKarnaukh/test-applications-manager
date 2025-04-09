@@ -31,4 +31,9 @@ app.conf.beat_schedule = {
         'schedule': crontab(hour=3, minute=0),
         'options': {'timezone': 'Europe/Kiev'},
     },
+    'delete-generated-images': {
+        'task': 'ai_lab.tasks.delete_generated_images',
+        'schedule': crontab(hour=2, minute=0),
+        'options': {'timezone': 'Europe/Kiev'},
+    },
 }
