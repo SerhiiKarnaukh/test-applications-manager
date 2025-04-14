@@ -88,7 +88,7 @@ class AiLabImageGeneratorView(APIView):
 
             return Response({"message": full_url})
         except Exception as e:
-            return Response({"error": str(e)}, status=500)
+            return Response({"message": str(e)}, status=500)
 
     def generate_image(self, prompt):
         openai_service = OpenAIService()
