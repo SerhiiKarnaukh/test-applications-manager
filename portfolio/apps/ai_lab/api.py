@@ -176,6 +176,10 @@ class AiLabVoiceGeneratorView(APIView):
         with open(filepath, "wb") as f:
             f.write(b64decode(message.audio.data))
 
-        media_url = os.path.join(settings.MEDIA_URL, "generated_voices", filename)
-        full_url = request.build_absolute_uri(media_url)
+        media_path = os.path.join(settings.MEDIA_URL, "generated_voices", filename)
+
+        scheme = "https" if not settings.DEBUG else request.scheme
+        host = request.get_host()
+
+        full_url = f"{scheme}://{host}{media_path}"
         return full_url
