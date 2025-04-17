@@ -7,5 +7,6 @@ app_name = 'ai_lab'
 urlpatterns = [
     path('', api.AiLabChatView.as_view(), name='ai_lab_api'),
     path('image-generator/', api.AiLabImageGeneratorView.as_view(), name='ai_lab_image_generator'),
+    path('voice-generator/', api.AiLabVoiceGeneratorView.as_view(), name='ai_lab_voice_generator'),
     path('download-image/', api.AiLabImageDownloadView.as_view(), name='ai-lab-download-image'),
 ]

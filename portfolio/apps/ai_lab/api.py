@@ -1,6 +1,7 @@
 import os
 import requests
 import json
+from base64 import b64decode
 from django.conf import settings
 from django.http import FileResponse, Http404
 from rest_framework.views import APIView
@@ -31,6 +32,18 @@ class OpenAIService:
                 model="dall-e-3", prompt=prompt,
             )
             return response.data[0].url
+        except Exception as e:
+            raise Exception(f"Error: {str(e)}")
+
+    def get_voice_gen_response(self, prompt):
+        try:
+            response = self.client.chat.completions.create(
+                model="gpt-4o-audio-preview",
+                modalities=["text", "audio"],
+                audio={"voice": "verse", "format": "mp3"},
+                messages=[{"role": "user", "content": prompt}],
+            )
+            return response.choices[0].message
         except Exception as e:
             raise Exception(f"Error: {str(e)}")
 
@@ -130,3 +143,39 @@ class AiLabImageDownloadView(APIView):
             raise Http404("File not found.")
 
         return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=image_name)
+
+
+class AiLabVoiceGeneratorView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        prompt = request.data.get("question")
+        if not prompt:
+            return Response({"error": "Prompt is required."}, status=400)
+
+        try:
+            message = self.generate_voice(prompt)
+            full_url = self.save_voice(message, prompt,  request)
+
+            return Response({"message": full_url})
+        except Exception as e:
+            return Response({"message": str(e)}, status=500)
+
+    def generate_voice(self, prompt):
+        openai_service = OpenAIService()
+        return openai_service.get_voice_gen_response(prompt)
+
+    def save_voice(self, message, prompt, request):
+
+        generated_voices_dir = os.path.join(settings.MEDIA_ROOT, "generated_voices")
+        os.makedirs(generated_voices_dir, exist_ok=True)
+
+        filename = generate_file_name_with_extension(prompt, generated_voices_dir, "mp3")
+
+        filepath = os.path.join(generated_voices_dir, filename)
+        with open(filepath, "wb") as f:
+            f.write(b64decode(message.audio.data))
+
+        media_url = os.path.join(settings.MEDIA_URL, "generated_voices", filename)
+        full_url = request.build_absolute_uri(media_url)
+        return full_url
