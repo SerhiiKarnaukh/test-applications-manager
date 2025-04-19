@@ -2,13 +2,17 @@ import os
 import requests
 import json
 from base64 import b64decode
+
 from django.conf import settings
 from django.http import FileResponse, Http404
+from django.core.files.storage import default_storage
+from django.utils.text import slugify
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from .tools import TOOLS
 
+from .tools import TOOLS
 from .utils import StockAPI, generate_file_name_with_extension
 
 
@@ -53,12 +57,26 @@ class AiLabChatView(APIView):
 
     def post(self, request):
         question = request.data.get("question")
+        prompt_images = request.data.get("prompt_images", [])
+
         openai_service = OpenAIService()
         available_functions = {"get_stock_price": StockAPI.get_stock_price}
 
+        user_content = [
+            {"type": "input_text", "text": question},
+        ]
+
+        if prompt_images:
+            for url in prompt_images:
+                user_content.append({
+                    "type": "input_image",
+                    "image_url": url,
+                    "detail": "low",
+                })
+
         messages = [
-            {"role": "system", "content": "Answer briefly and in the form of a joke"},
-            {"role": "user", "content": question},
+            {"role": "system", "content": "Answer briefly - no more than five sentences and in the form of a joke."},
+            {"role": "user", "content": user_content},
         ]
 
         try:
@@ -183,3 +201,41 @@ class AiLabVoiceGeneratorView(APIView):
 
         full_url = f"{scheme}://{host}{media_path}"
         return full_url
+
+
+class AiLabVisionImagesUploadView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        images = request.FILES.getlist('images[]')
+        if not images:
+            return Response({"error": "No images provided."}, status=400)
+
+        saved_image_urls = []
+
+        vision_images_dir = os.path.join(settings.MEDIA_ROOT, 'vision_images')
+        os.makedirs(vision_images_dir, exist_ok=True)
+
+        for image in images:
+            filename = slugify(os.path.splitext(image.name)[0])
+            extension = os.path.splitext(image.name)[1]
+            full_filename = f"{filename}{extension}"
+
+            counter = 1
+            while default_storage.exists(os.path.join('vision_images', full_filename)):
+                full_filename = f"{filename}-{counter}{extension}"
+                counter += 1
+
+            filepath = os.path.join('vision_images', full_filename)
+            full_file_path = os.path.join(settings.MEDIA_ROOT, filepath)
+
+            with open(full_file_path, 'wb+') as f:
+                for chunk in image.chunks():
+                    f.write(chunk)
+
+            scheme = "https" if not settings.DEBUG else request.scheme
+            host = request.get_host()
+            file_url = f"{scheme}://{host}{settings.MEDIA_URL}vision_images/{full_filename}"
+            saved_image_urls.append(file_url)
+
+        return Response({"uploaded_images": saved_image_urls})

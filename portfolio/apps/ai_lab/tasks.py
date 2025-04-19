@@ -6,7 +6,7 @@ from django.conf import settings
 
 @shared_task
 def delete_generated_media():
-    folders_to_clean = ['generated_images', 'generated_voices']
+    folders_to_clean = ['generated_images', 'generated_voices', 'vision_images']
 
     for folder_name in folders_to_clean:
         folder_path = os.path.join(settings.MEDIA_ROOT, folder_name)
