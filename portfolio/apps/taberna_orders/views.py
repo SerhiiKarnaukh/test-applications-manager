@@ -49,7 +49,7 @@ def place_order(request):
                 "invoice": order.order_number,
                 "currency_code": "USD",
                 "notify_url": f"{scheme}://{host}{reverse('paypal-ipn')}",
-                "return_url": f"{scheme}://{host}{reverse('order_complete', kwargs={'order_number':order.order_number})}",
+                "return_url": f"{scheme}://{host}{reverse('order_complete', kwargs={'order_number': order.order_number})}",
                 "cancel_return": f"{scheme}://{host}{reverse('order_failed')}",
             }
 

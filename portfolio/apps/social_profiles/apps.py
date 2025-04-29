@@ -7,4 +7,5 @@ class SocialProfilesConfig(AppConfig):
     verbose_name = '02.Social Network: Profiles'
 
     def ready(self):
-        import social_profiles.signals
+        from . import signals
+        signals.delete_old_avatar

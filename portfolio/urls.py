@@ -24,7 +24,6 @@ urlpatterns = [
 
     # for Applications Manager
     path('', include('core.urls')),
-    path('accounts/', include('accounts.urls')),
 
     # for Taberna
     path('taberna-cart/', include('taberna_cart.urls')),

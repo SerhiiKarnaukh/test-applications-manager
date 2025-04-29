@@ -1,0 +1,20 @@
+[run]
+omit =
+    */migrations/*
+    manage.py
+    */settings.py
+    */tests/*
+    */admin.py
+    */__init__.py
+    */urls.py
+    */version.py
+    */swagger_permissions.py
+    */throttles.py
+    */apps.py
+    */schemas.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:
+
