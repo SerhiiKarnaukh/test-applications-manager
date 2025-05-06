@@ -42,9 +42,12 @@ docker-compose run --rm app sh -c "coverage report"
 docker-compose run --rm app sh -c "coverage html"
 ```
 
-2. Run Test
+2. Run Lint and Test
 
 ```
+docker-compose run --rm app sh -c "flake8"
+docker-compose run --rm app sh -c "python manage.py test"
+
 docker-compose up
 docker exec -it portfolio coverage run manage.py test
 ```
