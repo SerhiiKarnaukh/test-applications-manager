@@ -1,7 +1,8 @@
-from django.test import TestCase
+from django.test import TestCase,  override_settings
 from unittest.mock import patch, MagicMock
 from django.urls import reverse
 from django.conf import settings
+import tempfile
 import os
 
 
@@ -98,11 +99,23 @@ class AiLabChatViewTest(TestCase):
         }, content_list)
 
 
+@override_settings(MEDIA_ROOT=os.path.join(tempfile.gettempdir(), "media"))
 class AiLabImageGeneratorViewTest(TestCase):
 
     def setUp(self):
         self.url = reverse("ai_lab:ai_lab_image_generator")
         self.prompt = "A robot eating ice cream"
+        self.test_filename = "robot.png"
+        self.generated_images_dir = os.path.join(settings.MEDIA_ROOT, "generated_images")
+        self.test_file_path = os.path.join(self.generated_images_dir, self.test_filename)
+
+    def tearDown(self):
+        if os.path.exists(self.test_file_path):
+            os.remove(self.test_file_path)
+        if os.path.exists(self.generated_images_dir) and not os.listdir(self.generated_images_dir):
+            os.rmdir(self.generated_images_dir)
+        if os.path.exists(settings.MEDIA_ROOT) and not os.listdir(settings.MEDIA_ROOT):
+            os.rmdir(settings.MEDIA_ROOT)
 
     @patch("ai_lab.api.OpenAIService")
     @patch("ai_lab.api.requests.get")
@@ -123,11 +136,7 @@ class AiLabImageGeneratorViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("message", response.data)
         self.assertIn("generated_images/robot.png", response.data["message"])
-
-        full_path = os.path.join(settings.MEDIA_ROOT, "generated_images", "robot.png")
-        self.assertTrue(os.path.exists(full_path))
-
-        os.remove(full_path)
+        self.assertTrue(os.path.exists(self.test_file_path))
 
     def test_missing_prompt_returns_400(self):
         response = self.client.post(self.url, {}, content_type="application/json")
@@ -168,21 +177,29 @@ class AiLabImageGeneratorViewTest(TestCase):
         self.assertIn("URL does not point to an image", response.data["message"])
 
 
+@override_settings(MEDIA_ROOT=os.path.join(tempfile.gettempdir(), "media"))
 class AiLabImageDownloadViewTest(TestCase):
 
     def setUp(self):
         self.url = reverse("ai_lab:ai-lab-download-image")
         self.test_filename = "test-image.png"
-        self.test_dir = os.path.join(settings.MEDIA_ROOT, "generated_images")
-        os.makedirs(self.test_dir, exist_ok=True)
 
-        self.test_file_path = os.path.join(self.test_dir, self.test_filename)
+        self.generated_images_dir = os.path.join(settings.MEDIA_ROOT, "generated_images")
+        os.makedirs(self.generated_images_dir, exist_ok=True)
+
+        self.test_file_path = os.path.join(self.generated_images_dir, self.test_filename)
         with open(self.test_file_path, "wb") as f:
             f.write(b"test image content")
 
     def tearDown(self):
         if os.path.exists(self.test_file_path):
             os.remove(self.test_file_path)
+
+        if os.path.exists(self.generated_images_dir) and not os.listdir(self.generated_images_dir):
+            os.rmdir(self.generated_images_dir)
+
+        if os.path.exists(settings.MEDIA_ROOT) and not os.listdir(settings.MEDIA_ROOT):
+            os.rmdir(settings.MEDIA_ROOT)
 
     def test_successful_file_download(self):
         response = self.client.post(self.url, {"filename": self.test_filename}, content_type="application/json")
