@@ -1,6 +1,8 @@
 from django.test import TestCase
 from unittest.mock import patch, MagicMock
 from django.urls import reverse
+from django.conf import settings
+import os
 
 
 class AiLabChatViewTest(TestCase):
@@ -94,3 +96,106 @@ class AiLabChatViewTest(TestCase):
             "image_url": "http://example.com/image2.png",
             "detail": "low"
         }, content_list)
+
+
+class AiLabImageGeneratorViewTest(TestCase):
+
+    def setUp(self):
+        self.url = reverse("ai_lab:ai_lab_image_generator")
+        self.prompt = "A robot eating ice cream"
+
+    @patch("ai_lab.api.OpenAIService")
+    @patch("ai_lab.api.requests.get")
+    @patch("ai_lab.api.generate_file_name_with_extension", return_value="robot.png")
+    def test_image_generated_and_saved_successfully(self, mock_filename, mock_requests_get, mock_openai_service):
+        mock_service = MagicMock()
+        mock_service.get_img_gen_response.return_value = "http://mocked.image.url/image.png"
+        mock_openai_service.return_value = mock_service
+
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.headers = {"Content-Type": "image/png"}
+        mock_response.iter_content = lambda chunk_size: [b"imagebytes"]
+        mock_requests_get.return_value = mock_response
+
+        response = self.client.post(self.url, {"question": self.prompt}, content_type="application/json")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("message", response.data)
+        self.assertIn("generated_images/robot.png", response.data["message"])
+
+        full_path = os.path.join(settings.MEDIA_ROOT, "generated_images", "robot.png")
+        self.assertTrue(os.path.exists(full_path))
+
+        os.remove(full_path)
+
+    def test_missing_prompt_returns_400(self):
+        response = self.client.post(self.url, {}, content_type="application/json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["error"], "Prompt is required.")
+
+    @patch("ai_lab.api.OpenAIService")
+    @patch("ai_lab.api.requests.get")
+    def test_download_fails_with_bad_status_code(self, mock_requests_get, mock_openai_service):
+        mock_service = MagicMock()
+        mock_service.get_img_gen_response.return_value = "http://mocked.image.url/image.png"
+        mock_openai_service.return_value = mock_service
+
+        mock_response = MagicMock()
+        mock_response.status_code = 404
+        mock_requests_get.return_value = mock_response
+
+        response = self.client.post(self.url, {"question": self.prompt}, content_type="application/json")
+
+        self.assertEqual(response.status_code, 500)
+        self.assertIn("Failed to download image", response.data["message"])
+
+    @patch("ai_lab.api.OpenAIService")
+    @patch("ai_lab.api.requests.get")
+    def test_url_does_not_point_to_image(self, mock_requests_get, mock_openai_service):
+        mock_service = MagicMock()
+        mock_service.get_img_gen_response.return_value = "http://mocked.image.url/image.png"
+        mock_openai_service.return_value = mock_service
+
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.headers = {"Content-Type": "text/html"}
+        mock_requests_get.return_value = mock_response
+
+        response = self.client.post(self.url, {"question": self.prompt}, content_type="application/json")
+
+        self.assertEqual(response.status_code, 500)
+        self.assertIn("URL does not point to an image", response.data["message"])
+
+
+class AiLabImageDownloadViewTest(TestCase):
+
+    def setUp(self):
+        self.url = reverse("ai_lab:ai-lab-download-image")
+        self.test_filename = "test-image.png"
+        self.test_dir = os.path.join(settings.MEDIA_ROOT, "generated_images")
+        os.makedirs(self.test_dir, exist_ok=True)
+
+        self.test_file_path = os.path.join(self.test_dir, self.test_filename)
+        with open(self.test_file_path, "wb") as f:
+            f.write(b"test image content")
+
+    def tearDown(self):
+        if os.path.exists(self.test_file_path):
+            os.remove(self.test_file_path)
+
+    def test_successful_file_download(self):
+        response = self.client.post(self.url, {"filename": self.test_filename}, content_type="application/json")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Disposition"], f'attachment; filename="{self.test_filename}"')
+        self.assertEqual(response.getvalue(), b"test image content")
+
+    def test_missing_filename_returns_400(self):
+        response = self.client.post(self.url, {}, content_type="application/json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["error"], "Filename is required.")
+
+    def test_file_not_found_returns_404(self):
+        response = self.client.post(self.url, {"filename": "nonexistent.png"}, content_type="application/json")
+        self.assertEqual(response.status_code, 404)
