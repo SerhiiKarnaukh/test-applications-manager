@@ -51,6 +51,15 @@ services:
     volumes:
       - redisdata:/data
 
+  flower:
+    image: mher/flower
+    restart: always
+    command: celery flower -A portfolio -l info --url-prefix=flower
+    ports:
+      - 5555:5555
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+
   celery:
     container_name: celery
     restart: always
