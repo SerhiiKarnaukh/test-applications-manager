@@ -1,10 +1,8 @@
 from django.http import JsonResponse
 from django.db.models import Q
 import os
-import re
 
 from rest_framework.decorators import api_view
-from rest_framework.pagination import PageNumberPagination
 
 from social_notification.utils import create_notification
 from .forms import PostForm, AttachmentForm
@@ -15,34 +13,18 @@ from social_profiles.models import Profile, FriendshipRequest
 from .serializers import PostSerializer, CommentSerializer, PostDetailSerializer, TrendSerializer
 from social_profiles.serializers import ProfileSerializer
 
-
-class PostPagination(PageNumberPagination):
-    page_size = 3
-    page_size_query_param = 'page_size'
-    max_page_size = 100
+from .pagination import PostPagination
+from .utils import get_trending_posts, get_user_feed_posts
 
 
 @api_view(['GET'])
 def post_list(request):
-    request_user = None
-    if request.user.is_authenticated and Profile.objects.filter(user=request.user).exists():
-        request_user = Profile.objects.get(user=request.user)
-
-    user_ids = []
-    if request_user is not None:
-        user_ids = [request_user.id]
-        for user in request_user.friends.all():
-            user_ids.append(user.id)
-        posts = Post.objects.filter(created_by_id__in=list(user_ids))
-    else:
-        posts = Post.objects.filter(is_private=False)
-
     trend = request.GET.get('trend', '').lower()
+
     if trend:
-        hashtag_pattern = r'#' + re.escape(trend) + r'(\b|[^a-zA-Z0-9_])'
-        posts = posts.filter(
-            Q(body__iregex=hashtag_pattern)
-        )
+        posts = get_trending_posts(trend)
+    else:
+        posts = get_user_feed_posts(request.user)
 
     paginator = PostPagination()
     paginated_posts = paginator.paginate_queryset(posts, request)
