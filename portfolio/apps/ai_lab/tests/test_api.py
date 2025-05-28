@@ -2,8 +2,12 @@ from django.test import TestCase,  override_settings
 from unittest.mock import patch, MagicMock
 from django.urls import reverse
 from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile
 import tempfile
 import os
+import io
+from base64 import b64encode
+from PIL import Image
 
 
 class AiLabChatViewTest(TestCase):
@@ -216,3 +220,85 @@ class AiLabImageDownloadViewTest(TestCase):
     def test_file_not_found_returns_404(self):
         response = self.client.post(self.url, {"filename": "nonexistent.png"}, content_type="application/json")
         self.assertEqual(response.status_code, 404)
+
+
+@override_settings(MEDIA_ROOT=os.path.join(tempfile.gettempdir(), "media"))
+class AiLabVoiceGeneratorViewTest(TestCase):
+
+    def setUp(self):
+        self.url = reverse("ai_lab:ai_lab_voice_generator")
+        self.prompt = "Say something inspiring"
+
+    @patch("ai_lab.api.OpenAIService")
+    @patch("ai_lab.api.generate_file_name_with_extension", return_value="inspiring.mp3")
+    def test_voice_generated_and_saved_successfully(self, mock_filename, mock_openai_service):
+        mock_service = MagicMock()
+        mock_message = MagicMock()
+        mock_message.audio.data = b64encode(b"fake-audio-data").decode()
+        mock_service.get_voice_gen_response.return_value = mock_message
+        mock_openai_service.return_value = mock_service
+
+        response = self.client.post(self.url, {"question": self.prompt}, content_type="application/json")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("generated_voices/inspiring.mp3", response.data["message"])
+
+        full_path = os.path.join(settings.MEDIA_ROOT, "generated_voices", "inspiring.mp3")
+        self.assertTrue(os.path.exists(full_path))
+
+        os.remove(full_path)
+
+    def test_missing_prompt_returns_400(self):
+        response = self.client.post(self.url, {}, content_type="application/json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["error"], "Prompt is required.")
+
+    @patch("ai_lab.api.OpenAIService")
+    def test_service_failure_returns_500(self, mock_openai_service):
+        mock_service = MagicMock()
+        mock_service.get_voice_gen_response.side_effect = Exception("Something went wrong")
+        mock_openai_service.return_value = mock_service
+
+        response = self.client.post(self.url, {"question": self.prompt}, content_type="application/json")
+        self.assertEqual(response.status_code, 500)
+        self.assertIn("Something went wrong", response.data["message"])
+
+
+@override_settings(MEDIA_ROOT=os.path.join(tempfile.gettempdir(), "media"))
+class AiLabVisionImagesUploadViewTest(TestCase):
+
+    def setUp(self):
+        self.url = reverse("ai_lab:upload-vision-images")
+        self.image = self._create_test_image("test-image.png")
+        self.second_image = self._create_test_image("test-image.png")  # same name to test uniqueness
+        self.vision_images_dir = os.path.join(settings.MEDIA_ROOT, "vision_images")
+
+    def tearDown(self):
+        if os.path.exists(self.vision_images_dir):
+            for f in os.listdir(self.vision_images_dir):
+                os.remove(os.path.join(self.vision_images_dir, f))
+            os.rmdir(self.vision_images_dir)
+
+    def _create_test_image(self, name):
+        buffer = io.BytesIO()
+        image = Image.new("RGB", (100, 100), color="red")
+        image.save(buffer, format="PNG")
+        buffer.seek(0)
+        return SimpleUploadedFile(name, buffer.read(), content_type="image/png")
+
+    def test_upload_images_successfully(self):
+        response = self.client.post(self.url, {"images[]": [self.image, self.second_image]}, format="multipart")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("uploaded_images", response.data)
+        self.assertEqual(len(response.data["uploaded_images"]), 2)
+        for url in response.data["uploaded_images"]:
+            self.assertIn("vision_images/test-image", url)
+
+        # Check files exist
+        self.assertEqual(len(os.listdir(self.vision_images_dir)), 2)
+
+    def test_upload_no_images_returns_400(self):
+        response = self.client.post(self.url, {}, format="multipart")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["error"], "No images provided.")
