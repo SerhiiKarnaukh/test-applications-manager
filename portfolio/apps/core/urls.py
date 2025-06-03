@@ -16,6 +16,6 @@ urlpatterns = [
     path('tag/<str:slug>/', ProjectsByTag.as_view(), name='tag'),
     path('search/', ProjectSearchListView.as_view(), name='search'),
     # for Django Rest Framework
-    path('api/v1/vue-apps/', api.VueAppsAPIList.as_view()),
-    path('api/v1/vue-apps/search/', api.search_api),
+    path('api/v1/vue-apps/', api.VueAppsAPIList.as_view(), name='vue_apps_api'),
+    path('api/v1/vue-apps/search/', api.search_api, name='search_api'),
 ]
