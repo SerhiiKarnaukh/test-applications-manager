@@ -1,4 +1,6 @@
-from django.test import TestCase, Client
+import os
+import tempfile
+from django.test import TestCase, Client, override_settings
 from django.urls import reverse
 from core.models import Category, Tag, Project, ProjectGallery
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -14,6 +16,7 @@ def get_temp_image():
     return SimpleUploadedFile("test.jpg", img_io.read(), content_type="image/jpeg")
 
 
+@override_settings(MEDIA_ROOT=os.path.join(tempfile.gettempdir(), "media"))
 class CoreViewsTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -59,3 +62,12 @@ class CoreViewsTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.project.title)
         self.assertTemplateUsed(response, 'core/index.html')
+
+    def tearDown(self):
+        media_path = os.path.join(tempfile.gettempdir(), "media")
+        if os.path.exists(media_path):
+            for root, dirs, files in os.walk(media_path, topdown=False):
+                for name in files:
+                    os.remove(os.path.join(root, name))
+                for name in dirs:
+                    os.rmdir(os.path.join(root, name))
