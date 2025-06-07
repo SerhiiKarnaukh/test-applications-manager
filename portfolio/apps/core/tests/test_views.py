@@ -1,8 +1,9 @@
 import os
 import tempfile
-from django.test import TestCase, Client, override_settings
+from django.test import TestCase, Client, override_settings, RequestFactory
 from django.urls import reverse
 from core.models import Category, Tag, Project, ProjectGallery
+from core.views import CategoryDetail
 from django.core.files.uploadedfile import SimpleUploadedFile
 from io import BytesIO
 from PIL import Image
@@ -71,3 +72,46 @@ class CoreViewsTest(TestCase):
                     os.remove(os.path.join(root, name))
                 for name in dirs:
                     os.rmdir(os.path.join(root, name))
+
+
+class CategoryDetailViewTest(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.category = Category.objects.create(title="Test Category", slug="test-category")
+        self.project1 = Project.objects.create(
+            title="A Project",
+            content="Test content",
+            photo=SimpleUploadedFile("test.jpg", b"file_content", content_type="image/jpeg"),
+            github_url="https://github.com/example",
+            view_url="https://example.com",
+            slug="a-project",
+            category=self.category,
+            ordering=1,
+        )
+        self.project2 = Project.objects.create(
+            title="B Project",
+            content="More content",
+            photo=SimpleUploadedFile("test2.jpg", b"file_content", content_type="image/jpeg"),
+            github_url="https://github.com/example2",
+            view_url="https://example2.com",
+            slug="b-project",
+            category=self.category,
+            ordering=2,
+        )
+
+    def test_default_context_without_slug_sets_welcome_title(self):
+        request = self.factory.get("/fake-url/")
+        view = CategoryDetail()
+        view.request = request
+        view.kwargs = {}
+        context = view.create_store_data()
+        self.assertEqual(context["core_title"], "Welcome")
+
+    def test_queryset_without_slug_returns_all_projects_ordered(self):
+        request = self.factory.get("/fake-url/")
+        view = CategoryDetail()
+        view.request = request
+        view.kwargs = {}
+        queryset = view.get_queryset()
+        project_titles = list(queryset.values_list("title", flat=True))
+        self.assertEqual(project_titles, ["A Project", "B Project"])  # ordering=1 first
