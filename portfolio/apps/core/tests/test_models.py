@@ -1,9 +1,13 @@
 
-from django.test import TestCase
+import tempfile
+import os
+import shutil
+from django.test import TestCase, override_settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from core.models import Category, Project, ProjectGallery
 
 
+@override_settings(MEDIA_ROOT=os.path.join(tempfile.gettempdir(), "media"))
 class ProjectModelTest(TestCase):
     def setUp(self):
         self.category = Category.objects.create(title="Test Category", slug="test-category")
@@ -21,7 +25,12 @@ class ProjectModelTest(TestCase):
     def test_project_str_method(self):
         self.assertEqual(str(self.project), "Test Project")
 
+    def tearDown(self):
+        media_dir = os.path.join(tempfile.gettempdir(), "media")
+        shutil.rmtree(media_dir, ignore_errors=True)
 
+
+@override_settings(MEDIA_ROOT=os.path.join(tempfile.gettempdir(), "media"))
 class ProjectGalleryModelTest(TestCase):
     def setUp(self):
         self.category = Category.objects.create(title="Test Category", slug="test-category")
@@ -42,3 +51,7 @@ class ProjectGalleryModelTest(TestCase):
 
     def test_project_gallery_str_method(self):
         self.assertEqual(str(self.gallery_image), "Test Project")
+
+    def tearDown(self):
+        media_dir = os.path.join(tempfile.gettempdir(), "media")
+        shutil.rmtree(media_dir, ignore_errors=True)
