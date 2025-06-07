@@ -74,6 +74,7 @@ class CoreViewsTest(TestCase):
                     os.rmdir(os.path.join(root, name))
 
 
+@override_settings(MEDIA_ROOT=os.path.join(tempfile.gettempdir(), "media"))
 class CategoryDetailViewTest(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
@@ -115,3 +116,9 @@ class CategoryDetailViewTest(TestCase):
         queryset = view.get_queryset()
         project_titles = list(queryset.values_list("title", flat=True))
         self.assertEqual(project_titles, ["A Project", "B Project"])  # ordering=1 first
+
+    def tearDown(self):
+        media_dir = os.path.join(tempfile.gettempdir(), "media")
+        if os.path.exists(media_dir):
+            import shutil
+            shutil.rmtree(media_dir, ignore_errors=True)
