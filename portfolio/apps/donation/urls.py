@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
 
-    path('', views.my_donation, name=''),
+    path('', views.my_donation, name='my-donation'),
 
     path('payment-success/', views.payment_success, name='payment-success'),
 
