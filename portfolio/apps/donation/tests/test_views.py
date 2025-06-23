@@ -53,3 +53,24 @@ class MyDonationViewTest(TestCase):
         paypal_form = response.context["paypal_form"]
         self.assertEqual(paypal_form.initial["amount"], 10)
         self.assertEqual(paypal_form.initial["item_name"], "Default Donation")
+
+
+class PaymentSuccessViewTest(TestCase):
+
+    @patch("donation.views.time.sleep")
+    def test_payment_success_renders_correct_template(self, mock_sleep):
+        response = self.client.get(reverse("payment-success"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "donation/includes/payment-success.html")
+
+        mock_sleep.assert_called_once_with(10)
+
+
+class PaymentFailedViewTest(TestCase):
+
+    def test_payment_failed_renders_correct_template(self):
+        response = self.client.get(reverse("payment-failed"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "donation/includes/payment-failed.html")
