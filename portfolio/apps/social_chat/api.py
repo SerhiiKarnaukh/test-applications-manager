@@ -1,15 +1,17 @@
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import NotFound
-from social_notification.utils import create_notification
 
 from social_profiles.models import Profile
-
 from .models import Conversation, ConversationMessage
+
 from .serializers import ConversationSerializer, ConversationDetailSerializer, ConversationMessageSerializer
+
+from social_notification.utils import create_notification
 
 
 @api_view(['GET'])
@@ -42,7 +44,7 @@ def conversation_detail(request, pk):
 @api_view(['GET'])
 def conversation_get_or_create(request, slug):
 
-    user = Profile.objects.get(slug=slug)
+    user = get_object_or_404(Profile, slug=slug)
     request_user = Profile.objects.get(user=request.user)
 
     conversations = Conversation.objects.filter(
