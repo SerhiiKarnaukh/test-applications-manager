@@ -3,6 +3,7 @@ from asgiref.sync import async_to_sync
 from django.http import JsonResponse
 
 from rest_framework.decorators import api_view
+from rest_framework.exceptions import NotFound
 from social_notification.utils import create_notification
 
 from social_profiles.models import Profile
@@ -25,8 +26,13 @@ def conversation_list(request):
 @api_view(['GET'])
 def conversation_detail(request, pk):
     request_user = Profile.objects.get(user=request.user)
-    conversation = Conversation.objects.filter(
-        users__in=list([request_user])).get(pk=pk)
+    try:
+        conversation = Conversation.objects.filter(
+            users__in=[request_user]
+        ).get(pk=pk)
+    except Conversation.DoesNotExist:
+        raise NotFound("Conversation not found.")
+
     serializer = ConversationDetailSerializer(conversation,
                                               context={'request': request})
 
