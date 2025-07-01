@@ -2,16 +2,10 @@ from django.test import TestCase
 from django.urls import reverse
 from unittest.mock import patch, AsyncMock
 from rest_framework.test import APIClient
-from accounts.models import Account
 from social_profiles.models import Profile
 from social_chat.models import Conversation, ConversationMessage
 
-
-def create_active_user(**kwargs):
-    user = Account.objects.create_user(**kwargs)
-    user.is_active = True
-    user.save()
-    return user
+from core.utils import create_active_user
 
 
 class ConversationListViewTest(TestCase):

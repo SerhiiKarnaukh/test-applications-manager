@@ -1,4 +1,5 @@
 from pprint import pprint
+from accounts.models import Account
 
 
 def object_to_dict(obj):
@@ -14,3 +15,10 @@ def object_to_dict(obj):
 
 def print_object(obj):
     pprint(object_to_dict(obj), indent=1)
+
+
+def create_active_user(**kwargs):
+    user = Account.objects.create_user(**kwargs)
+    user.is_active = True
+    user.save()
+    return user
