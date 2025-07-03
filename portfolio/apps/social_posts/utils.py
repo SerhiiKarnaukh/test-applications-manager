@@ -4,7 +4,7 @@ from social_profiles.models import Profile
 
 
 def get_trending_posts(trend: str):
-    hashtag_pattern = r'#' + re.escape(trend) + r'(\b|[^a-zA-Z0-9_])'
+    hashtag_pattern = r'#' + re.escape(trend) + r'(?![a-zA-Z0-9_])'
     return Post.objects.filter(
         is_private=False,
         body__iregex=hashtag_pattern
