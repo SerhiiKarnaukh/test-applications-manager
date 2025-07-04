@@ -3,6 +3,7 @@ from django.db.models import Q
 import os
 
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from social_notification.utils import create_notification
 from .forms import PostForm, AttachmentForm
@@ -49,11 +50,8 @@ def post_detail(request, pk):
 
     post = Post.objects.filter(Q(created_by_id__in=list(user_ids)) | Q(is_private=False)).get(pk=pk)
 
-    return JsonResponse({
-        'post':
-        PostDetailSerializer(post, context={
-            'request': request
-        }).data
+    return Response({
+        'post': PostDetailSerializer(post, context={'request': request}).data
     })
 
 
