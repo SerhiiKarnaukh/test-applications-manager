@@ -101,6 +101,9 @@ def post_list_profile(request, slug):
 
 @api_view(['POST'])
 def post_create(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Authentication required'}, status=401)
+
     form = PostForm(request.POST)
     user = request.user
     profile = Profile.objects.get(user=user)
@@ -136,7 +139,7 @@ def post_create(request):
 
         return JsonResponse(serializer.data, safe=False)
     else:
-        return JsonResponse({'error': 'add something here later!...'})
+        return JsonResponse({'error': 'Form is not valid'}, status=400)
 
 
 @api_view(['GET', 'POST'])

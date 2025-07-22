@@ -2,12 +2,11 @@ from django.test import TestCase,  override_settings
 from unittest.mock import patch, MagicMock
 from django.urls import reverse
 from django.conf import settings
-from django.core.files.uploadedfile import SimpleUploadedFile
 import tempfile
 import os
-import io
+
 from base64 import b64encode
-from PIL import Image
+from core.utils import create_test_image
 
 
 class AiLabChatViewTest(TestCase):
@@ -269,8 +268,8 @@ class AiLabVisionImagesUploadViewTest(TestCase):
 
     def setUp(self):
         self.url = reverse("ai_lab:upload-vision-images")
-        self.image = self._create_test_image("test-image.png")
-        self.second_image = self._create_test_image("test-image.png")  # same name to test uniqueness
+        self.image = create_test_image("test-image.png")
+        self.second_image = create_test_image("test-image.png")  # same name to test uniqueness
         self.vision_images_dir = os.path.join(settings.MEDIA_ROOT, "vision_images")
 
     def tearDown(self):
@@ -278,13 +277,6 @@ class AiLabVisionImagesUploadViewTest(TestCase):
             for f in os.listdir(self.vision_images_dir):
                 os.remove(os.path.join(self.vision_images_dir, f))
             os.rmdir(self.vision_images_dir)
-
-    def _create_test_image(self, name):
-        buffer = io.BytesIO()
-        image = Image.new("RGB", (100, 100), color="red")
-        image.save(buffer, format="PNG")
-        buffer.seek(0)
-        return SimpleUploadedFile(name, buffer.read(), content_type="image/png")
 
     def test_upload_images_successfully(self):
         response = self.client.post(self.url, {"images[]": [self.image, self.second_image]}, format="multipart")
