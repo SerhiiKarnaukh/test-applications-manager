@@ -7,7 +7,7 @@ from django.conf import settings
 from rest_framework.test import APIClient
 
 from social_profiles.models import Profile, FriendshipRequest
-from social_posts.models import Post, PostAttachment
+from social_posts.models import Post, PostAttachment, Like
 
 from core.utils import create_active_user, create_test_image
 
@@ -385,3 +385,64 @@ class SearchApiTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("results", response.data)
         self.assertLessEqual(len(response.data["results"]["posts"]), 5)
+
+
+class PostLikeViewTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.author_user = create_active_user(username="author",
+                                              email="author@example.com",
+                                              password="pass123",
+                                              first_name="Test_author",
+                                              last_name="User_author")
+        self.liker_user = create_active_user(username="liker",
+                                             email="liker@example.com",
+                                             password="pass123",
+                                             first_name="Test_liker",
+                                             last_name="User_liker")
+
+        self.author_profile = Profile.objects.create(user=self.author_user)
+        self.liker_profile = Profile.objects.create(user=self.liker_user)
+
+        self.post = Post.objects.create(
+            body="Test Post", created_by=self.author_profile, is_private=False
+        )
+
+        self.like_url = reverse("social_posts:post_like", kwargs={"pk": self.post.pk})
+
+    def test_authenticated_user_can_like_post(self):
+        self.client.force_authenticate(user=self.liker_user)
+
+        response = self.client.post(self.like_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["message"], "like created")
+        self.assertEqual(Like.objects.count(), 1)
+        self.assertEqual(self.post.likes.count(), 1)
+        self.post.refresh_from_db()
+        self.assertEqual(self.post.likes_count, 1)
+
+    def test_user_cannot_like_twice(self):
+        self.client.force_authenticate(user=self.liker_user)
+
+        self.client.post(self.like_url)
+        response = self.client.post(self.like_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["message"], "post already liked")
+        self.assertEqual(Like.objects.count(), 1)
+        self.assertEqual(self.post.likes.count(), 1)
+
+    def test_unauthenticated_user_cannot_like(self):
+        response = self.client.post(self.like_url)
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(Like.objects.count(), 0)
+
+    def test_user_likes_own_post_creates_like_but_no_error(self):
+        self.client.force_authenticate(user=self.author_user)
+
+        response = self.client.post(self.like_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["message"], "like created")
+        self.assertEqual(Like.objects.count(), 1)
+        self.assertEqual(self.post.likes.count(), 1)

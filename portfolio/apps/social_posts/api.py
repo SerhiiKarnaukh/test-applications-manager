@@ -177,6 +177,9 @@ def search(request):
 
 @api_view(['POST'])
 def post_like(request, pk):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Authentication required'}, status=401)
+
     post = Post.objects.get(pk=pk)
     request_user = Profile.objects.get(user=request.user)
 
