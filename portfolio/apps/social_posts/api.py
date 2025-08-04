@@ -201,6 +201,9 @@ def post_like(request, pk):
 
 @api_view(['POST'])
 def post_create_comment(request, pk):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Authentication required'}, status=401)
+
     request_user = Profile.objects.get(user=request.user)
     comment = Comment.objects.create(body=request.data.get('body'),
                                      created_by=request_user)
