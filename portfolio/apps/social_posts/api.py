@@ -2,8 +2,9 @@ from django.http import JsonResponse
 from django.db.models import Q
 import os
 
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from social_notification.utils import create_notification
 from .forms import PostForm, AttachmentForm
@@ -228,9 +229,14 @@ def get_trends(request):
 
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def post_delete(request, pk):
     request_user = Profile.objects.get(user=request.user)
-    post = Post.objects.filter(created_by=request_user).get(pk=pk)
+
+    try:
+        post = Post.objects.filter(created_by=request_user).get(pk=pk)
+    except Post.DoesNotExist:
+        return JsonResponse({'detail': 'Not found.'}, status=404)
 
     for attachment in post.attachments.all():
         if attachment.image:
@@ -246,6 +252,7 @@ def post_delete(request, pk):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def post_report(request, pk):
     request_user = Profile.objects.get(user=request.user)
     post = Post.objects.get(pk=pk)
