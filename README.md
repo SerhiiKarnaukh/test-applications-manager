@@ -13,7 +13,7 @@ See Makefile
 ### Front-end Store
 
 ```
-nvm use 22.16.0
+nvm use 22.19.0
 cd portfolio/apps/taberna_product/_dev
 npm install
 npm run w
@@ -22,7 +22,7 @@ npm run w
 ### Front-end Core
 
 ```
-nvm use 22.16.0
+nvm use 22.19.0
 cd portfolio/apps/core/_dev
 npm install
 npm run w
