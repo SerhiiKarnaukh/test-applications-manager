@@ -35,6 +35,15 @@ services:
 
   db:
     image: postgres:17-alpine
+    command:
+      [
+        '-c',
+        'shared_buffers=128MB',
+        '-c',
+        'work_mem=4MB',
+        '-c',
+        'maintenance_work_mem=64MB',
+      ]
     restart: always
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -64,7 +73,14 @@ services:
     container_name: celery
     restart: always
     build: .
-    command: celery -A portfolio worker -l info
+    command: >
+      celery -A portfolio -b redis://redis:6379/0 worker -l info
+      --concurrency=1
+      --prefetch-multiplier=1
+      --max-tasks-per-child=1
+      --time-limit=1800
+      --soft-time-limit=1500
+      -Ofair
     volumes:
       - static-data:/vol/web
     environment:
@@ -87,7 +103,9 @@ services:
       - STRIPE_PRIVATE_KEY=${STRIPE_PRIVATE_KEY}
       - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - CELERY_WORKER_MAX_MEMORY_PER_CHILD=1100000
     depends_on:
+      - db
       - redis
 
   celery-beat:
@@ -125,6 +143,8 @@ services:
       - certbot-certs:/etc/letsencrypt
     environment:
       - DOMAIN=${DJANGO_ALLOWED_HOSTS}
+      - APP_HOST=app
+      - APP_PORT=8000
 
   certbot:
     build:

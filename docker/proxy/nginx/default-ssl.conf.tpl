@@ -31,21 +31,25 @@ server {
     location / {
         include              gunicorn_headers;
         proxy_redirect       off;
+        proxy_read_timeout   300s;
+        proxy_connect_timeout 30s;
+        proxy_send_timeout   300s;
         proxy_pass           http://${APP_HOST}:${APP_PORT};
         client_max_body_size 75M;
         client_body_buffer_size 1M;
     }
 
     location /ws/ {
-         proxy_pass http://app:8000;
-         proxy_http_version 1.1;
-         proxy_set_header Upgrade $http_upgrade;
-         proxy_set_header Connection "upgrade";
-         proxy_redirect off;
-         proxy_set_header Host $host;
-         proxy_set_header X-Real-IP $remote_addr;
-         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-         proxy_set_header X-Forwarded-Host $server_name;
+        proxy_pass http://${APP_HOST}:${APP_PORT};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $server_name;
+        proxy_read_timeout 600s;
     }
 
     location /flower/ {
